@@ -16,9 +16,6 @@ u16 LCD_BGR2RGB(u16 c)
 
 }
 
-
-
-
 void Gui_Circle(u16 X,u16 Y,u16 R,u16 fc) 
 {//Bresenham算法 
     unsigned short  a,b; 

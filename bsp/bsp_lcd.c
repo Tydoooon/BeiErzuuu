@@ -7,78 +7,12 @@ u16 BACK_COLOR = WHITE;
 
 static void LCD_WriteByte(u8 data);
 
-void LCD_GPIO_Init(void)
-{
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-    __HAL_RCC_GPIOB_CLK_ENABLE();
-
-#if USE_HARDWARE_SPI
-    GPIO_InitStruct.Pin = LCD_LED | LCD_CS;
-#else
-    GPIO_InitStruct.Pin = LCD_LED | LCD_CS | LCD_SCL | LCD_SDA;
-#endif
-    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    HAL_GPIO_Init(LCD_CTRL1, &GPIO_InitStruct);
-
-    GPIO_InitStruct.Pin = LCD_RST | LCD_RS;
-    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    HAL_GPIO_Init(LCD_CTRL2, &GPIO_InitStruct);
-
-#if !USE_HARDWARE_SPI
-    LCD_SCL_CLR;
-    LCD_SDA_SET;
-#endif
-    LCD_CS_SET;
-    LCD_RS_SET;
-    LCD_RST_SET;
-    LCD_LED_SET;
-}
-
-#if !USE_HARDWARE_SPI
-static void LCD_SoftSpiWriteByte(u8 Data)
-{
-    u8 i;
-
-    for (i = 0; i < 8; i++)
-    {
-        if (Data & 0x80)
-        {
-            LCD_SDA_SET;
-        }
-        else
-        {
-            LCD_SDA_CLR;
-        }
-
-        LCD_SCL_CLR;
-        __NOP();
-        __NOP();
-        LCD_SCL_SET;
-        __NOP();
-        __NOP();
-        Data <<= 1;
-    }
-
-    LCD_SCL_CLR;
-}
-#endif
-
 static void LCD_WriteByte(u8 data)
 {
-#if USE_HARDWARE_SPI
     if (HAL_SPI_Transmit(&hspi1, &data, 1, 100) != HAL_OK)
     {
         Error_Handler();
     }
-#else
-    LCD_SoftSpiWriteByte(data);
-#endif
 }
 
 void Lcd_WriteIndex(u8 Index)
@@ -122,11 +56,6 @@ void Lcd_Reset(void)
 
 void Lcd_Init(void)
 {
-#if USE_HARDWARE_SPI
-    MX_SPI1_Init();
-#endif
-    LCD_GPIO_Init();
-
     LCD_CS_SET;
     LCD_LED_SET;
     Lcd_Reset();

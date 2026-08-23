@@ -419,9 +419,9 @@ Discarded input sections
  .debug_macro   0x00000000      0x225 CMakeFiles/BeiErZu.dir/app/app_lcd.c.obj
  .debug_macro   0x00000000      0x12d CMakeFiles/BeiErZu.dir/app/app_lcd.c.obj
  .debug_macro   0x00000000       0xa0 CMakeFiles/BeiErZu.dir/app/app_lcd.c.obj
- .debug_macro   0x00000000      0x10c CMakeFiles/BeiErZu.dir/app/app_lcd.c.obj
+ .debug_macro   0x00000000       0xe8 CMakeFiles/BeiErZu.dir/app/app_lcd.c.obj
  .debug_line    0x00000000      0x891 CMakeFiles/BeiErZu.dir/app/app_lcd.c.obj
- .debug_str     0x00000000    0xbcdd6 CMakeFiles/BeiErZu.dir/app/app_lcd.c.obj
+ .debug_str     0x00000000    0xbccef CMakeFiles/BeiErZu.dir/app/app_lcd.c.obj
  .comment       0x00000000       0x46 CMakeFiles/BeiErZu.dir/app/app_lcd.c.obj
  .debug_frame   0x00000000      0x13c CMakeFiles/BeiErZu.dir/app/app_lcd.c.obj
  .ARM.attributes
@@ -597,7 +597,7 @@ Discarded input sections
  .debug_macro   0x00000000      0x225 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
  .debug_macro   0x00000000      0x12d CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
  .debug_macro   0x00000000       0xa0 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
- .debug_macro   0x00000000      0x10c CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
+ .debug_macro   0x00000000       0xe8 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
  .group         0x00000000        0xc CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
  .group         0x00000000        0xc CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
  .group         0x00000000        0xc CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
@@ -809,10 +809,10 @@ Discarded input sections
  .debug_macro   0x00000000      0x225 CMakeFiles/BeiErZu.dir/gui/gui.c.obj
  .debug_macro   0x00000000      0x12d CMakeFiles/BeiErZu.dir/gui/gui.c.obj
  .debug_macro   0x00000000       0xa0 CMakeFiles/BeiErZu.dir/gui/gui.c.obj
- .debug_macro   0x00000000      0x10c CMakeFiles/BeiErZu.dir/gui/gui.c.obj
+ .debug_macro   0x00000000       0xe8 CMakeFiles/BeiErZu.dir/gui/gui.c.obj
  .debug_macro   0x00000000       0x1e CMakeFiles/BeiErZu.dir/gui/gui.c.obj
  .debug_line    0x00000000      0xd3a CMakeFiles/BeiErZu.dir/gui/gui.c.obj
- .debug_str     0x00000000    0xbce93 CMakeFiles/BeiErZu.dir/gui/gui.c.obj
+ .debug_str     0x00000000    0xbcdac CMakeFiles/BeiErZu.dir/gui/gui.c.obj
  .comment       0x00000000       0x46 CMakeFiles/BeiErZu.dir/gui/gui.c.obj
  .debug_frame   0x00000000      0x304 CMakeFiles/BeiErZu.dir/gui/gui.c.obj
  .ARM.attributes
@@ -3384,7 +3384,7 @@ LOAD E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/.
                 0x08000000                g_pfnVectors
                 0x08000188                        . = ALIGN (0x4)
 
-.text           0x08000188     0x24d8
+.text           0x08000188     0x2414
                 0x08000188                        . = ALIGN (0x4)
  *(.text)
  .text          0x08000188       0x30 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard\libgcc.a(_aeabi_uldivmod.o)
@@ -3415,320 +3415,317 @@ LOAD E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/.
  .text.bsp_led_reset
                 0x08000400       0x20 CMakeFiles/BeiErZu.dir/bsp/bsp_led.c.obj
                 0x08000400                bsp_led_reset
- .text.LCD_GPIO_Init
-                0x08000420       0xc4 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
-                0x08000420                LCD_GPIO_Init
  .text.LCD_WriteByte
-                0x080004e4       0x2c CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
+                0x08000420       0x2c CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
  .text.Lcd_WriteIndex
-                0x08000510       0x40 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
-                0x08000510                Lcd_WriteIndex
+                0x0800044c       0x40 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
+                0x0800044c                Lcd_WriteIndex
  .text.Lcd_WriteData
-                0x08000550       0x40 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
-                0x08000550                Lcd_WriteData
+                0x0800048c       0x40 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
+                0x0800048c                Lcd_WriteData
  .text.Lcd_WriteData_16Bit
-                0x08000590       0x50 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
-                0x08000590                Lcd_WriteData_16Bit
+                0x080004cc       0x50 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
+                0x080004cc                Lcd_WriteData_16Bit
  .text.Lcd_Reset
-                0x080005e0       0x2c CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
-                0x080005e0                Lcd_Reset
+                0x0800051c       0x2c CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
+                0x0800051c                Lcd_Reset
  .text.Lcd_Init
-                0x0800060c      0x23c CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
-                0x0800060c                Lcd_Init
+                0x08000548      0x238 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
+                0x08000548                Lcd_Init
  .text.Lcd_SetRegion
-                0x08000848       0x70 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
-                0x08000848                Lcd_SetRegion
+                0x08000780       0x70 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
+                0x08000780                Lcd_SetRegion
  .text.Lcd_Clear
-                0x080008b8       0x8c CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
-                0x080008b8                Lcd_Clear
- .text.LED1_ON  0x08000944       0x18 CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
-                0x08000944                LED1_ON
+                0x080007f0       0x8c CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
+                0x080007f0                Lcd_Clear
+ .text.LED1_ON  0x0800087c       0x18 CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
+                0x0800087c                LED1_ON
  .text.LED1_OFF
-                0x0800095c       0x18 CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
-                0x0800095c                LED1_OFF
- .text.LED3_ON  0x08000974       0x18 CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
-                0x08000974                LED3_ON
+                0x08000894       0x18 CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
+                0x08000894                LED1_OFF
+ .text.LED3_ON  0x080008ac       0x18 CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
+                0x080008ac                LED3_ON
  .text.LED3_OFF
-                0x0800098c       0x18 CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
-                0x0800098c                LED3_OFF
- .text.main     0x080009a4       0x20 CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
-                0x080009a4                main
+                0x080008c4       0x18 CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
+                0x080008c4                LED3_OFF
+ .text.main     0x080008dc       0x24 CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
+                0x080008dc                main
  .text.SystemClock_Config
-                0x080009c4       0xd4 CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
-                0x080009c4                SystemClock_Config
+                0x08000900       0xd4 CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
+                0x08000900                SystemClock_Config
  .text.Error_Handler
-                0x08000a98        0xc CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
-                0x08000a98                Error_Handler
+                0x080009d4        0xc CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
+                0x080009d4                Error_Handler
  .text.MX_GPIO_Init
-                0x08000aa4      0x198 CMakeFiles/BeiErZu.dir/Core/Src/gpio.c.obj
-                0x08000aa4                MX_GPIO_Init
+                0x080009e0      0x198 CMakeFiles/BeiErZu.dir/Core/Src/gpio.c.obj
+                0x080009e0                MX_GPIO_Init
  .text.MX_SPI1_Init
-                0x08000c3c       0x6c CMakeFiles/BeiErZu.dir/Core/Src/spi.c.obj
-                0x08000c3c                MX_SPI1_Init
+                0x08000b78       0x6c CMakeFiles/BeiErZu.dir/Core/Src/spi.c.obj
+                0x08000b78                MX_SPI1_Init
  .text.HAL_SPI_MspInit
-                0x08000ca8       0x90 CMakeFiles/BeiErZu.dir/Core/Src/spi.c.obj
-                0x08000ca8                HAL_SPI_MspInit
+                0x08000be4       0x90 CMakeFiles/BeiErZu.dir/Core/Src/spi.c.obj
+                0x08000be4                HAL_SPI_MspInit
  .text.NMI_Handler
-                0x08000d38        0x8 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
-                0x08000d38                NMI_Handler
+                0x08000c74        0x8 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
+                0x08000c74                NMI_Handler
  .text.HardFault_Handler
-                0x08000d40        0x8 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
-                0x08000d40                HardFault_Handler
+                0x08000c7c        0x8 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
+                0x08000c7c                HardFault_Handler
  .text.MemManage_Handler
-                0x08000d48        0x8 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
-                0x08000d48                MemManage_Handler
+                0x08000c84        0x8 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
+                0x08000c84                MemManage_Handler
  .text.BusFault_Handler
-                0x08000d50        0x8 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
-                0x08000d50                BusFault_Handler
+                0x08000c8c        0x8 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
+                0x08000c8c                BusFault_Handler
  .text.UsageFault_Handler
-                0x08000d58        0x8 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
-                0x08000d58                UsageFault_Handler
+                0x08000c94        0x8 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
+                0x08000c94                UsageFault_Handler
  .text.SVC_Handler
-                0x08000d60        0xc CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
-                0x08000d60                SVC_Handler
+                0x08000c9c        0xc CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
+                0x08000c9c                SVC_Handler
  .text.DebugMon_Handler
-                0x08000d6c        0xc CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
-                0x08000d6c                DebugMon_Handler
+                0x08000ca8        0xc CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
+                0x08000ca8                DebugMon_Handler
  .text.PendSV_Handler
-                0x08000d78        0xc CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
-                0x08000d78                PendSV_Handler
+                0x08000cb4        0xc CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
+                0x08000cb4                PendSV_Handler
  .text.SysTick_Handler
-                0x08000d84        0xc CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
-                0x08000d84                SysTick_Handler
+                0x08000cc0        0xc CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
+                0x08000cc0                SysTick_Handler
  .text.HAL_MspInit
-                0x08000d90       0x4c CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_hal_msp.c.obj
-                0x08000d90                HAL_MspInit
+                0x08000ccc       0x4c CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_hal_msp.c.obj
+                0x08000ccc                HAL_MspInit
  .text.HAL_SPI_Init
-                0x08000ddc      0x112 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
-                0x08000ddc                HAL_SPI_Init
+                0x08000d18      0x112 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
+                0x08000d18                HAL_SPI_Init
  .text.HAL_SPI_Transmit
-                0x08000eee      0x288 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
-                0x08000eee                HAL_SPI_Transmit
- *fill*         0x08001176        0x2 
+                0x08000e2a      0x288 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
+                0x08000e2a                HAL_SPI_Transmit
+ *fill*         0x080010b2        0x2 
  .text.SPI_WaitFlagStateUntilTimeout
-                0x08001178      0x110 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
+                0x080010b4      0x110 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
  .text.SPI_EndRxTxTransaction
-                0x08001288       0xa8 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
+                0x080011c4       0xa8 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
  .text.HAL_RCC_OscConfig
-                0x08001330      0x4f0 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
-                0x08001330                HAL_RCC_OscConfig
+                0x0800126c      0x4f0 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
+                0x0800126c                HAL_RCC_OscConfig
  .text.HAL_RCC_ClockConfig
-                0x08001820      0x1cc CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
-                0x08001820                HAL_RCC_ClockConfig
+                0x0800175c      0x1cc CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
+                0x0800175c                HAL_RCC_ClockConfig
  .text.HAL_RCC_GetSysClockFreq
-                0x080019ec      0x20c CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
-                0x080019ec                HAL_RCC_GetSysClockFreq
+                0x08001928      0x20c CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
+                0x08001928                HAL_RCC_GetSysClockFreq
  .text.HAL_GPIO_Init
-                0x08001bf8      0x334 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
-                0x08001bf8                HAL_GPIO_Init
+                0x08001b34      0x334 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
+                0x08001b34                HAL_GPIO_Init
  .text.HAL_GPIO_ReadPin
-                0x08001f2c       0x2e CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
-                0x08001f2c                HAL_GPIO_ReadPin
+                0x08001e68       0x2e CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
+                0x08001e68                HAL_GPIO_ReadPin
  .text.HAL_GPIO_WritePin
-                0x08001f5a       0x30 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
-                0x08001f5a                HAL_GPIO_WritePin
+                0x08001e96       0x30 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
+                0x08001e96                HAL_GPIO_WritePin
  .text.HAL_GPIO_TogglePin
-                0x08001f8a       0x32 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
-                0x08001f8a                HAL_GPIO_TogglePin
+                0x08001ec6       0x32 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
+                0x08001ec6                HAL_GPIO_TogglePin
  .text.__NVIC_SetPriorityGrouping
-                0x08001fbc       0x48 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
+                0x08001ef8       0x48 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
  .text.__NVIC_GetPriorityGrouping
-                0x08002004       0x1c CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
+                0x08001f40       0x1c CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
  .text.__NVIC_SetPriority
-                0x08002020       0x54 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
+                0x08001f5c       0x54 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
  .text.NVIC_EncodePriority
-                0x08002074       0x6e CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
- *fill*         0x080020e2        0x2 
+                0x08001fb0       0x6e CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
+ *fill*         0x0800201e        0x2 
  .text.SysTick_Config
-                0x080020e4       0x44 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
+                0x08002020       0x44 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
  .text.HAL_NVIC_SetPriorityGrouping
-                0x08002128       0x16 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
-                0x08002128                HAL_NVIC_SetPriorityGrouping
+                0x08002064       0x16 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
+                0x08002064                HAL_NVIC_SetPriorityGrouping
  .text.HAL_NVIC_SetPriority
-                0x0800213e       0x38 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
-                0x0800213e                HAL_NVIC_SetPriority
+                0x0800207a       0x38 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
+                0x0800207a                HAL_NVIC_SetPriority
  .text.HAL_SYSTICK_Config
-                0x08002176       0x18 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
-                0x08002176                HAL_SYSTICK_Config
- *fill*         0x0800218e        0x2 
+                0x080020b2       0x18 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
+                0x080020b2                HAL_SYSTICK_Config
+ *fill*         0x080020ca        0x2 
  .text.HAL_Init
-                0x08002190       0x44 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
-                0x08002190                HAL_Init
+                0x080020cc       0x44 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
+                0x080020cc                HAL_Init
  .text.HAL_InitTick
-                0x080021d4       0x60 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
-                0x080021d4                HAL_InitTick
+                0x08002110       0x60 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
+                0x08002110                HAL_InitTick
  .text.HAL_IncTick
-                0x08002234       0x24 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
-                0x08002234                HAL_IncTick
+                0x08002170       0x24 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
+                0x08002170                HAL_IncTick
  .text.HAL_GetTick
-                0x08002258       0x14 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
-                0x08002258                HAL_GetTick
+                0x08002194       0x14 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
+                0x08002194                HAL_GetTick
  .text.HAL_Delay
-                0x0800226c       0x48 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
-                0x0800226c                HAL_Delay
+                0x080021a8       0x48 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
+                0x080021a8                HAL_Delay
  .text.SystemInit
-                0x080022b4       0x20 CMakeFiles/BeiErZu.dir/Core/Src/system_stm32f4xx.c.obj
-                0x080022b4                SystemInit
+                0x080021f0       0x20 CMakeFiles/BeiErZu.dir/Core/Src/system_stm32f4xx.c.obj
+                0x080021f0                SystemInit
  .text.Reset_Handler
-                0x080022d4       0x50 CMakeFiles/BeiErZu.dir/startup_stm32f407xx.s.obj
-                0x080022d4                Reset_Handler
+                0x08002210       0x50 CMakeFiles/BeiErZu.dir/startup_stm32f407xx.s.obj
+                0x08002210                Reset_Handler
  .text.Default_Handler
-                0x08002324        0x2 CMakeFiles/BeiErZu.dir/startup_stm32f407xx.s.obj
-                0x08002324                RTC_Alarm_IRQHandler
-                0x08002324                HASH_RNG_IRQHandler
-                0x08002324                EXTI2_IRQHandler
-                0x08002324                TIM8_CC_IRQHandler
-                0x08002324                TIM1_CC_IRQHandler
-                0x08002324                DMA2_Stream5_IRQHandler
-                0x08002324                DMA1_Stream5_IRQHandler
-                0x08002324                PVD_IRQHandler
-                0x08002324                SDIO_IRQHandler
-                0x08002324                TAMP_STAMP_IRQHandler
-                0x08002324                CAN2_RX1_IRQHandler
-                0x08002324                EXTI3_IRQHandler
-                0x08002324                TIM8_TRG_COM_TIM14_IRQHandler
-                0x08002324                TIM1_UP_TIM10_IRQHandler
-                0x08002324                TIM8_UP_TIM13_IRQHandler
-                0x08002324                I2C3_ER_IRQHandler
-                0x08002324                EXTI0_IRQHandler
-                0x08002324                I2C2_EV_IRQHandler
-                0x08002324                DMA1_Stream2_IRQHandler
-                0x08002324                CAN1_RX0_IRQHandler
-                0x08002324                FPU_IRQHandler
-                0x08002324                OTG_HS_WKUP_IRQHandler
-                0x08002324                CAN2_SCE_IRQHandler
-                0x08002324                DMA2_Stream2_IRQHandler
-                0x08002324                SPI1_IRQHandler
-                0x08002324                TIM6_DAC_IRQHandler
-                0x08002324                TIM1_BRK_TIM9_IRQHandler
-                0x08002324                DCMI_IRQHandler
-                0x08002324                CAN2_RX0_IRQHandler
-                0x08002324                DMA2_Stream3_IRQHandler
-                0x08002324                USART6_IRQHandler
-                0x08002324                USART3_IRQHandler
-                0x08002324                CAN1_RX1_IRQHandler
-                0x08002324                UART5_IRQHandler
-                0x08002324                DMA2_Stream0_IRQHandler
-                0x08002324                TIM4_IRQHandler
-                0x08002324                I2C1_EV_IRQHandler
-                0x08002324                DMA1_Stream6_IRQHandler
-                0x08002324                DMA1_Stream1_IRQHandler
-                0x08002324                UART4_IRQHandler
-                0x08002324                TIM3_IRQHandler
-                0x08002324                RCC_IRQHandler
-                0x08002324                TIM8_BRK_TIM12_IRQHandler
-                0x08002324                Default_Handler
-                0x08002324                EXTI15_10_IRQHandler
-                0x08002324                ADC_IRQHandler
-                0x08002324                DMA1_Stream7_IRQHandler
-                0x08002324                TIM7_IRQHandler
-                0x08002324                CAN2_TX_IRQHandler
-                0x08002324                TIM5_IRQHandler
-                0x08002324                DMA2_Stream7_IRQHandler
-                0x08002324                I2C3_EV_IRQHandler
-                0x08002324                EXTI9_5_IRQHandler
-                0x08002324                RTC_WKUP_IRQHandler
-                0x08002324                ETH_WKUP_IRQHandler
-                0x08002324                SPI2_IRQHandler
-                0x08002324                OTG_HS_EP1_IN_IRQHandler
-                0x08002324                DMA1_Stream0_IRQHandler
-                0x08002324                CAN1_TX_IRQHandler
-                0x08002324                EXTI4_IRQHandler
-                0x08002324                FSMC_IRQHandler
-                0x08002324                ETH_IRQHandler
-                0x08002324                OTG_HS_EP1_OUT_IRQHandler
-                0x08002324                WWDG_IRQHandler
-                0x08002324                TIM2_IRQHandler
-                0x08002324                OTG_FS_WKUP_IRQHandler
-                0x08002324                TIM1_TRG_COM_TIM11_IRQHandler
-                0x08002324                OTG_HS_IRQHandler
-                0x08002324                EXTI1_IRQHandler
-                0x08002324                USART2_IRQHandler
-                0x08002324                I2C2_ER_IRQHandler
-                0x08002324                DMA2_Stream1_IRQHandler
-                0x08002324                CAN1_SCE_IRQHandler
-                0x08002324                FLASH_IRQHandler
-                0x08002324                DMA2_Stream4_IRQHandler
-                0x08002324                USART1_IRQHandler
-                0x08002324                OTG_FS_IRQHandler
-                0x08002324                SPI3_IRQHandler
-                0x08002324                DMA1_Stream4_IRQHandler
-                0x08002324                I2C1_ER_IRQHandler
-                0x08002324                DMA2_Stream6_IRQHandler
-                0x08002324                DMA1_Stream3_IRQHandler
- *fill*         0x08002326        0x2 
+                0x08002260        0x2 CMakeFiles/BeiErZu.dir/startup_stm32f407xx.s.obj
+                0x08002260                RTC_Alarm_IRQHandler
+                0x08002260                HASH_RNG_IRQHandler
+                0x08002260                EXTI2_IRQHandler
+                0x08002260                TIM8_CC_IRQHandler
+                0x08002260                TIM1_CC_IRQHandler
+                0x08002260                DMA2_Stream5_IRQHandler
+                0x08002260                DMA1_Stream5_IRQHandler
+                0x08002260                PVD_IRQHandler
+                0x08002260                SDIO_IRQHandler
+                0x08002260                TAMP_STAMP_IRQHandler
+                0x08002260                CAN2_RX1_IRQHandler
+                0x08002260                EXTI3_IRQHandler
+                0x08002260                TIM8_TRG_COM_TIM14_IRQHandler
+                0x08002260                TIM1_UP_TIM10_IRQHandler
+                0x08002260                TIM8_UP_TIM13_IRQHandler
+                0x08002260                I2C3_ER_IRQHandler
+                0x08002260                EXTI0_IRQHandler
+                0x08002260                I2C2_EV_IRQHandler
+                0x08002260                DMA1_Stream2_IRQHandler
+                0x08002260                CAN1_RX0_IRQHandler
+                0x08002260                FPU_IRQHandler
+                0x08002260                OTG_HS_WKUP_IRQHandler
+                0x08002260                CAN2_SCE_IRQHandler
+                0x08002260                DMA2_Stream2_IRQHandler
+                0x08002260                SPI1_IRQHandler
+                0x08002260                TIM6_DAC_IRQHandler
+                0x08002260                TIM1_BRK_TIM9_IRQHandler
+                0x08002260                DCMI_IRQHandler
+                0x08002260                CAN2_RX0_IRQHandler
+                0x08002260                DMA2_Stream3_IRQHandler
+                0x08002260                USART6_IRQHandler
+                0x08002260                USART3_IRQHandler
+                0x08002260                CAN1_RX1_IRQHandler
+                0x08002260                UART5_IRQHandler
+                0x08002260                DMA2_Stream0_IRQHandler
+                0x08002260                TIM4_IRQHandler
+                0x08002260                I2C1_EV_IRQHandler
+                0x08002260                DMA1_Stream6_IRQHandler
+                0x08002260                DMA1_Stream1_IRQHandler
+                0x08002260                UART4_IRQHandler
+                0x08002260                TIM3_IRQHandler
+                0x08002260                RCC_IRQHandler
+                0x08002260                TIM8_BRK_TIM12_IRQHandler
+                0x08002260                Default_Handler
+                0x08002260                EXTI15_10_IRQHandler
+                0x08002260                ADC_IRQHandler
+                0x08002260                DMA1_Stream7_IRQHandler
+                0x08002260                TIM7_IRQHandler
+                0x08002260                CAN2_TX_IRQHandler
+                0x08002260                TIM5_IRQHandler
+                0x08002260                DMA2_Stream7_IRQHandler
+                0x08002260                I2C3_EV_IRQHandler
+                0x08002260                EXTI9_5_IRQHandler
+                0x08002260                RTC_WKUP_IRQHandler
+                0x08002260                ETH_WKUP_IRQHandler
+                0x08002260                SPI2_IRQHandler
+                0x08002260                OTG_HS_EP1_IN_IRQHandler
+                0x08002260                DMA1_Stream0_IRQHandler
+                0x08002260                CAN1_TX_IRQHandler
+                0x08002260                EXTI4_IRQHandler
+                0x08002260                FSMC_IRQHandler
+                0x08002260                ETH_IRQHandler
+                0x08002260                OTG_HS_EP1_OUT_IRQHandler
+                0x08002260                WWDG_IRQHandler
+                0x08002260                TIM2_IRQHandler
+                0x08002260                OTG_FS_WKUP_IRQHandler
+                0x08002260                TIM1_TRG_COM_TIM11_IRQHandler
+                0x08002260                OTG_HS_IRQHandler
+                0x08002260                EXTI1_IRQHandler
+                0x08002260                USART2_IRQHandler
+                0x08002260                I2C2_ER_IRQHandler
+                0x08002260                DMA2_Stream1_IRQHandler
+                0x08002260                CAN1_SCE_IRQHandler
+                0x08002260                FLASH_IRQHandler
+                0x08002260                DMA2_Stream4_IRQHandler
+                0x08002260                USART1_IRQHandler
+                0x08002260                OTG_FS_IRQHandler
+                0x08002260                SPI3_IRQHandler
+                0x08002260                DMA1_Stream4_IRQHandler
+                0x08002260                I2C1_ER_IRQHandler
+                0x08002260                DMA2_Stream6_IRQHandler
+                0x08002260                DMA1_Stream3_IRQHandler
+ *fill*         0x08002262        0x2 
  .text.__udivmoddi4
-                0x08002328      0x320 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard\libgcc.a(_udivmoddi4.o)
-                0x08002328                __udivmoddi4
+                0x08002264      0x320 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard\libgcc.a(_udivmoddi4.o)
+                0x08002264                __udivmoddi4
  *(.glue_7)
- .glue_7        0x08002648        0x0 linker stubs
+ .glue_7        0x08002584        0x0 linker stubs
  *(.glue_7t)
- .glue_7t       0x08002648        0x0 linker stubs
+ .glue_7t       0x08002584        0x0 linker stubs
  *(.eh_frame)
- .eh_frame      0x08002648        0x0 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard/crtbegin.o
+ .eh_frame      0x08002584        0x0 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard/crtbegin.o
  *(.init)
- .init          0x08002648        0x4 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard/crti.o
-                0x08002648                _init
- .init          0x0800264c        0x8 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard/crtn.o
+ .init          0x08002584        0x4 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard/crti.o
+                0x08002584                _init
+ .init          0x08002588        0x8 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard/crtn.o
  *(.fini)
- .fini          0x08002654        0x4 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard/crti.o
-                0x08002654                _fini
- .fini          0x08002658        0x8 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard/crtn.o
-                0x08002660                        . = ALIGN (0x4)
-                0x08002660                        _etext = .
+ .fini          0x08002590        0x4 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard/crti.o
+                0x08002590                _fini
+ .fini          0x08002594        0x8 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard/crtn.o
+                0x0800259c                        . = ALIGN (0x4)
+                0x0800259c                        _etext = .
 
-.vfp11_veneer   0x08002660        0x0
- .vfp11_veneer  0x08002660        0x0 linker stubs
+.vfp11_veneer   0x0800259c        0x0
+ .vfp11_veneer  0x0800259c        0x0 linker stubs
 
-.v4_bx          0x08002660        0x0
- .v4_bx         0x08002660        0x0 linker stubs
+.v4_bx          0x0800259c        0x0
+ .v4_bx         0x0800259c        0x0 linker stubs
 
-.iplt           0x08002660        0x0
- .iplt          0x08002660        0x0 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard/crtbegin.o
+.iplt           0x0800259c        0x0
+ .iplt          0x0800259c        0x0 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard/crtbegin.o
 
-.rodata         0x08002660       0x10
-                0x08002660                        . = ALIGN (0x4)
+.rodata         0x0800259c       0x10
+                0x0800259c                        . = ALIGN (0x4)
  *(.rodata)
  *(.rodata*)
  .rodata.AHBPrescTable
-                0x08002660       0x10 CMakeFiles/BeiErZu.dir/Core/Src/system_stm32f4xx.c.obj
-                0x08002660                AHBPrescTable
-                0x08002670                        . = ALIGN (0x4)
+                0x0800259c       0x10 CMakeFiles/BeiErZu.dir/Core/Src/system_stm32f4xx.c.obj
+                0x0800259c                AHBPrescTable
+                0x080025ac                        . = ALIGN (0x4)
 
 .ARM.extab
  *(.ARM.extab* .gnu.linkonce.armextab.*)
 
-.ARM            0x08002670        0x8
-                0x08002670                        __exidx_start = .
+.ARM            0x080025ac        0x8
+                0x080025ac                        __exidx_start = .
  *(.ARM.exidx*)
  .ARM.exidx.text.__udivmoddi4
-                0x08002670        0x8 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard\libgcc.a(_udivmoddi4.o)
-                0x08002678                        __exidx_end = .
+                0x080025ac        0x8 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard\libgcc.a(_udivmoddi4.o)
+                0x080025b4                        __exidx_end = .
 
-.rel.dyn        0x08002678        0x0
- .rel.iplt      0x08002678        0x0 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard/crtbegin.o
+.rel.dyn        0x080025b4        0x0
+ .rel.iplt      0x080025b4        0x0 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard/crtbegin.o
 
-.preinit_array  0x08002678        0x0
-                0x08002678                        PROVIDE (__preinit_array_start = .)
+.preinit_array  0x080025b4        0x0
+                0x080025b4                        PROVIDE (__preinit_array_start = .)
  *(.preinit_array*)
-                0x08002678                        PROVIDE (__preinit_array_end = .)
+                0x080025b4                        PROVIDE (__preinit_array_end = .)
 
-.init_array     0x08002678        0x4
-                0x08002678                        PROVIDE (__init_array_start = .)
+.init_array     0x080025b4        0x4
+                0x080025b4                        PROVIDE (__init_array_start = .)
  *(SORT_BY_NAME(.init_array.*))
  *(.init_array*)
- .init_array    0x08002678        0x4 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard/crtbegin.o
-                0x0800267c                        PROVIDE (__init_array_end = .)
+ .init_array    0x080025b4        0x4 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard/crtbegin.o
+                0x080025b8                        PROVIDE (__init_array_end = .)
 
-.fini_array     0x0800267c        0x4
+.fini_array     0x080025b8        0x4
                 [!provide]                        PROVIDE (__fini_array_start = .)
  *(SORT_BY_NAME(.fini_array.*))
  *(.fini_array*)
- .fini_array    0x0800267c        0x4 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard/crtbegin.o
+ .fini_array    0x080025b8        0x4 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard/crtbegin.o
                 [!provide]                        PROVIDE (__fini_array_end = .)
-                0x08002680                        _sidata = LOADADDR (.data)
+                0x080025bc                        _sidata = LOADADDR (.data)
 
-.data           0x20000000       0x20 load address 0x08002680
+.data           0x20000000       0x20 load address 0x080025bc
                 0x20000000                        . = ALIGN (0x4)
                 0x20000000                        _sdata = .
  *(.data)
@@ -3758,19 +3755,19 @@ LOAD E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/.
                 0x2000001c                SystemCoreClock
                 0x20000020                        . = ALIGN (0x4)
                 0x20000020                        _edata = .
-                0x080026a0                        _siccmram = LOADADDR (.ccmram)
+                0x080025dc                        _siccmram = LOADADDR (.ccmram)
 
 .tm_clone_table
-                0x20000020        0x0 load address 0x080026a0
+                0x20000020        0x0 load address 0x080025dc
  .tm_clone_table
                 0x20000020        0x0 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard/crtbegin.o
  .tm_clone_table
                 0x20000020        0x0 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard/crtend.o
 
-.igot.plt       0x20000020        0x0 load address 0x080026a0
+.igot.plt       0x20000020        0x0 load address 0x080025dc
  .igot.plt      0x20000020        0x0 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard/crtbegin.o
 
-.ccmram         0x10000000        0x0 load address 0x080026a0
+.ccmram         0x10000000        0x0 load address 0x080025dc
                 0x10000000                        . = ALIGN (0x4)
                 0x10000000                        _sccmram = .
  *(.ccmram)
@@ -3885,133 +3882,133 @@ LOAD E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/.
 LOAD E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a
 LOAD E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard\libgcc.a
 
-.debug_frame    0x00000000     0x1a58
+.debug_frame    0x00000000     0x1a34
  .debug_frame   0x00000000       0x20 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-memset.o)
  .debug_frame   0x00000020       0x2c E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-init.o)
  .debug_frame   0x0000004c       0x2c CMakeFiles/BeiErZu.dir/app/app_led.c.obj
  .debug_frame   0x00000078       0x58 CMakeFiles/BeiErZu.dir/bsp/bsp_led.c.obj
- .debug_frame   0x000000d0      0x1d8 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
- .debug_frame   0x000002a8       0xb8 CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
- .debug_frame   0x00000360       0x68 CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
- .debug_frame   0x000003c8       0x34 CMakeFiles/BeiErZu.dir/Core/Src/gpio.c.obj
- .debug_frame   0x000003fc       0x74 CMakeFiles/BeiErZu.dir/Core/Src/spi.c.obj
- .debug_frame   0x00000470      0x104 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
- .debug_frame   0x00000574       0x38 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_hal_msp.c.obj
- .debug_frame   0x000005ac      0x828 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
- .debug_frame   0x00000dd4      0x1f4 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
- .debug_frame   0x00000fc8      0x14c CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
- .debug_frame   0x00001114      0x508 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
- .debug_frame   0x0000161c      0x374 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
- .debug_frame   0x00001990       0x58 CMakeFiles/BeiErZu.dir/Core/Src/system_stm32f4xx.c.obj
- .debug_frame   0x000019e8       0x2c E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard\libgcc.a(_aeabi_uldivmod.o)
- .debug_frame   0x00001a14       0x44 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard\libgcc.a(_udivmoddi4.o)
+ .debug_frame   0x000000d0      0x1b4 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
+ .debug_frame   0x00000284       0xb8 CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
+ .debug_frame   0x0000033c       0x68 CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
+ .debug_frame   0x000003a4       0x34 CMakeFiles/BeiErZu.dir/Core/Src/gpio.c.obj
+ .debug_frame   0x000003d8       0x74 CMakeFiles/BeiErZu.dir/Core/Src/spi.c.obj
+ .debug_frame   0x0000044c      0x104 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
+ .debug_frame   0x00000550       0x38 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_hal_msp.c.obj
+ .debug_frame   0x00000588      0x828 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
+ .debug_frame   0x00000db0      0x1f4 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
+ .debug_frame   0x00000fa4      0x14c CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
+ .debug_frame   0x000010f0      0x508 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
+ .debug_frame   0x000015f8      0x374 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
+ .debug_frame   0x0000196c       0x58 CMakeFiles/BeiErZu.dir/Core/Src/system_stm32f4xx.c.obj
+ .debug_frame   0x000019c4       0x2c E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard\libgcc.a(_aeabi_uldivmod.o)
+ .debug_frame   0x000019f0       0x44 E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m+fp/hard\libgcc.a(_udivmoddi4.o)
 
-.debug_info     0x00000000     0x6943
+.debug_info     0x00000000     0x66e4
  .debug_info    0x00000000      0x28e CMakeFiles/BeiErZu.dir/app/app_led.c.obj
  .debug_info    0x0000028e      0x1f1 CMakeFiles/BeiErZu.dir/bsp/bsp_led.c.obj
- .debug_info    0x0000047f      0xc1d CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
- .debug_info    0x0000109c      0x1d6 CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
- .debug_info    0x00001272      0x50b CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
- .debug_info    0x0000177d      0x441 CMakeFiles/BeiErZu.dir/Core/Src/gpio.c.obj
- .debug_info    0x00001bbe      0x94d CMakeFiles/BeiErZu.dir/Core/Src/spi.c.obj
- .debug_info    0x0000250b      0x112 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
- .debug_info    0x0000261d      0x269 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_hal_msp.c.obj
- .debug_info    0x00002886     0x1525 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
- .debug_info    0x00003dab      0x8c3 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
- .debug_info    0x0000466e      0x6c3 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
- .debug_info    0x00004d31      0xd8c CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
- .debug_info    0x00005abd      0x944 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
- .debug_info    0x00006401      0x512 CMakeFiles/BeiErZu.dir/Core/Src/system_stm32f4xx.c.obj
- .debug_info    0x00006913       0x30 CMakeFiles/BeiErZu.dir/startup_stm32f407xx.s.obj
+ .debug_info    0x0000047f      0x9b7 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
+ .debug_info    0x00000e36      0x1d6 CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
+ .debug_info    0x0000100c      0x512 CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
+ .debug_info    0x0000151e      0x441 CMakeFiles/BeiErZu.dir/Core/Src/gpio.c.obj
+ .debug_info    0x0000195f      0x94d CMakeFiles/BeiErZu.dir/Core/Src/spi.c.obj
+ .debug_info    0x000022ac      0x112 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
+ .debug_info    0x000023be      0x269 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_hal_msp.c.obj
+ .debug_info    0x00002627     0x1525 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
+ .debug_info    0x00003b4c      0x8c3 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
+ .debug_info    0x0000440f      0x6c3 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
+ .debug_info    0x00004ad2      0xd8c CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
+ .debug_info    0x0000585e      0x944 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
+ .debug_info    0x000061a2      0x512 CMakeFiles/BeiErZu.dir/Core/Src/system_stm32f4xx.c.obj
+ .debug_info    0x000066b4       0x30 CMakeFiles/BeiErZu.dir/startup_stm32f407xx.s.obj
 
-.debug_abbrev   0x00000000     0x1a03
+.debug_abbrev   0x00000000     0x1992
  .debug_abbrev  0x00000000      0x15b CMakeFiles/BeiErZu.dir/app/app_led.c.obj
  .debug_abbrev  0x0000015b      0x11f CMakeFiles/BeiErZu.dir/bsp/bsp_led.c.obj
- .debug_abbrev  0x0000027a      0x28f CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
- .debug_abbrev  0x00000509       0xda CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
- .debug_abbrev  0x000005e3      0x215 CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
- .debug_abbrev  0x000007f8      0x152 CMakeFiles/BeiErZu.dir/Core/Src/gpio.c.obj
- .debug_abbrev  0x0000094a      0x1fa CMakeFiles/BeiErZu.dir/Core/Src/spi.c.obj
- .debug_abbrev  0x00000b44       0x73 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
- .debug_abbrev  0x00000bb7       0xd8 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_hal_msp.c.obj
- .debug_abbrev  0x00000c8f      0x27a CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
- .debug_abbrev  0x00000f09      0x2b7 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
- .debug_abbrev  0x000011c0      0x1d4 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
- .debug_abbrev  0x00001394      0x31d CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
- .debug_abbrev  0x000016b1      0x214 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
- .debug_abbrev  0x000018c5      0x11a CMakeFiles/BeiErZu.dir/Core/Src/system_stm32f4xx.c.obj
- .debug_abbrev  0x000019df       0x24 CMakeFiles/BeiErZu.dir/startup_stm32f407xx.s.obj
+ .debug_abbrev  0x0000027a      0x21e CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
+ .debug_abbrev  0x00000498       0xda CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
+ .debug_abbrev  0x00000572      0x215 CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
+ .debug_abbrev  0x00000787      0x152 CMakeFiles/BeiErZu.dir/Core/Src/gpio.c.obj
+ .debug_abbrev  0x000008d9      0x1fa CMakeFiles/BeiErZu.dir/Core/Src/spi.c.obj
+ .debug_abbrev  0x00000ad3       0x73 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
+ .debug_abbrev  0x00000b46       0xd8 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_hal_msp.c.obj
+ .debug_abbrev  0x00000c1e      0x27a CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
+ .debug_abbrev  0x00000e98      0x2b7 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
+ .debug_abbrev  0x0000114f      0x1d4 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
+ .debug_abbrev  0x00001323      0x31d CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
+ .debug_abbrev  0x00001640      0x214 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
+ .debug_abbrev  0x00001854      0x11a CMakeFiles/BeiErZu.dir/Core/Src/system_stm32f4xx.c.obj
+ .debug_abbrev  0x0000196e       0x24 CMakeFiles/BeiErZu.dir/startup_stm32f407xx.s.obj
 
-.debug_aranges  0x00000000      0x730
+.debug_aranges  0x00000000      0x728
  .debug_aranges
                 0x00000000       0x20 CMakeFiles/BeiErZu.dir/app/app_led.c.obj
  .debug_aranges
                 0x00000020       0x28 CMakeFiles/BeiErZu.dir/bsp/bsp_led.c.obj
  .debug_aranges
-                0x00000048       0x80 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
+                0x00000048       0x78 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
  .debug_aranges
-                0x000000c8       0x48 CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
+                0x000000c0       0x48 CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
  .debug_aranges
-                0x00000110       0x30 CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
+                0x00000108       0x30 CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
  .debug_aranges
-                0x00000140       0x20 CMakeFiles/BeiErZu.dir/Core/Src/gpio.c.obj
+                0x00000138       0x20 CMakeFiles/BeiErZu.dir/Core/Src/gpio.c.obj
  .debug_aranges
-                0x00000160       0x30 CMakeFiles/BeiErZu.dir/Core/Src/spi.c.obj
+                0x00000158       0x30 CMakeFiles/BeiErZu.dir/Core/Src/spi.c.obj
  .debug_aranges
-                0x00000190       0x60 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
+                0x00000188       0x60 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
  .debug_aranges
-                0x000001f0       0x20 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_hal_msp.c.obj
+                0x000001e8       0x20 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_hal_msp.c.obj
  .debug_aranges
-                0x00000210      0x1d0 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
+                0x00000208      0x1d0 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
  .debug_aranges
-                0x000003e0       0x88 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
+                0x000003d8       0x88 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
  .debug_aranges
-                0x00000468       0x58 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
+                0x00000460       0x58 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
  .debug_aranges
-                0x000004c0      0x130 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
+                0x000004b8      0x130 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
  .debug_aranges
-                0x000005f0       0xf0 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
+                0x000005e8       0xf0 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
  .debug_aranges
-                0x000006e0       0x28 CMakeFiles/BeiErZu.dir/Core/Src/system_stm32f4xx.c.obj
+                0x000006d8       0x28 CMakeFiles/BeiErZu.dir/Core/Src/system_stm32f4xx.c.obj
  .debug_aranges
-                0x00000708       0x28 CMakeFiles/BeiErZu.dir/startup_stm32f407xx.s.obj
+                0x00000700       0x28 CMakeFiles/BeiErZu.dir/startup_stm32f407xx.s.obj
 
 .debug_rnglists
-                0x00000000      0x53b
+                0x00000000      0x534
  .debug_rnglists
                 0x00000000       0x14 CMakeFiles/BeiErZu.dir/app/app_led.c.obj
  .debug_rnglists
                 0x00000014       0x19 CMakeFiles/BeiErZu.dir/bsp/bsp_led.c.obj
  .debug_rnglists
-                0x0000002d       0x5e CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
+                0x0000002d       0x57 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
  .debug_rnglists
-                0x0000008b       0x31 CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
+                0x00000084       0x31 CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
  .debug_rnglists
-                0x000000bc       0x20 CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
+                0x000000b5       0x20 CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
  .debug_rnglists
-                0x000000dc       0x14 CMakeFiles/BeiErZu.dir/Core/Src/gpio.c.obj
+                0x000000d5       0x14 CMakeFiles/BeiErZu.dir/Core/Src/gpio.c.obj
  .debug_rnglists
-                0x000000f0       0x20 CMakeFiles/BeiErZu.dir/Core/Src/spi.c.obj
+                0x000000e9       0x20 CMakeFiles/BeiErZu.dir/Core/Src/spi.c.obj
  .debug_rnglists
-                0x00000110       0x43 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
+                0x00000109       0x43 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
  .debug_rnglists
-                0x00000153       0x13 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_hal_msp.c.obj
+                0x0000014c       0x13 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_hal_msp.c.obj
  .debug_rnglists
-                0x00000166      0x16f CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
+                0x0000015f      0x16f CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
  .debug_rnglists
-                0x000002d5       0x66 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
+                0x000002ce       0x66 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
  .debug_rnglists
-                0x0000033b       0x3f CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
+                0x00000334       0x3f CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
  .debug_rnglists
-                0x0000037a       0xdf CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
+                0x00000373       0xdf CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
  .debug_rnglists
-                0x00000459       0xaf CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
+                0x00000452       0xaf CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
  .debug_rnglists
-                0x00000508       0x1a CMakeFiles/BeiErZu.dir/Core/Src/system_stm32f4xx.c.obj
+                0x00000501       0x1a CMakeFiles/BeiErZu.dir/Core/Src/system_stm32f4xx.c.obj
  .debug_rnglists
-                0x00000522       0x19 CMakeFiles/BeiErZu.dir/startup_stm32f407xx.s.obj
+                0x0000051b       0x19 CMakeFiles/BeiErZu.dir/startup_stm32f407xx.s.obj
 
-.debug_macro    0x00000000    0x1ffbc
+.debug_macro    0x00000000    0x1ffa2
  .debug_macro   0x00000000      0x1f5 CMakeFiles/BeiErZu.dir/app/app_led.c.obj
  .debug_macro   0x000001f5      0xaea CMakeFiles/BeiErZu.dir/app/app_led.c.obj
  .debug_macro   0x00000cdf      0x295 CMakeFiles/BeiErZu.dir/app/app_led.c.obj
@@ -4054,69 +4051,69 @@ LOAD E:/Toolchain/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/bin/.
  .debug_macro   0x0001e4a1      0x1e1 CMakeFiles/BeiErZu.dir/bsp/bsp_led.c.obj
  .debug_macro   0x0001e682      0x1e6 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
  .debug_macro   0x0001e868      0x1eb CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
- .debug_macro   0x0001ea53      0x220 CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
- .debug_macro   0x0001ec73      0x112 CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
- .debug_macro   0x0001ed85      0x1d3 CMakeFiles/BeiErZu.dir/Core/Src/gpio.c.obj
- .debug_macro   0x0001ef58      0x1d3 CMakeFiles/BeiErZu.dir/Core/Src/spi.c.obj
- .debug_macro   0x0001f12b      0x1d3 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
- .debug_macro   0x0001f2fe      0x1c9 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_hal_msp.c.obj
- .debug_macro   0x0001f4c7      0x1c9 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
- .debug_macro   0x0001f690      0x1de CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
- .debug_macro   0x0001f86e      0x1c0 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
- .debug_macro   0x0001fa2e      0x1ba CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
- .debug_macro   0x0001fbe8      0x21a CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
- .debug_macro   0x0001fe02      0x1ba CMakeFiles/BeiErZu.dir/Core/Src/system_stm32f4xx.c.obj
+ .debug_macro   0x0001ea53      0x22a CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
+ .debug_macro   0x0001ec7d       0xee CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
+ .debug_macro   0x0001ed6b      0x1d3 CMakeFiles/BeiErZu.dir/Core/Src/gpio.c.obj
+ .debug_macro   0x0001ef3e      0x1d3 CMakeFiles/BeiErZu.dir/Core/Src/spi.c.obj
+ .debug_macro   0x0001f111      0x1d3 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
+ .debug_macro   0x0001f2e4      0x1c9 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_hal_msp.c.obj
+ .debug_macro   0x0001f4ad      0x1c9 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
+ .debug_macro   0x0001f676      0x1de CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
+ .debug_macro   0x0001f854      0x1c0 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
+ .debug_macro   0x0001fa14      0x1ba CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
+ .debug_macro   0x0001fbce      0x21a CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
+ .debug_macro   0x0001fde8      0x1ba CMakeFiles/BeiErZu.dir/Core/Src/system_stm32f4xx.c.obj
 
-.debug_line     0x00000000     0x875b
+.debug_line     0x00000000     0x8723
  .debug_line    0x00000000      0x6c1 CMakeFiles/BeiErZu.dir/app/app_led.c.obj
  .debug_line    0x000006c1      0x5db CMakeFiles/BeiErZu.dir/bsp/bsp_led.c.obj
- .debug_line    0x00000c9c      0x7d3 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
- .debug_line    0x0000146f      0x661 CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
- .debug_line    0x00001ad0      0x704 CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
- .debug_line    0x000021d4      0x607 CMakeFiles/BeiErZu.dir/Core/Src/gpio.c.obj
- .debug_line    0x000027db      0x637 CMakeFiles/BeiErZu.dir/Core/Src/spi.c.obj
- .debug_line    0x00002e12      0x670 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
- .debug_line    0x00003482      0x5c1 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_hal_msp.c.obj
- .debug_line    0x00003a43     0x1b4e CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
- .debug_line    0x00005591      0xcc2 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
- .debug_line    0x00006253      0xa0c CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
- .debug_line    0x00006c5f      0xb95 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
- .debug_line    0x000077f4      0x8b6 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
- .debug_line    0x000080aa      0x637 CMakeFiles/BeiErZu.dir/Core/Src/system_stm32f4xx.c.obj
- .debug_line    0x000086e1       0x7a CMakeFiles/BeiErZu.dir/startup_stm32f407xx.s.obj
+ .debug_line    0x00000c9c      0x791 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
+ .debug_line    0x0000142d      0x661 CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
+ .debug_line    0x00001a8e      0x70e CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
+ .debug_line    0x0000219c      0x607 CMakeFiles/BeiErZu.dir/Core/Src/gpio.c.obj
+ .debug_line    0x000027a3      0x637 CMakeFiles/BeiErZu.dir/Core/Src/spi.c.obj
+ .debug_line    0x00002dda      0x670 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
+ .debug_line    0x0000344a      0x5c1 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_hal_msp.c.obj
+ .debug_line    0x00003a0b     0x1b4e CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
+ .debug_line    0x00005559      0xcc2 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
+ .debug_line    0x0000621b      0xa0c CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
+ .debug_line    0x00006c27      0xb95 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
+ .debug_line    0x000077bc      0x8b6 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
+ .debug_line    0x00008072      0x637 CMakeFiles/BeiErZu.dir/Core/Src/system_stm32f4xx.c.obj
+ .debug_line    0x000086a9       0x7a CMakeFiles/BeiErZu.dir/startup_stm32f407xx.s.obj
 
-.debug_str      0x00000000    0xbee69
- .debug_str     0x00000000    0xbee69 CMakeFiles/BeiErZu.dir/app/app_led.c.obj
+.debug_str      0x00000000    0xbed74
+ .debug_str     0x00000000    0xbed74 CMakeFiles/BeiErZu.dir/app/app_led.c.obj
                               0xbc814 (size before relaxing)
- .debug_str     0x000bee69        0x0 CMakeFiles/BeiErZu.dir/bsp/bsp_led.c.obj
+ .debug_str     0x000bed74        0x0 CMakeFiles/BeiErZu.dir/bsp/bsp_led.c.obj
                               0xbc7a4 (size before relaxing)
- .debug_str     0x000bee69        0x0 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
-                              0xbd3fc (size before relaxing)
- .debug_str     0x000bee69        0x0 CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
+ .debug_str     0x000bed74        0x0 CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
+                              0xbd1b3 (size before relaxing)
+ .debug_str     0x000bed74        0x0 CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
                               0xbc799 (size before relaxing)
- .debug_str     0x000bee69        0x0 CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
-                              0xbcfb3 (size before relaxing)
- .debug_str     0x000bee69        0x0 CMakeFiles/BeiErZu.dir/Core/Src/gpio.c.obj
+ .debug_str     0x000bed74        0x0 CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
+                              0xbcee4 (size before relaxing)
+ .debug_str     0x000bed74        0x0 CMakeFiles/BeiErZu.dir/Core/Src/gpio.c.obj
                               0xbc8c9 (size before relaxing)
- .debug_str     0x000bee69        0x0 CMakeFiles/BeiErZu.dir/Core/Src/spi.c.obj
+ .debug_str     0x000bed74        0x0 CMakeFiles/BeiErZu.dir/Core/Src/spi.c.obj
                               0xbcd55 (size before relaxing)
- .debug_str     0x000bee69        0x0 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
+ .debug_str     0x000bed74        0x0 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
                               0xbc784 (size before relaxing)
- .debug_str     0x000bee69        0x0 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_hal_msp.c.obj
+ .debug_str     0x000bed74        0x0 CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_hal_msp.c.obj
                               0xbc7fe (size before relaxing)
- .debug_str     0x000bee69        0x0 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
+ .debug_str     0x000bed74        0x0 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj
                               0xbcf2c (size before relaxing)
- .debug_str     0x000bee69        0x0 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
+ .debug_str     0x000bed74        0x0 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
                               0xbcaa2 (size before relaxing)
- .debug_str     0x000bee69        0x0 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
+ .debug_str     0x000bed74        0x0 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
                               0xbc7e9 (size before relaxing)
- .debug_str     0x000bee69        0x0 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
+ .debug_str     0x000bed74        0x0 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
                               0xbcf6e (size before relaxing)
- .debug_str     0x000bee69        0x0 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
+ .debug_str     0x000bed74        0x0 CMakeFiles/BeiErZu.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
                               0xbd1f2 (size before relaxing)
- .debug_str     0x000bee69        0x0 CMakeFiles/BeiErZu.dir/Core/Src/system_stm32f4xx.c.obj
+ .debug_str     0x000bed74        0x0 CMakeFiles/BeiErZu.dir/Core/Src/system_stm32f4xx.c.obj
                               0xbc66e (size before relaxing)
- .debug_str     0x000bee69        0x0 CMakeFiles/BeiErZu.dir/startup_stm32f407xx.s.obj
+ .debug_str     0x000bed74        0x0 CMakeFiles/BeiErZu.dir/startup_stm32f407xx.s.obj
                                  0x66 (size before relaxing)
 
 .comment        0x00000000       0x45

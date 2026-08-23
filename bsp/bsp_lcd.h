@@ -15,9 +15,6 @@ typedef uint32_t u32;
 // Support portrait/landscape switching.
 #define USE_HORIZONTAL 0
 
-// Set to 1 to use SPI1 hardware output instead of bit-banged SPI.
-#define USE_HARDWARE_SPI 1
-
 #define LCD_X_SIZE 240
 #define LCD_Y_SIZE 320
 
@@ -39,29 +36,24 @@ typedef uint32_t u32;
 #define GRAY1 0x8410
 #define GRAY2 0x4208
 
-#define LCD_CTRL1 GPIOA
-#define LCD_CTRL2 GPIOB
-#define LCD_LED GPIO_PIN_0
-#define LCD_RS GPIO_PIN_1
-#define LCD_CS_PORT GPIOA
-#define LCD_CS GPIO_PIN_3
-#define LCD_RST GPIO_PIN_0
-#define LCD_SCL GPIO_PIN_5
-#define LCD_SDA GPIO_PIN_7
+#define LCD_LED_PORT TFT_BL_GPIO_Port
+#define LCD_LED TFT_BL_Pin
+#define LCD_RS_PORT TFT_DC_GPIO_Port
+#define LCD_RS TFT_DC_Pin
+#define LCD_CS_PORT TFT_CS_GPIO_Port
+#define LCD_CS TFT_CS_Pin
+#define LCD_RST_PORT TFT_RES_GPIO_Port
+#define LCD_RST TFT_RES_Pin
 
 #define LCD_CS_SET HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS, GPIO_PIN_SET)
-#define LCD_RS_SET HAL_GPIO_WritePin(LCD_CTRL2, LCD_RS, GPIO_PIN_SET)
-#define LCD_SDA_SET HAL_GPIO_WritePin(LCD_CTRL1, LCD_SDA, GPIO_PIN_SET)
-#define LCD_SCL_SET HAL_GPIO_WritePin(LCD_CTRL1, LCD_SCL, GPIO_PIN_SET)
-#define LCD_RST_SET HAL_GPIO_WritePin(LCD_CTRL2, LCD_RST, GPIO_PIN_SET)
-#define LCD_LED_SET HAL_GPIO_WritePin(LCD_CTRL1, LCD_LED, GPIO_PIN_SET)
+#define LCD_RS_SET HAL_GPIO_WritePin(LCD_RS_PORT, LCD_RS, GPIO_PIN_SET)
+#define LCD_RST_SET HAL_GPIO_WritePin(LCD_RST_PORT, LCD_RST, GPIO_PIN_SET)
+#define LCD_LED_SET HAL_GPIO_WritePin(LCD_LED_PORT, LCD_LED, GPIO_PIN_SET)
 
 #define LCD_CS_CLR HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS, GPIO_PIN_RESET)
-#define LCD_RS_CLR HAL_GPIO_WritePin(LCD_CTRL2, LCD_RS, GPIO_PIN_RESET)
-#define LCD_SDA_CLR HAL_GPIO_WritePin(LCD_CTRL1, LCD_SDA, GPIO_PIN_RESET)
-#define LCD_SCL_CLR HAL_GPIO_WritePin(LCD_CTRL1, LCD_SCL, GPIO_PIN_RESET)
-#define LCD_RST_CLR HAL_GPIO_WritePin(LCD_CTRL2, LCD_RST, GPIO_PIN_RESET)
-#define LCD_LED_CLR HAL_GPIO_WritePin(LCD_CTRL1, LCD_LED, GPIO_PIN_RESET)
+#define LCD_RS_CLR HAL_GPIO_WritePin(LCD_RS_PORT, LCD_RS, GPIO_PIN_RESET)
+#define LCD_RST_CLR HAL_GPIO_WritePin(LCD_RST_PORT, LCD_RST, GPIO_PIN_RESET)
+#define LCD_LED_CLR HAL_GPIO_WritePin(LCD_LED_PORT, LCD_LED, GPIO_PIN_RESET)
 
 typedef struct
 {
@@ -77,7 +69,6 @@ extern _lcd_dev lcddev;
 extern u16 POINT_COLOR;
 extern u16 BACK_COLOR;
 
-void LCD_GPIO_Init(void);
 void Lcd_WriteIndex(u8 Index);
 void Lcd_WriteData(u8 Data);
 void Lcd_WriteReg(u8 Index, u16 Data);
