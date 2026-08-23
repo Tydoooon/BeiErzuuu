@@ -1,0 +1,43 @@
+{
+    // "terminal.integrated.profiles.windows": {
+    //     "Git Bash": {
+    //         "path": "D:/Git/Git/Git/bin/bash.exe",
+    //         "args": []
+    //     }
+    // },
+    // "terminal.integrated.defaultProfile.windows": "Git Bash",
+    // "editor.formatOnSave": true,
+    // "editor.formatOnPaste": false,
+    // "editor.defaultFormatter": "xaver.clang-format",
+    // "clang-format.executable": "D:/clang+llvm_18.1.8/bin/clang-format.exe",
+    // "clang-format.assumeFilename": "./.clang-format",
+    // "clang-format.fallbackStyle": "Google"
+    "VsCodeTaskButtons.showCounter": true,
+    "VsCodeTaskButtons.tasks": [
+        {
+            "label": "$(wrench) Configure",
+            "task": "CMake Configure",
+            "tooltip": "Run CMake Configure Task"
+        },
+        {
+            "label": "$(tools) Build",
+            "task": "CMake Build",
+            "tooltip": "Run CMake Build Task"
+        },
+        {
+            "label": "$(chip) DAP-Link Flash",
+            "task": "Flash",
+            "tooltip": "Run Flash Task"
+        },
+        {
+            "label": "$(chip) StLink Flash",
+            "task": "StLink Flash",
+            "tooltip": "Run Flash Task"
+        },
+        {
+            "label": "$(wrench) Open STM32CubeMX",
+            "task": "Open_STM32CubeMX",
+            "tooltip": "Open STM32CubeMX Project"
+        }
+    ]
+}

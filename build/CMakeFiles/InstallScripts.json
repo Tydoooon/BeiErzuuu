@@ -1,0 +1,8 @@
+{
+	"InstallScripts" : 
+	[
+		"E:/code/nortos/BeiErZu/build/cmake_install.cmake",
+		"E:/code/nortos/BeiErZu/build/cmake/stm32cubemx/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
