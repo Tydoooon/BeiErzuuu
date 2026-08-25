@@ -1,0 +1,598 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{8FC4F7A4-595D-3695-8053-31A736B06571}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>BeiErZu</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">E:\code\nortos\BeiErZu\build-release\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">BeiErZu.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">BeiErZu</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.elf</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">E:\code\nortos\BeiErZu\build-release\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">BeiErZu.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">BeiErZu</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.elf</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">E:\code\nortos\BeiErZu\build-release\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">BeiErZu.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">BeiErZu</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.elf</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">E:\code\nortos\BeiErZu\build-release\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">BeiErZu.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">BeiErZu</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.elf</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>E:\code\nortos\BeiErZu\Core\Inc;E:\code\nortos\BeiErZu\app;E:\code\nortos\BeiErZu\bsp;E:\code\nortos\BeiErZu\dev;E:\code\nortos\BeiErZu\gui;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\gpu;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\hal;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Core\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM4F;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Device\ST\STM32F4xx\Include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -Wextra -Wpedantic -fdata-sections -ffunction-sections -g0</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization></Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary></RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);USE_HAL_DRIVER;STM32F407xx;DEBUG;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);USE_HAL_DRIVER;STM32F407xx;DEBUG;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\code\nortos\BeiErZu\Core\Inc;E:\code\nortos\BeiErZu\app;E:\code\nortos\BeiErZu\bsp;E:\code\nortos\BeiErZu\dev;E:\code\nortos\BeiErZu\gui;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\gpu;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\hal;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Core\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM4F;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Device\ST\STM32F4xx\Include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>E:\code\nortos\BeiErZu\Core\Inc;E:\code\nortos\BeiErZu\app;E:\code\nortos\BeiErZu\bsp;E:\code\nortos\BeiErZu\dev;E:\code\nortos\BeiErZu\gui;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\gpu;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\hal;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Core\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM4F;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Device\ST\STM32F4xx\Include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies></AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>E:/code/nortos/BeiErZu/build-release/Debug/BeiErZu.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>E:\code\nortos\BeiErZu\Core\Inc;E:\code\nortos\BeiErZu\app;E:\code\nortos\BeiErZu\bsp;E:\code\nortos\BeiErZu\dev;E:\code\nortos\BeiErZu\gui;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\gpu;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\hal;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Core\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM4F;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Device\ST\STM32F4xx\Include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -Wextra -Wpedantic -fdata-sections -ffunction-sections -g0</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization></Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary></RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);USE_HAL_DRIVER;STM32F407xx;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);USE_HAL_DRIVER;STM32F407xx;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\code\nortos\BeiErZu\Core\Inc;E:\code\nortos\BeiErZu\app;E:\code\nortos\BeiErZu\bsp;E:\code\nortos\BeiErZu\dev;E:\code\nortos\BeiErZu\gui;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\gpu;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\hal;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Core\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM4F;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Device\ST\STM32F4xx\Include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>E:\code\nortos\BeiErZu\Core\Inc;E:\code\nortos\BeiErZu\app;E:\code\nortos\BeiErZu\bsp;E:\code\nortos\BeiErZu\dev;E:\code\nortos\BeiErZu\gui;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\gpu;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\hal;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Core\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM4F;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Device\ST\STM32F4xx\Include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies></AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>E:/code/nortos/BeiErZu/build-release/Release/BeiErZu.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>E:\code\nortos\BeiErZu\Core\Inc;E:\code\nortos\BeiErZu\app;E:\code\nortos\BeiErZu\bsp;E:\code\nortos\BeiErZu\dev;E:\code\nortos\BeiErZu\gui;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\gpu;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\hal;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Core\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM4F;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Device\ST\STM32F4xx\Include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -Wextra -Wpedantic -fdata-sections -ffunction-sections -g0</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization></Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary></RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);USE_HAL_DRIVER;STM32F407xx;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);USE_HAL_DRIVER;STM32F407xx;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\code\nortos\BeiErZu\Core\Inc;E:\code\nortos\BeiErZu\app;E:\code\nortos\BeiErZu\bsp;E:\code\nortos\BeiErZu\dev;E:\code\nortos\BeiErZu\gui;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\gpu;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\hal;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Core\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM4F;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Device\ST\STM32F4xx\Include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>E:\code\nortos\BeiErZu\Core\Inc;E:\code\nortos\BeiErZu\app;E:\code\nortos\BeiErZu\bsp;E:\code\nortos\BeiErZu\dev;E:\code\nortos\BeiErZu\gui;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\gpu;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\hal;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Core\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM4F;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Device\ST\STM32F4xx\Include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies></AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>E:/code/nortos/BeiErZu/build-release/MinSizeRel/BeiErZu.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>E:\code\nortos\BeiErZu\Core\Inc;E:\code\nortos\BeiErZu\app;E:\code\nortos\BeiErZu\bsp;E:\code\nortos\BeiErZu\dev;E:\code\nortos\BeiErZu\gui;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\gpu;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\hal;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Core\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM4F;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Device\ST\STM32F4xx\Include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -Wextra -Wpedantic -fdata-sections -ffunction-sections -g0</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization></Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary></RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);USE_HAL_DRIVER;STM32F407xx;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);USE_HAL_DRIVER;STM32F407xx;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\code\nortos\BeiErZu\Core\Inc;E:\code\nortos\BeiErZu\app;E:\code\nortos\BeiErZu\bsp;E:\code\nortos\BeiErZu\dev;E:\code\nortos\BeiErZu\gui;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\gpu;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\hal;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Core\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM4F;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Device\ST\STM32F4xx\Include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>E:\code\nortos\BeiErZu\Core\Inc;E:\code\nortos\BeiErZu\app;E:\code\nortos\BeiErZu\bsp;E:\code\nortos\BeiErZu\dev;E:\code\nortos\BeiErZu\gui;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\gpu;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\hal;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra;E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Core\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM4F;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Device\ST\STM32F4xx\Include;E:\code\nortos\BeiErZu\cmake\stm32cubemx\..\..\Drivers\CMSIS\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies></AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>E:/code/nortos/BeiErZu/build-release/RelWithDebInfo/BeiErZu.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="E:\code\nortos\BeiErZu\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule E:/code/nortos/BeiErZu/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+E:\Toolchain\cmake-4.4.0\bin\cmake.exe -SE:/code/nortos/BeiErZu -BE:/code/nortos/BeiErZu/build-release --check-stamp-file E:/code/nortos/BeiErZu/build-release/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeASMCompiler.cmake.in;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeASMInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCCompiler.cmake.in;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCXXCompiler.cmake.in;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCXXInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCommonLanguageInclude.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCompilerIdDetection.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineASMCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineCCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineCXXCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineCompilerId.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineSystem.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeFindBinUtils.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeGenericSystem.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeInitializeConfigs.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeLanguageInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeSystem.cmake.in;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeSystemSpecificInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeSystemSpecificInitialize.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeTestASMCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeTestCCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeTestCXXCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\ADSP-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\ARMCC-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\ARMClang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\AppleClang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Borland-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\CMakeCommonCompilerMacros.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Clang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Cray-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\CrayClang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Diab-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\FujitsuClang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GHS-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GNU-ASM.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GNU-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GNU-FindBinUtils.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GNU.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\HP-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IAR-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IBMClang-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IBMClang-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Intel-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IntelLLVM-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\LCC-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\LCC-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\MSVC-C.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\MSVC-CXX.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\MSVC-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\MSVC.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\NVHPC-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\OrangeC-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\PGI-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\PathScale-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\PellesC-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Renesas-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\SCO-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\TI-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\TIClang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Tasking-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Watcom-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\XL-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\XLClang-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\XLClang-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\zOS-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CompilerId\VS-10.vcxproj.in;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeASMLinkerInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeCLinkerInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeCXXLinkerInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeCommonLinkerInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeInspectASMLinker.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeInspectCLinker.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeInspectCXXLinker.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Platform\Generic.cmake;E:\code\nortos\BeiErZu\build-release\CMakeFiles\4.4.0\CMakeASMCompiler.cmake;E:\code\nortos\BeiErZu\build-release\CMakeFiles\4.4.0\CMakeCCompiler.cmake;E:\code\nortos\BeiErZu\build-release\CMakeFiles\4.4.0\CMakeCXXCompiler.cmake;E:\code\nortos\BeiErZu\build-release\CMakeFiles\4.4.0\CMakeSystem.cmake;E:\code\nortos\BeiErZu\cmake\gcc-arm-none-eabi.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">E:\code\nortos\BeiErZu\build-release\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule E:/code/nortos/BeiErZu/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+E:\Toolchain\cmake-4.4.0\bin\cmake.exe -SE:/code/nortos/BeiErZu -BE:/code/nortos/BeiErZu/build-release --check-stamp-file E:/code/nortos/BeiErZu/build-release/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeASMCompiler.cmake.in;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeASMInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCCompiler.cmake.in;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCXXCompiler.cmake.in;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCXXInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCommonLanguageInclude.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCompilerIdDetection.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineASMCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineCCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineCXXCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineCompilerId.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineSystem.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeFindBinUtils.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeGenericSystem.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeInitializeConfigs.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeLanguageInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeSystem.cmake.in;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeSystemSpecificInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeSystemSpecificInitialize.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeTestASMCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeTestCCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeTestCXXCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\ADSP-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\ARMCC-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\ARMClang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\AppleClang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Borland-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\CMakeCommonCompilerMacros.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Clang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Cray-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\CrayClang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Diab-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\FujitsuClang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GHS-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GNU-ASM.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GNU-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GNU-FindBinUtils.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GNU.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\HP-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IAR-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IBMClang-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IBMClang-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Intel-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IntelLLVM-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\LCC-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\LCC-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\MSVC-C.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\MSVC-CXX.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\MSVC-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\MSVC.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\NVHPC-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\OrangeC-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\PGI-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\PathScale-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\PellesC-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Renesas-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\SCO-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\TI-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\TIClang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Tasking-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Watcom-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\XL-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\XLClang-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\XLClang-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\zOS-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CompilerId\VS-10.vcxproj.in;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeASMLinkerInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeCLinkerInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeCXXLinkerInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeCommonLinkerInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeInspectASMLinker.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeInspectCLinker.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeInspectCXXLinker.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Platform\Generic.cmake;E:\code\nortos\BeiErZu\build-release\CMakeFiles\4.4.0\CMakeASMCompiler.cmake;E:\code\nortos\BeiErZu\build-release\CMakeFiles\4.4.0\CMakeCCompiler.cmake;E:\code\nortos\BeiErZu\build-release\CMakeFiles\4.4.0\CMakeCXXCompiler.cmake;E:\code\nortos\BeiErZu\build-release\CMakeFiles\4.4.0\CMakeSystem.cmake;E:\code\nortos\BeiErZu\cmake\gcc-arm-none-eabi.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">E:\code\nortos\BeiErZu\build-release\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule E:/code/nortos/BeiErZu/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+E:\Toolchain\cmake-4.4.0\bin\cmake.exe -SE:/code/nortos/BeiErZu -BE:/code/nortos/BeiErZu/build-release --check-stamp-file E:/code/nortos/BeiErZu/build-release/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeASMCompiler.cmake.in;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeASMInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCCompiler.cmake.in;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCXXCompiler.cmake.in;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCXXInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCommonLanguageInclude.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCompilerIdDetection.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineASMCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineCCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineCXXCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineCompilerId.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineSystem.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeFindBinUtils.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeGenericSystem.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeInitializeConfigs.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeLanguageInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeSystem.cmake.in;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeSystemSpecificInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeSystemSpecificInitialize.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeTestASMCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeTestCCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeTestCXXCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\ADSP-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\ARMCC-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\ARMClang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\AppleClang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Borland-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\CMakeCommonCompilerMacros.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Clang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Cray-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\CrayClang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Diab-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\FujitsuClang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GHS-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GNU-ASM.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GNU-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GNU-FindBinUtils.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GNU.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\HP-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IAR-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IBMClang-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IBMClang-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Intel-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IntelLLVM-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\LCC-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\LCC-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\MSVC-C.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\MSVC-CXX.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\MSVC-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\MSVC.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\NVHPC-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\OrangeC-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\PGI-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\PathScale-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\PellesC-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Renesas-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\SCO-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\TI-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\TIClang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Tasking-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Watcom-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\XL-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\XLClang-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\XLClang-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\zOS-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CompilerId\VS-10.vcxproj.in;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeASMLinkerInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeCLinkerInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeCXXLinkerInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeCommonLinkerInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeInspectASMLinker.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeInspectCLinker.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeInspectCXXLinker.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Platform\Generic.cmake;E:\code\nortos\BeiErZu\build-release\CMakeFiles\4.4.0\CMakeASMCompiler.cmake;E:\code\nortos\BeiErZu\build-release\CMakeFiles\4.4.0\CMakeCCompiler.cmake;E:\code\nortos\BeiErZu\build-release\CMakeFiles\4.4.0\CMakeCXXCompiler.cmake;E:\code\nortos\BeiErZu\build-release\CMakeFiles\4.4.0\CMakeSystem.cmake;E:\code\nortos\BeiErZu\cmake\gcc-arm-none-eabi.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">E:\code\nortos\BeiErZu\build-release\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule E:/code/nortos/BeiErZu/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+E:\Toolchain\cmake-4.4.0\bin\cmake.exe -SE:/code/nortos/BeiErZu -BE:/code/nortos/BeiErZu/build-release --check-stamp-file E:/code/nortos/BeiErZu/build-release/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeASMCompiler.cmake.in;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeASMInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCCompiler.cmake.in;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCXXCompiler.cmake.in;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCXXInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCommonLanguageInclude.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeCompilerIdDetection.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineASMCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineCCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineCXXCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineCompilerId.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeDetermineSystem.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeFindBinUtils.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeGenericSystem.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeInitializeConfigs.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeLanguageInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeSystem.cmake.in;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeSystemSpecificInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeSystemSpecificInitialize.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeTestASMCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeTestCCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CMakeTestCXXCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\ADSP-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\ARMCC-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\ARMClang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\AppleClang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Borland-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\CMakeCommonCompilerMacros.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Clang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Cray-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\CrayClang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Diab-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\FujitsuClang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GHS-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GNU-ASM.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GNU-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GNU-FindBinUtils.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\GNU.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\HP-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IAR-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IBMClang-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IBMClang-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Intel-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\IntelLLVM-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\LCC-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\LCC-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\MSVC-C.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\MSVC-CXX.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\MSVC-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\MSVC.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\NVHPC-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\OrangeC-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\PGI-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\PathScale-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\PellesC-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Renesas-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\SCO-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\TI-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\TIClang-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Tasking-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\Watcom-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\XL-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\XLClang-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\XLClang-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\zOS-C-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\CompilerId\VS-10.vcxproj.in;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeASMLinkerInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeCLinkerInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeCXXLinkerInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeCommonLinkerInformation.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeInspectASMLinker.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeInspectCLinker.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Internal\CMakeInspectCXXLinker.cmake;E:\Toolchain\cmake-4.4.0\share\cmake-4.4\Modules\Platform\Generic.cmake;E:\code\nortos\BeiErZu\build-release\CMakeFiles\4.4.0\CMakeASMCompiler.cmake;E:\code\nortos\BeiErZu\build-release\CMakeFiles\4.4.0\CMakeCCompiler.cmake;E:\code\nortos\BeiErZu\build-release\CMakeFiles\4.4.0\CMakeCXXCompiler.cmake;E:\code\nortos\BeiErZu\build-release\CMakeFiles\4.4.0\CMakeSystem.cmake;E:\code\nortos\BeiErZu\cmake\gcc-arm-none-eabi.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">E:\code\nortos\BeiErZu\build-release\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="E:\code\nortos\BeiErZu\Core\Src">
+    </None>
+    <ClCompile Include="E:\code\nortos\BeiErZu\app\app_led.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\app\app_lcd.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\bsp\bsp_led.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\bsp\bsp_lcd.c" />
+    <ClInclude Include="E:\code\nortos\BeiErZu\dev\dev_head.h" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\dev\dev_lcd.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\dev\dev_led.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\app\app_lvgl.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\gui\pic.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_disp.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_event.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_group.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_indev.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_indev_scroll.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_obj.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_obj_class.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_obj_draw.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_obj_pos.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_obj_scroll.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_obj_style.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_obj_style_gen.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_obj_tree.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_refr.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_theme.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\lv_draw.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\lv_draw_arc.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\lv_draw_img.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\lv_draw_label.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\lv_draw_line.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\lv_draw_mask.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\lv_draw_rect.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\lv_draw_triangle.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\lv_img_buf.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\lv_img_cache.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\lv_img_decoder.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sw\lv_draw_sw.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sw\lv_draw_sw_arc.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sw\lv_draw_sw_blend.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sw\lv_draw_sw_dither.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sw\lv_draw_sw_gradient.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sw\lv_draw_sw_img.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sw\lv_draw_sw_letter.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sw\lv_draw_sw_line.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sw\lv_draw_sw_polygon.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sw\lv_draw_sw_rect.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\lv_extra.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\layouts\flex\lv_flex.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\layouts\grid\lv_grid.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\bmp\lv_bmp.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\ffmpeg\lv_ffmpeg.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\freetype\lv_freetype.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\fsdrv\lv_fs_fatfs.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\fsdrv\lv_fs_posix.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\fsdrv\lv_fs_stdio.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\fsdrv\lv_fs_win32.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\gif\gifdec.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\gif\lv_gif.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\png\lodepng.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\png\lv_png.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\qrcode\lv_qrcode.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\qrcode\qrcodegen.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\rlottie\lv_rlottie.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\sjpg\lv_sjpg.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\sjpg\tjpgd.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\others\gridnav\lv_gridnav.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\others\monkey\lv_monkey.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\others\snapshot\lv_snapshot.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\themes\basic\lv_theme_basic.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\themes\default\lv_theme_default.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\themes\mono\lv_theme_mono.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\animimg\lv_animimg.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\calendar\lv_calendar.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\calendar\lv_calendar_header_arrow.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\calendar\lv_calendar_header_dropdown.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\chart\lv_chart.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\colorwheel\lv_colorwheel.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\imgbtn\lv_imgbtn.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\keyboard\lv_keyboard.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\led\lv_led.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\list\lv_list.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\menu\lv_menu.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\meter\lv_meter.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\msgbox\lv_msgbox.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\span\lv_span.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\spinbox\lv_spinbox.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\spinner\lv_spinner.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\tabview\lv_tabview.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\tileview\lv_tileview.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\win\lv_win.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_dejavu_16_persian_hebrew.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_fmt_txt.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_loader.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_10.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_12.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_12_subpx.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_14.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_16.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_18.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_20.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_22.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_24.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_26.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_28.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_28_compressed.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_30.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_32.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_34.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_36.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_38.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_40.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_42.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_44.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_46.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_48.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_8.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_simsun_16_cjk.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_unscii_16.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_unscii_8.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\stm32_dma2d\lv_gpu_stm32_dma2d.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_arc.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_bg.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_composite.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_img.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_label.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_line.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_mask.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_polygon.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_rect.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_stack_blur.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_texture_cache.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_utils.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\hal\lv_hal_disp.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\hal\lv_hal_indev.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\hal\lv_hal_tick.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_anim.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_anim_timeline.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_area.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_async.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_bidi.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_color.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_fs.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_gc.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_ll.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_log.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_lru.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_math.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_mem.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_printf.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_style.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_style_gen.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_templ.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_timer.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_tlsf.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_txt.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_txt_ap.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_utils.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_arc.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_bar.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_btn.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_btnmatrix.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_canvas.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_checkbox.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_dropdown.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_img.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_label.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_line.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_objx_templ.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_roller.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_slider.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_switch.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_table.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_textarea.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Core\Src\main.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Core\Src\gpio.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Core\Src\freertos.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Core\Src\spi.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Core\Src\stm32f4xx_it.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Core\Src\stm32f4xx_hal_msp.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Core\Src\stm32f4xx_hal_timebase_tim.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc_ex.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_flash.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_flash_ex.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_flash_ramfunc.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_gpio.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma_ex.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_pwr.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_pwr_ex.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_cortex.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_exti.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_spi.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_tim.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_tim_ex.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Core\Src\system_stm32f4xx.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Middlewares\Third_Party\FreeRTOS\Source\croutine.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Middlewares\Third_Party\FreeRTOS\Source\event_groups.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Middlewares\Third_Party\FreeRTOS\Source\list.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Middlewares\Third_Party\FreeRTOS\Source\queue.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Middlewares\Third_Party\FreeRTOS\Source\stream_buffer.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Middlewares\Third_Party\FreeRTOS\Source\tasks.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Middlewares\Third_Party\FreeRTOS\Source\timers.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os2.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Middlewares\Third_Party\FreeRTOS\Source\portable\MemMang\heap_4.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM4F\port.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Core\Src\sysmem.c" />
+    <ClCompile Include="E:\code\nortos\BeiErZu\Core\Src\syscalls.c" />
+    <None Include="E:\code\nortos\BeiErZu\startup_stm32f407xx.s" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="E:\code\nortos\BeiErZu\build-release\ZERO_CHECK.vcxproj">
+      <Project>{62120B77-FE0B-3EDA-8A22-5656493AFFA4}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

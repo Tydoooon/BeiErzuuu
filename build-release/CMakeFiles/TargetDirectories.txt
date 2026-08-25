@@ -1,0 +1,4 @@
+E:/code/nortos/BeiErZu/build-release/CMakeFiles/BeiErZu.dir
+E:/code/nortos/BeiErZu/build-release/CMakeFiles/ALL_BUILD.dir
+E:/code/nortos/BeiErZu/build-release/CMakeFiles/ZERO_CHECK.dir
+E:/code/nortos/BeiErZu/build-release/cmake/stm32cubemx/CMakeFiles/ALL_BUILD.dir

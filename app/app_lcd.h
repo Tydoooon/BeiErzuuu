@@ -1,7 +1,7 @@
 #ifndef __APP_LCD_H
 #define __APP_LCD_H
 
-#include "gui.h"
+#include "dev_lcd.h"
 #include "pic.h"
 #include <stdint.h>
 

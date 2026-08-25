@@ -26,6 +26,7 @@
 /* USER CODE BEGIN Includes */
 #include "app_led.h"
 #include "app_lcd.h"
+#include "app_lvgl.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -92,16 +93,7 @@ int main(void)
   MX_GPIO_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-  LCD_Init();
-  LCD_Clear(BLACK);
-  // DrawTestPage("hello");
-  // main_test();
-  // Test_Color();
-  // Test_FillRec();
-  // Test_Circle();
-  // English_Font_test();
-  // Chinese_Font_test();
-  Pic_test();
+  
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -190,6 +182,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE END Callback 0 */
   if (htim->Instance == TIM11) {
     HAL_IncTick();
+    lv_tick_inc(1);
   }
   /* USER CODE BEGIN Callback 1 */
 

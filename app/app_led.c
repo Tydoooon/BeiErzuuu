@@ -1,4 +1,5 @@
 #include "app_led.h"
+#include "app_ui.h"
 
 extern uint8_t lcd_num;
 uint8_t B1 = 0,B2 = 0,B3 = 0,B4 = 0,B5 = 0;
@@ -13,24 +14,29 @@ void key_scan(void)
 
     if(B1 == 1 && B1_last == 0)
     {
+        app_ui_key_push(1);
         LED1_ON();
         LED3_ON();
     }
     if(B2 == 1 && B2_last == 0)
     {
+        app_ui_key_push(2);
         LED1_OFF();
         LED3_OFF();
     }
     if(B3 == 1 && B3_last == 0)
     {
+        app_ui_key_push(3);
         lcd_num ++;
     }
     if(B4 == 1 && B4_last == 0)
     {
+        app_ui_key_push(4);
         lcd_num --;
     }
     if(B5 == 1 && B5_last == 0)
     {
+        app_ui_key_push(5);
         HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_9);
     }
 

@@ -19,7 +19,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "FreeRTOS.h"
-#include "cmsis_os2.h"
 #include "task.h"
 #include "main.h"
 #include "cmsis_os.h"
@@ -28,6 +27,8 @@
 /* USER CODE BEGIN Includes */
 #include "app_led.h"
 #include "app_lcd.h"
+#include "app_lvgl.h"
+#include "app_ui.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -62,7 +63,7 @@ const osThreadAttr_t keyTask_attributes = {
 };
 const osThreadAttr_t lcdTask_attributes = {
   .name = "lcdTask",
-  .stack_size = 128 * 4,
+  .stack_size = 4096,
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* USER CODE END Variables */
@@ -115,11 +116,9 @@ void MX_FREERTOS_Init(void) {
   /* creation of defaultTask */
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
-  /* creation of startTask */
-  startTaskHandle = osThreadNew(StartStartTask, NULL, &startTask_attributes);
-
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
+  startTaskHandle = osThreadNew(StartStartTask, NULL, &startTask_attributes);
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
@@ -138,6 +137,7 @@ void MX_FREERTOS_Init(void) {
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
+  (void)argument;
   /* Infinite loop */
   for(;;)
   {
@@ -150,6 +150,7 @@ void StartDefaultTask(void *argument)
 /* USER CODE BEGIN Application */
 void StartStartTask(void *argument)
 {
+  (void)argument;
   keyTaskHandle = osThreadNew(StartKeyTask, NULL, &keyTask_attributes);
   lcdTaskHandle = osThreadNew(StartLCDTask, NULL, &lcdTask_attributes);
   
@@ -158,7 +159,8 @@ void StartStartTask(void *argument)
 
 void StartKeyTask(void *argument)
 {
-  /* Infinite loop */
+  (void)argument;
+  
   for(;;)
   {
     key_scan();
@@ -168,11 +170,16 @@ void StartKeyTask(void *argument)
 
 void StartLCDTask(void *argument)
 {
-  /* Infinite loop */
+  (void)argument;
+  lv_init();
+  lv_port_disp_init();
+  app_ui_create();
+
   for(;;)
   {
-    Test_Color();
-    osDelay(100);
+    app_ui_process_keys();
+    lv_timer_handler();
+    osDelay(5);
   }
 }
 /* USER CODE END Application */

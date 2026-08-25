@@ -1,0 +1,652 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="E:\code\nortos\BeiErZu\app\app_led.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\app\app_lcd.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\bsp\bsp_led.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\bsp\bsp_lcd.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\dev\dev_lcd.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\dev\dev_led.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\app\app_lvgl.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\gui\pic.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_disp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_event.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_group.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_indev.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_indev_scroll.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_obj.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_obj_class.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_obj_draw.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_obj_pos.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_obj_scroll.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_obj_style.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_obj_style_gen.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_obj_tree.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_refr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\core\lv_theme.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\lv_draw.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\lv_draw_arc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\lv_draw_img.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\lv_draw_label.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\lv_draw_line.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\lv_draw_mask.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\lv_draw_rect.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\lv_draw_triangle.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\lv_img_buf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\lv_img_cache.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\lv_img_decoder.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sw\lv_draw_sw.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sw\lv_draw_sw_arc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sw\lv_draw_sw_blend.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sw\lv_draw_sw_dither.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sw\lv_draw_sw_gradient.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sw\lv_draw_sw_img.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sw\lv_draw_sw_letter.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sw\lv_draw_sw_line.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sw\lv_draw_sw_polygon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sw\lv_draw_sw_rect.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\lv_extra.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\layouts\flex\lv_flex.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\layouts\grid\lv_grid.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\bmp\lv_bmp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\ffmpeg\lv_ffmpeg.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\freetype\lv_freetype.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\fsdrv\lv_fs_fatfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\fsdrv\lv_fs_posix.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\fsdrv\lv_fs_stdio.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\fsdrv\lv_fs_win32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\gif\gifdec.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\gif\lv_gif.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\png\lodepng.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\png\lv_png.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\qrcode\lv_qrcode.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\qrcode\qrcodegen.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\rlottie\lv_rlottie.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\sjpg\lv_sjpg.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\libs\sjpg\tjpgd.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\others\gridnav\lv_gridnav.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\others\monkey\lv_monkey.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\others\snapshot\lv_snapshot.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\themes\basic\lv_theme_basic.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\themes\default\lv_theme_default.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\themes\mono\lv_theme_mono.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\animimg\lv_animimg.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\calendar\lv_calendar.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\calendar\lv_calendar_header_arrow.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\calendar\lv_calendar_header_dropdown.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\chart\lv_chart.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\colorwheel\lv_colorwheel.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\imgbtn\lv_imgbtn.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\keyboard\lv_keyboard.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\led\lv_led.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\list\lv_list.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\menu\lv_menu.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\meter\lv_meter.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\msgbox\lv_msgbox.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\span\lv_span.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\spinbox\lv_spinbox.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\spinner\lv_spinner.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\tabview\lv_tabview.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\tileview\lv_tileview.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\extra\widgets\win\lv_win.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_dejavu_16_persian_hebrew.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_fmt_txt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_loader.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_10.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_12.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_12_subpx.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_14.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_16.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_18.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_20.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_22.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_24.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_26.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_28.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_28_compressed.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_30.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_34.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_36.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_38.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_40.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_42.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_44.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_46.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_48.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_montserrat_8.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_simsun_16_cjk.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_unscii_16.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\font\lv_font_unscii_8.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\stm32_dma2d\lv_gpu_stm32_dma2d.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_arc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_bg.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_composite.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_img.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_label.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_line.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_mask.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_polygon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_rect.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_stack_blur.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_texture_cache.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\draw\sdl\lv_draw_sdl_utils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\hal\lv_hal_disp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\hal\lv_hal_indev.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\hal\lv_hal_tick.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_anim.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_anim_timeline.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_area.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_async.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_bidi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_color.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_fs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_gc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_ll.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_log.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_lru.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_math.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_mem.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_printf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_style.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_style_gen.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_templ.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_timer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_tlsf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_txt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_txt_ap.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\misc\lv_utils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_arc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_bar.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_btn.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_btnmatrix.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_canvas.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_checkbox.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_dropdown.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_img.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_label.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_line.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_objx_templ.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_roller.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_slider.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_switch.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_table.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\LVGL\GUI\lvgl\src\widgets\lv_textarea.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Core\Src\main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Core\Src\gpio.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Core\Src\freertos.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Core\Src\spi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Core\Src\stm32f4xx_it.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Core\Src\stm32f4xx_hal_msp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Core\Src\stm32f4xx_hal_timebase_tim.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc_ex.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_flash.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_flash_ex.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_flash_ramfunc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_gpio.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma_ex.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_pwr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_pwr_ex.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_cortex.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_exti.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_spi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_tim.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_tim_ex.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Core\Src\system_stm32f4xx.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Middlewares\Third_Party\FreeRTOS\Source\croutine.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Middlewares\Third_Party\FreeRTOS\Source\event_groups.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Middlewares\Third_Party\FreeRTOS\Source\list.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Middlewares\Third_Party\FreeRTOS\Source\queue.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Middlewares\Third_Party\FreeRTOS\Source\stream_buffer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Middlewares\Third_Party\FreeRTOS\Source\tasks.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Middlewares\Third_Party\FreeRTOS\Source\timers.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Middlewares\Third_Party\FreeRTOS\Source\portable\MemMang\heap_4.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM4F\port.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Core\Src\sysmem.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\nortos\BeiErZu\Core\Src\syscalls.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="E:\code\nortos\BeiErZu\dev\dev_head.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="E:\code\nortos\BeiErZu\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="E:\code\nortos\BeiErZu\Core\Src" />
+    <None Include="E:\code\nortos\BeiErZu\startup_stm32f407xx.s" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{6B73550E-8215-304F-A948-BFEC73FF3501}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{72DA58C4-18CB-3E5B-AA14-2362E7787B59}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

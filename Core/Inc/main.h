@@ -59,6 +59,8 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define TFT_BL_Pin GPIO_PIN_0
 #define TFT_BL_GPIO_Port GPIOA
+#define TFT_CS_Pin GPIO_PIN_3
+#define TFT_CS_GPIO_Port GPIOA
 #define TFT_RES_Pin GPIO_PIN_0
 #define TFT_RES_GPIO_Port GPIOB
 #define TFT_DC_Pin GPIO_PIN_1
@@ -81,8 +83,6 @@ void Error_Handler(void);
 #define LEDB13_GPIO_Port GPIOB
 #define USB_EN_Pin GPIO_PIN_9
 #define USB_EN_GPIO_Port GPIOD
-#define TFT_CS_Pin GPIO_PIN_6
-#define TFT_CS_GPIO_Port GPIOC
 
 /* USER CODE BEGIN Private defines */
 
