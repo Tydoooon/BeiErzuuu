@@ -2,6 +2,7 @@
 #define _LCD_DRIVER_H_
 
 #include "main.h"
+#include "cmsis_os.h"
 #include <stdint.h>
 
 typedef uint8_t u8;
@@ -9,11 +10,52 @@ typedef uint16_t u16;
 typedef uint32_t u32;
 
 #ifndef delay_ms
-#define delay_ms(ms) HAL_Delay(ms)
+static inline void lcd_delay_ms(uint32_t ms)
+{
+    if (osKernelGetState() == osKernelRunning)
+    {
+        (void)osDelay(ms);
+    }
+    else
+    {
+        HAL_Delay(ms);
+    }
+}
+#define delay_ms(ms) lcd_delay_ms(ms)
 #endif
 
 // Support portrait/landscape switching.
 #define USE_HORIZONTAL 0
+
+// Flip the panel top-to-bottom without changing the logical resolution.
+#define LCD_FLIP_VERTICAL 1
+// Flip the panel left-to-right without changing the logical resolution.
+#define LCD_FLIP_HORIZONTAL 1
+
+#define LCD_MADCTL_MY  0x80
+#define LCD_MADCTL_MX  0x40
+#define LCD_MADCTL_MV  0x20
+#define LCD_MADCTL_BGR 0x08
+
+#if USE_HORIZONTAL
+#define LCD_MADCTL_BASE (LCD_MADCTL_MY | LCD_MADCTL_MX | LCD_MADCTL_MV | LCD_MADCTL_BGR)
+#else
+#define LCD_MADCTL_BASE (LCD_MADCTL_MX | LCD_MADCTL_BGR)
+#endif
+
+#if LCD_FLIP_VERTICAL
+#define LCD_MADCTL_VERTICAL_FLIP LCD_MADCTL_MY
+#else
+#define LCD_MADCTL_VERTICAL_FLIP 0
+#endif
+
+#if LCD_FLIP_HORIZONTAL
+#define LCD_MADCTL_HORIZONTAL_FLIP LCD_MADCTL_MX
+#else
+#define LCD_MADCTL_HORIZONTAL_FLIP 0
+#endif
+
+#define LCD_MADCTL_VALUE (LCD_MADCTL_BASE ^ LCD_MADCTL_VERTICAL_FLIP ^ LCD_MADCTL_HORIZONTAL_FLIP)
 
 #define LCD_X_SIZE 240
 #define LCD_Y_SIZE 320

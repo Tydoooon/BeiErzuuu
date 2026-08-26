@@ -28,6 +28,7 @@
 #include "app_led.h"
 #include "app_lcd.h"
 #include "app_lvgl.h"
+#include "app_mouse.h"
 #include "app_ui.h"
 /* USER CODE END Includes */
 
@@ -84,6 +85,7 @@ void StartLCDTask(void *argument);
 
 void StartDefaultTask(void *argument);
 
+extern void MX_USB_HOST_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /**
@@ -136,6 +138,8 @@ void MX_FREERTOS_Init(void) {
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void *argument)
 {
+  /* init code for USB_HOST */
+  MX_USB_HOST_Init();
   /* USER CODE BEGIN StartDefaultTask */
   (void)argument;
   /* Infinite loop */
@@ -174,6 +178,7 @@ void StartLCDTask(void *argument)
   lv_init();
   lv_port_disp_init();
   app_ui_create();
+  app_mouse_init();
 
   for(;;)
   {

@@ -116,11 +116,7 @@ void Lcd_Init(void)
     Lcd_WriteData(0X55);
 
     Lcd_WriteIndex(0x36);
-#if USE_HORIZONTAL
-    Lcd_WriteData(0xE8);
-#else
-    Lcd_WriteData(0x48);
-#endif
+    Lcd_WriteData(LCD_MADCTL_VALUE);
 
     Lcd_WriteIndex(0xB1);
     Lcd_WriteData(0X00);

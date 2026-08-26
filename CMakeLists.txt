@@ -51,6 +51,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src
     app/app_led.c
     app/app_lcd.c
+    app/app_mouse.c
     bsp/bsp_led.c
     bsp/bsp_lcd.c
     dev/dev_head.h
@@ -58,6 +59,16 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     dev/dev_led.c
     app/app_lvgl.c
     app/app_ui.c
+    app/app_ui_model.c
+    app/app_ui_common.c
+    app/app_ui_login.c
+    app/app_ui_home.c
+    app/app_ui_file.c
+    app/app_ui_draw.c
+    app/app_ui_music.c
+    app/app_ui_log.c
+    app/app_ui_monitor.c
+    app/app_ui_setting.c
     gui/pic.c
     LVGL/GUI/lvgl/src/core/lv_disp.c
     LVGL/GUI/lvgl/src/core/lv_event.c

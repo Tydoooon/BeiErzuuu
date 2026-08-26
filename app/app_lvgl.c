@@ -1,9 +1,3 @@
-/**
- * @file app_lvgl.c
- *
- * LVGL display port for the project LCD.
- */
-
 #include "app_lvgl.h"
 #include "bsp_lcd.h"
 
