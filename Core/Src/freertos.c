@@ -71,7 +71,7 @@ const osThreadAttr_t lcdTask_attributes = {
 };
 const osThreadAttr_t w25q128Task_attributes = {
   .name = "w25q128Task",
-  .stack_size = 128 * 4,
+  .stack_size = 1024,
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* USER CODE END Variables */
