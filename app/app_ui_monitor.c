@@ -10,7 +10,7 @@ static void monitor_timer_cb(lv_timer_t *timer)
 
 void ui_create_monitor_app(void)
 {
-    lv_obj_t *scr = ui_create_app_frame("系统监控");
+    lv_obj_t *scr = ui_create_app_frame(UI_TEXT_APP_MONITOR);
 
     g_monitor_label = ui_label(scr, "", 14, 52);
     lv_obj_set_width(g_monitor_label, 212);
@@ -29,10 +29,9 @@ static void ui_monitor_refresh(void)
 
     lv_mem_monitor(&mem);
     free_pct = mem.used_pct <= 100U ? (uint8_t)(100U - mem.used_pct) : 0U;
-    lv_label_set_text_fmt(g_monitor_label,
-                          "运行时间:%lus\n系统状态:%s\n输入事件:%lu\n丢弃事件:%lu\n错误事件:%lu\n任务数量:%lu\n当前栈水位:%lu\nRTOS剩余堆:%luB\nLVGL空闲:%u%%",
+    lv_label_set_text_fmt(g_monitor_label, UI_TEXT_MONITOR_FMT,
                           (unsigned long)(lv_tick_get() / 1000U),
-                          g_music_playing ? "音乐播放" : "正常",
+                          g_music_playing ? UI_TEXT_STATUS_MUSIC : UI_TEXT_STATUS_NORMAL,
                           (unsigned long)g_input_events,
                           (unsigned long)g_discarded_events,
                           (unsigned long)g_error_events,

@@ -6,6 +6,8 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "app_lvgl.h"
+#include "app_ui_font.h"
+#include "app_ui_text.h"
 #include "bsp_lcd.h"
 
 #include <stdbool.h>
@@ -89,11 +91,7 @@ extern bool g_storage_dirty;
 extern bool g_login_active;
 extern bool g_music_playing;
 
-#if LV_FONT_SIMSUN_16_CJK
-#define UI_FONT (&lv_font_simsun_16_cjk)
-#else
-#define UI_FONT LV_FONT_DEFAULT
-#endif
+#define UI_FONT ui_font_get()
 
 void ui_model_init(void);
 void ui_storage_load(void);

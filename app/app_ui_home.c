@@ -19,16 +19,17 @@ static void main_app_event_cb(lv_event_t *e)
 void ui_create_main(void)
 {
     static const char *names[] = {
-        "文件管理", "画图", "音乐播放", "日志查看", "系统监控", "系统设置"
+        UI_TEXT_APP_FILE, UI_TEXT_APP_DRAW, UI_TEXT_APP_MUSIC,
+        UI_TEXT_APP_LOG, UI_TEXT_APP_MONITOR, UI_TEXT_APP_SETTING
     };
     static const char *hints[] = {
-        "列表/新建/保存", "绘图/清空/打开", "旋律/音量/退出",
-        "事件/错误记录", "任务/内存/状态", "亮度/音量/熄屏"
+        UI_TEXT_HINT_FILE, UI_TEXT_HINT_DRAW, UI_TEXT_HINT_MUSIC,
+        UI_TEXT_HINT_LOG, UI_TEXT_HINT_MONITOR, UI_TEXT_HINT_SETTING
     };
 
     lv_obj_t *scr = ui_create_screen();
     g_login_active = false;
-    ui_label(scr, "LVGL 主界面", 12, 10);
+    ui_label(scr, UI_TEXT_HOME_TITLE, 12, 10);
 
     for (uint8_t i = 0; i < 6; i++) {
         lv_coord_t x = (i % 2) == 0 ? 12 : 124;
@@ -42,6 +43,6 @@ void ui_create_main(void)
         lv_obj_align(hint, LV_ALIGN_BOTTOM_MID, 0, -7);
     }
 
-    ui_label(scr, g_storage_dirty ? "存储: 有未同步状态" : "存储: 已同步", 12, 292);
+    ui_label(scr, g_storage_dirty ? UI_TEXT_STORAGE_DIRTY : UI_TEXT_STORAGE_SYNCED, 12, 292);
     ui_load_screen(scr);
 }

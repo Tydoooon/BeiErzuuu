@@ -7,13 +7,13 @@ static void log_clear_event_cb(lv_event_t *e)
     (void)e;
     g_input_events++;
     g_log_count = 0;
-    ui_log("清空日志");
+    ui_log(UI_TEXT_LOG_CLEAR);
     ui_create_log_app();
 }
 
 void ui_create_log_app(void)
 {
-    lv_obj_t *scr = ui_create_app_frame("日志查看");
+    lv_obj_t *scr = ui_create_app_frame(UI_TEXT_APP_LOG);
     lv_obj_t *list = lv_obj_create(scr);
 
     lv_obj_set_size(list, 216, 198);
@@ -22,7 +22,7 @@ void ui_create_log_app(void)
     lv_obj_set_style_bg_color(list, lv_color_white(), 0);
     ui_refresh_logs(list);
 
-    ui_button(scr, "清空日志", 70, 266, 100, 34, log_clear_event_cb, NULL);
+    ui_button(scr, UI_TEXT_LOG_CLEAR, 70, 266, 100, 34, log_clear_event_cb, NULL);
     ui_load_screen(scr);
 }
 

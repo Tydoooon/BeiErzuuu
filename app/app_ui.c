@@ -30,6 +30,7 @@ bool g_music_playing;
 void app_ui_create(void)
 {
     ui_model_init();
+    ui_font_init();
     ui_create_login();
 }
 
@@ -64,7 +65,7 @@ void app_ui_process_keys(void)
         } else if (strlen(lv_textarea_get_text(g_password_ta)) < 8U) {
             char digit[2] = { (char)('0' + key_id), '\0' };
             lv_textarea_add_text(g_password_ta, digit);
-            lv_label_set_text(g_login_hint, "按 1-4 输入，5 确认");
+            lv_label_set_text(g_login_hint, UI_TEXT_KEY_HINT);
         } else {
             g_discarded_events++;
         }

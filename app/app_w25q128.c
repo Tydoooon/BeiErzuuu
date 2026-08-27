@@ -2,6 +2,13 @@
 
 #include <string.h>
 
+#define APP_W25Q128_PROGRAM_CHUNK_SIZE 256U
+
+#if APP_W25Q128_FONT_PROGRAMMER_ENABLE
+extern const uint8_t g_ui_font_w25q128_img[];
+extern const uint8_t g_ui_font_w25q128_img_end[];
+#endif
+
 static app_w25q128_info_t g_w25q128_info = {
     .ready = false,
     .jedec_id = 0,
@@ -9,11 +16,16 @@ static app_w25q128_info_t g_w25q128_info = {
     .sector_size = W25Q128_SECTOR_SIZE,
     .page_size = W25Q128_PAGE_SIZE,
 };
+static bsp_w25q128_status_t g_last_font_program_status = BSP_W25Q128_NOT_FOUND;
 
 bsp_w25q128_status_t app_w25q128_init(void)
 {
     bsp_w25q128_status_t ret;
     uint32_t id = 0;
+
+    if (g_w25q128_info.ready) {
+        return BSP_W25Q128_OK;
+    }
 
     ret = BSP_W25Q128_Init();
     if (ret != BSP_W25Q128_OK) {
@@ -106,4 +118,128 @@ bsp_w25q128_status_t app_w25q128_self_test(void)
     }
 
     return memcmp(pattern, readback, sizeof(pattern)) == 0 ? BSP_W25Q128_OK : BSP_W25Q128_ERROR;
+}
+
+#if APP_W25Q128_FONT_PROGRAMMER_ENABLE
+static bsp_w25q128_status_t app_w25q128_record_font_program_status(bsp_w25q128_status_t status)
+{
+    g_last_font_program_status = status;
+    return status;
+}
+
+static size_t app_w25q128_font_image_size(void)
+{
+    return (size_t)(g_ui_font_w25q128_img_end - g_ui_font_w25q128_img);
+}
+
+static bool app_w25q128_font_image_range_valid(size_t image_size)
+{
+    if (image_size == 0U || image_size > APP_W25Q128_RESOURCE_SIZE) {
+        return false;
+    }
+
+    return image_size <= (size_t)(APP_W25Q128_RESOURCE_END - APP_W25Q128_FONT16_HEADER_ADDR);
+}
+
+static bsp_w25q128_status_t app_w25q128_erase_range(uint32_t addr, size_t len)
+{
+    uint32_t erase_addr = addr - (addr % W25Q128_SECTOR_SIZE);
+    uint32_t erase_end = addr + (uint32_t)len;
+    bsp_w25q128_status_t ret;
+
+    while (erase_addr < erase_end) {
+        ret = app_w25q128_erase_sector(erase_addr);
+        if (ret != BSP_W25Q128_OK) {
+            return ret;
+        }
+        erase_addr += W25Q128_SECTOR_SIZE;
+    }
+
+    return BSP_W25Q128_OK;
+}
+#endif
+
+bsp_w25q128_status_t app_w25q128_program_ui_font_image(void)
+{
+#if APP_W25Q128_FONT_PROGRAMMER_ENABLE
+    size_t image_size = app_w25q128_font_image_size();
+    bsp_w25q128_status_t ret;
+
+    if (!app_w25q128_font_image_range_valid(image_size)) {
+        return app_w25q128_record_font_program_status(BSP_W25Q128_INVALID_PARAM);
+    }
+
+    if (!g_w25q128_info.ready) {
+        ret = app_w25q128_init();
+        if (ret != BSP_W25Q128_OK) {
+            return app_w25q128_record_font_program_status(ret);
+        }
+    }
+
+    ret = app_w25q128_verify_ui_font_image();
+    if (ret == BSP_W25Q128_OK) {
+        return app_w25q128_record_font_program_status(BSP_W25Q128_OK);
+    }
+
+    ret = app_w25q128_erase_range(APP_W25Q128_FONT16_HEADER_ADDR, image_size);
+    if (ret != BSP_W25Q128_OK) {
+        return app_w25q128_record_font_program_status(ret);
+    }
+
+    ret = app_w25q128_write(APP_W25Q128_FONT16_HEADER_ADDR, g_ui_font_w25q128_img, image_size);
+    if (ret != BSP_W25Q128_OK) {
+        return app_w25q128_record_font_program_status(ret);
+    }
+
+    return app_w25q128_record_font_program_status(app_w25q128_verify_ui_font_image());
+#else
+    g_last_font_program_status = BSP_W25Q128_INVALID_PARAM;
+    return BSP_W25Q128_INVALID_PARAM;
+#endif
+}
+
+bsp_w25q128_status_t app_w25q128_verify_ui_font_image(void)
+{
+#if APP_W25Q128_FONT_PROGRAMMER_ENABLE
+    uint8_t readback[APP_W25Q128_PROGRAM_CHUNK_SIZE];
+    size_t image_size = app_w25q128_font_image_size();
+    size_t offset = 0U;
+    bsp_w25q128_status_t ret;
+
+    if (!app_w25q128_font_image_range_valid(image_size)) {
+        return BSP_W25Q128_INVALID_PARAM;
+    }
+
+    if (!g_w25q128_info.ready) {
+        ret = app_w25q128_init();
+        if (ret != BSP_W25Q128_OK) {
+            return ret;
+        }
+    }
+
+    while (offset < image_size) {
+        size_t remain = image_size - offset;
+        size_t chunk = remain > sizeof(readback) ? sizeof(readback) : remain;
+
+        ret = app_w25q128_read(APP_W25Q128_FONT16_HEADER_ADDR + (uint32_t)offset, readback, chunk);
+        if (ret != BSP_W25Q128_OK) {
+            return ret;
+        }
+
+        if (memcmp(g_ui_font_w25q128_img + offset, readback, chunk) != 0) {
+            return BSP_W25Q128_ERROR;
+        }
+
+        offset += chunk;
+    }
+
+    return BSP_W25Q128_OK;
+#else
+    return BSP_W25Q128_INVALID_PARAM;
+#endif
+}
+
+bsp_w25q128_status_t app_w25q128_get_last_font_program_status(void)
+{
+    return g_last_font_program_status;
 }

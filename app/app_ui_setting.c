@@ -21,7 +21,7 @@ static void setting_slider_event_cb(lv_event_t *e)
 
     g_storage_dirty = true;
     ui_storage_commit();
-    ui_log("修改设置");
+    ui_log(UI_TEXT_SETTING_CHANGED);
 }
 
 static void ui_setting_row(lv_obj_t *parent, const char *name, uint8_t id,
@@ -40,14 +40,14 @@ static void ui_setting_row(lv_obj_t *parent, const char *name, uint8_t id,
 
 void ui_create_setting_app(void)
 {
-    lv_obj_t *scr = ui_create_app_frame("系统设置");
+    lv_obj_t *scr = ui_create_app_frame(UI_TEXT_APP_SETTING);
 
-    ui_setting_row(scr, "灵敏度", 0, 1, 100, g_settings.cursor_sensitivity, 58);
-    ui_setting_row(scr, "光标大小", 1, 4, 32, g_settings.cursor_size, 96);
-    ui_setting_row(scr, "亮度", 2, 0, 100, g_settings.screen_brightness, 134);
-    ui_setting_row(scr, "音量", 3, 0, 100, g_settings.system_volume, 172);
-    ui_setting_row(scr, "熄屏秒", 4, 10, 300, g_settings.screen_timeout_s, 210);
-    ui_label(scr, "设置变化立即进入状态层", 30, 266);
+    ui_setting_row(scr, UI_TEXT_SETTING_SENSITIVITY, 0, 1, 100, g_settings.cursor_sensitivity, 58);
+    ui_setting_row(scr, UI_TEXT_SETTING_CURSOR_SIZE, 1, 4, 32, g_settings.cursor_size, 96);
+    ui_setting_row(scr, UI_TEXT_SETTING_BRIGHTNESS, 2, 0, 100, g_settings.screen_brightness, 134);
+    ui_setting_row(scr, UI_TEXT_SETTING_VOLUME, 3, 0, 100, g_settings.system_volume, 172);
+    ui_setting_row(scr, UI_TEXT_SETTING_TIMEOUT, 4, 10, 300, g_settings.screen_timeout_s, 210);
+    ui_label(scr, UI_TEXT_SETTING_TIP, 30, 266);
 
     ui_load_screen(scr);
 }

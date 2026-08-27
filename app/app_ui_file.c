@@ -32,7 +32,7 @@ static void file_action_event_cb(lv_event_t *e)
 
 void ui_create_file_app(void)
 {
-    lv_obj_t *scr = ui_create_app_frame("文件管理");
+    lv_obj_t *scr = ui_create_app_frame(UI_TEXT_APP_FILE);
 
     g_file_list = lv_list_create(scr);
     lv_obj_set_size(g_file_list, 216, 142);
@@ -42,10 +42,10 @@ void ui_create_file_app(void)
     g_file_detail = ui_label(scr, "", 12, 196);
     lv_obj_set_width(g_file_detail, 216);
 
-    ui_button(scr, "新建", 12, 266, 50, 32, file_action_event_cb, (void *)0);
-    ui_button(scr, "删除", 67, 266, 50, 32, file_action_event_cb, (void *)1);
-    ui_button(scr, "保存", 122, 266, 50, 32, file_action_event_cb, (void *)2);
-    ui_button(scr, "打开", 177, 266, 50, 32, file_action_event_cb, (void *)3);
+    ui_button(scr, UI_TEXT_FILE_NEW, 12, 266, 50, 32, file_action_event_cb, (void *)0);
+    ui_button(scr, UI_TEXT_FILE_DELETE, 67, 266, 50, 32, file_action_event_cb, (void *)1);
+    ui_button(scr, UI_TEXT_FILE_SAVE, 122, 266, 50, 32, file_action_event_cb, (void *)2);
+    ui_button(scr, UI_TEXT_FILE_OPEN, 177, 266, 50, 32, file_action_event_cb, (void *)3);
 
     ui_refresh_file_list();
     ui_refresh_file_detail();
@@ -72,7 +72,7 @@ static void ui_refresh_file_list(void)
     }
 
     if (active_count == 0) {
-        ui_label(g_file_list, "暂无文件", 8, 8);
+        ui_label(g_file_list, UI_TEXT_FILE_EMPTY, 8, 8);
     }
 }
 
@@ -84,11 +84,11 @@ static void ui_refresh_file_detail(void)
     if (g_file_detail == NULL) return;
 
     if (file->state != UI_FILE_STATE_NORMAL) {
-        lv_label_set_text(g_file_detail, "未选择文件");
+        lv_label_set_text(g_file_detail, UI_TEXT_FILE_NONE);
         return;
     }
 
-    snprintf(text, sizeof(text), "名称:%s\n类型:%s  大小:%luB\n位置:0x%08lX  状态:正常\n内容:%s",
+    snprintf(text, sizeof(text), UI_TEXT_FILE_DETAIL_FMT,
              file->name, file->type, (unsigned long)file->size,
              (unsigned long)file->storage_addr, file->content);
     lv_label_set_text(g_file_detail, text);
@@ -119,14 +119,14 @@ static void ui_create_file(void)
 
     if (slot < 0) {
         g_error_events++;
-        ui_log("文件新建失败: 表已满");
+        ui_log(UI_TEXT_FILE_TABLE_FULL);
         return;
     }
 
     snprintf(name, sizeof(name), "note%u.txt", (unsigned)g_file_serial++);
     if (ui_file_find(name) >= 0) {
         g_error_events++;
-        ui_log("文件新建失败: 重名");
+        ui_log(UI_TEXT_FILE_NAME_DUP);
         return;
     }
 
@@ -139,7 +139,7 @@ static void ui_create_file(void)
     g_selected_file = (uint8_t)slot;
     g_storage_dirty = true;
     ui_storage_commit();
-    ui_log("新建文件");
+    ui_log(UI_TEXT_FILE_CREATED);
 }
 
 static void ui_delete_file(void)
@@ -149,7 +149,7 @@ static void ui_delete_file(void)
     g_files[g_selected_file].state = UI_FILE_STATE_DELETED;
     g_storage_dirty = true;
     ui_storage_commit();
-    ui_log("删除文件");
+    ui_log(UI_TEXT_FILE_DELETED);
 }
 
 static void ui_save_file(void)
@@ -162,12 +162,12 @@ static void ui_save_file(void)
     file->size = strlen(file->content);
     g_storage_dirty = true;
     ui_storage_commit();
-    ui_log("保存文件");
+    ui_log(UI_TEXT_FILE_SAVED);
 }
 
 static void ui_open_file(void)
 {
     if (g_files[g_selected_file].state == UI_FILE_STATE_NORMAL) {
-        ui_log("打开文件");
+        ui_log(UI_TEXT_FILE_OPENED);
     }
 }

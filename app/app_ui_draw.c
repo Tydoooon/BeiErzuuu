@@ -64,7 +64,7 @@ static void draw_action_event_cb(lv_event_t *e)
 
 void ui_create_draw_app(void)
 {
-    lv_obj_t *scr = ui_create_app_frame("画图");
+    lv_obj_t *scr = ui_create_app_frame(UI_TEXT_APP_DRAW);
 
     g_canvas = lv_canvas_create(scr);
     lv_canvas_set_buffer(g_canvas, g_canvas_buf, UI_DRAW_W, UI_DRAW_H, LV_IMG_CF_TRUE_COLOR);
@@ -77,12 +77,12 @@ void ui_create_draw_app(void)
     lv_obj_add_event_cb(g_canvas, draw_canvas_event_cb, LV_EVENT_PRESSING, NULL);
     lv_canvas_fill_bg(g_canvas, lv_color_white(), LV_OPA_COVER);
 
-    g_draw_status = ui_label(scr, "鼠标/触摸拖动绘图", 42, 130);
+    g_draw_status = ui_label(scr, UI_TEXT_DRAW_TIP, 42, 130);
 
-    ui_button(scr, "清空", 24, 170, 58, 34, draw_action_event_cb, (void *)0);
-    ui_button(scr, "保存", 91, 170, 58, 34, draw_action_event_cb, (void *)1);
-    ui_button(scr, "打开", 158, 170, 58, 34, draw_action_event_cb, (void *)2);
-    ui_label(scr, "保存格式: 1bit 画布快照", 32, 226);
+    ui_button(scr, UI_TEXT_DRAW_CLEAR, 24, 170, 58, 34, draw_action_event_cb, (void *)0);
+    ui_button(scr, UI_TEXT_DRAW_SAVE, 91, 170, 58, 34, draw_action_event_cb, (void *)1);
+    ui_button(scr, UI_TEXT_DRAW_OPEN, 158, 170, 58, 34, draw_action_event_cb, (void *)2);
+    ui_label(scr, UI_TEXT_DRAW_FORMAT, 32, 226);
 
     ui_load_screen(scr);
 }
@@ -91,8 +91,8 @@ static void ui_draw_clear(void)
 {
     if (g_canvas == NULL) return;
     lv_canvas_fill_bg(g_canvas, lv_color_white(), LV_OPA_COVER);
-    lv_label_set_text(g_draw_status, "画布已清空");
-    ui_log("清空画布");
+    lv_label_set_text(g_draw_status, UI_TEXT_DRAW_CLEARED);
+    ui_log(UI_TEXT_DRAW_LOG_CLEAR);
 }
 
 static void ui_draw_save(void)
@@ -109,8 +109,8 @@ static void ui_draw_save(void)
 
     g_storage_dirty = true;
     ui_storage_commit();
-    lv_label_set_text(g_draw_status, "绘图已保存");
-    ui_log("保存绘图");
+    lv_label_set_text(g_draw_status, UI_TEXT_DRAW_SAVED);
+    ui_log(UI_TEXT_DRAW_LOG_SAVE);
 }
 
 static void ui_draw_open(void)
@@ -124,8 +124,8 @@ static void ui_draw_open(void)
         }
     }
 
-    lv_label_set_text(g_draw_status, "已打开保存内容");
-    ui_log("打开绘图");
+    lv_label_set_text(g_draw_status, UI_TEXT_DRAW_OPENED);
+    ui_log(UI_TEXT_DRAW_LOG_OPEN);
 }
 
 static void ui_draw_set_saved_bit(uint32_t idx, bool value)

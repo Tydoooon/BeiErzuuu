@@ -36,7 +36,7 @@ lv_obj_t *ui_label(lv_obj_t *parent, const char *text, lv_coord_t x, lv_coord_t 
 }
 
 lv_obj_t *ui_button(lv_obj_t *parent, const char *text, lv_coord_t x, lv_coord_t y,
-                           lv_coord_t w, lv_coord_t h, lv_event_cb_t cb, void *user_data)
+                    lv_coord_t w, lv_coord_t h, lv_event_cb_t cb, void *user_data)
 {
     lv_obj_t *btn = lv_btn_create(parent);
     lv_obj_set_size(btn, w, h);
@@ -63,7 +63,7 @@ static void back_event_cb(lv_event_t *e)
     (void)e;
     if (g_music_playing) {
         g_music_playing = false;
-        ui_log("退出音乐应用并停止播放");
+        ui_log(UI_TEXT_BACK_MUSIC_STOP);
     }
     g_input_events++;
     ui_create_main();

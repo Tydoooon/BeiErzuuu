@@ -3,12 +3,12 @@
 void ui_login_submit(void)
 {
     if (strcmp(lv_textarea_get_text(g_password_ta), UI_PASSWORD) == 0) {
-        ui_log("登录成功");
+        ui_log(UI_TEXT_LOGIN_SUCCESS);
         ui_create_main();
     } else {
         g_error_events++;
-        ui_log("登录失败");
-        lv_label_set_text(g_login_hint, "密码错误");
+        ui_log(UI_TEXT_LOGIN_FAILED);
+        lv_label_set_text(g_login_hint, UI_TEXT_LOGIN_WRONG);
         lv_textarea_set_text(g_password_ta, "");
     }
 }
@@ -65,7 +65,7 @@ void ui_create_login(void)
     lv_obj_clear_flag(panel, LV_OBJ_FLAG_SCROLLABLE);
 
     lv_obj_t *title = lv_label_create(panel);
-    lv_label_set_text(title, "登录");
+    lv_label_set_text(title, UI_TEXT_LOGIN_TITLE);
     lv_obj_set_style_text_font(title, UI_FONT, 0);
     lv_obj_set_style_text_color(title, lv_color_hex(0x1F6FD0), 0);
     lv_obj_align(title, LV_ALIGN_TOP_MID, 0, 12);
@@ -80,12 +80,12 @@ void ui_create_login(void)
     lv_obj_set_style_text_font(g_password_ta, UI_FONT, 0);
 
     g_login_hint = lv_label_create(panel);
-    lv_label_set_text(g_login_hint, "请输入密码");
+    lv_label_set_text(g_login_hint, UI_TEXT_LOGIN_HINT);
     lv_obj_set_style_text_font(g_login_hint, UI_FONT, 0);
     lv_obj_set_style_text_color(g_login_hint, lv_color_hex(0x6B7280), 0);
     lv_obj_align(g_login_hint, LV_ALIGN_TOP_MID, 0, 86);
 
-    ui_button(panel, "登录", 68, 108, 80, 34, login_button_event_cb, NULL);
+    ui_button(panel, UI_TEXT_LOGIN_BUTTON, 68, 108, 80, 34, login_button_event_cb, NULL);
 
     lv_obj_t *keypad = lv_btnmatrix_create(panel);
     lv_btnmatrix_set_map(keypad, key_map);

@@ -9,7 +9,7 @@ void ui_model_init(void)
 
     ui_storage_load();
     ui_apply_brightness();
-    ui_log("系统启动");
+    ui_log(UI_TEXT_SYSTEM_START);
 }
 
 void ui_storage_load(void)

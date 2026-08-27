@@ -56,7 +56,11 @@ osThreadId_t lcdTaskHandle;
 osThreadId_t w25q128TaskHandle;
 const osThreadAttr_t startTask_attributes = {
   .name = "startTask",
+#if APP_W25Q128_FONT_PROGRAMMER_ENABLE
+  .stack_size = 1024,
+#else
   .stack_size = 128 * 4,
+#endif
   .priority = (osPriority_t) osPriorityNormal,
 };
 const osThreadAttr_t keyTask_attributes = {
@@ -163,6 +167,9 @@ void StartDefaultTask(void *argument)
 void StartStartTask(void *argument)
 {
   (void)argument;
+#if APP_W25Q128_FONT_PROGRAMMER_ENABLE
+  (void)app_w25q128_program_ui_font_image();
+#endif
   keyTaskHandle = osThreadNew(StartKeyTask, NULL, &keyTask_attributes);
   lcdTaskHandle = osThreadNew(StartLCDTask, NULL, &lcdTask_attributes);
   w25q128TaskHandle = osThreadNew(StartW25Q128Task, NULL, &w25q128Task_attributes);

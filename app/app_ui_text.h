@@ -1,0 +1,84 @@
+#ifndef __APP_UI_TEXT_H
+#define __APP_UI_TEXT_H
+
+#define UI_TEXT_LOGIN_TITLE             "登录"
+#define UI_TEXT_LOGIN_HINT              "请输入密码"
+#define UI_TEXT_LOGIN_BUTTON            "登录"
+#define UI_TEXT_LOGIN_WRONG             "密码错误"
+#define UI_TEXT_LOGIN_SUCCESS           "登录成功"
+#define UI_TEXT_LOGIN_FAILED            "登录失败"
+#define UI_TEXT_KEY_HINT                "按 1-4 输入，5 确认"
+
+#define UI_TEXT_HOME_TITLE              "LVGL 主界面"
+#define UI_TEXT_STORAGE_DIRTY           "存储: 有未同步状态"
+#define UI_TEXT_STORAGE_SYNCED          "存储: 已同步"
+
+#define UI_TEXT_APP_FILE                "文件管理"
+#define UI_TEXT_APP_DRAW                "画图"
+#define UI_TEXT_APP_MUSIC               "音乐播放"
+#define UI_TEXT_APP_LOG                 "日志查看"
+#define UI_TEXT_APP_MONITOR             "系统监控"
+#define UI_TEXT_APP_SETTING             "系统设置"
+
+#define UI_TEXT_HINT_FILE               "列表/新建/保存"
+#define UI_TEXT_HINT_DRAW               "绘图/清空/打开"
+#define UI_TEXT_HINT_MUSIC              "旋律/音量/退出"
+#define UI_TEXT_HINT_LOG                "事件/错误记录"
+#define UI_TEXT_HINT_MONITOR            "任务/内存/状态"
+#define UI_TEXT_HINT_SETTING            "亮度/音量/熄屏"
+
+#define UI_TEXT_BACK_MUSIC_STOP         "退出音乐应用并停止播放"
+
+#define UI_TEXT_FILE_NEW                "新建"
+#define UI_TEXT_FILE_DELETE             "删除"
+#define UI_TEXT_FILE_SAVE               "保存"
+#define UI_TEXT_FILE_OPEN               "打开"
+#define UI_TEXT_FILE_EMPTY              "暂无文件"
+#define UI_TEXT_FILE_NONE               "未选择文件"
+#define UI_TEXT_FILE_DETAIL_FMT         "名称:%s\n类型:%s  大小:%luB\n位置:0x%08lX  状态:正常\n内容:%s"
+#define UI_TEXT_FILE_TABLE_FULL         "文件新建失败: 表已满"
+#define UI_TEXT_FILE_NAME_DUP           "文件新建失败: 重名"
+#define UI_TEXT_FILE_CREATED            "新建文件"
+#define UI_TEXT_FILE_DELETED            "删除文件"
+#define UI_TEXT_FILE_SAVED              "保存文件"
+#define UI_TEXT_FILE_OPENED             "打开文件"
+
+#define UI_TEXT_DRAW_TIP                "鼠标/触摸拖动画图"
+#define UI_TEXT_DRAW_CLEAR              "清空"
+#define UI_TEXT_DRAW_SAVE               "保存"
+#define UI_TEXT_DRAW_OPEN               "打开"
+#define UI_TEXT_DRAW_FORMAT             "保存格式: 1bit 画布快照"
+#define UI_TEXT_DRAW_CLEARED            "画布已清空"
+#define UI_TEXT_DRAW_SAVED              "绘图已保存"
+#define UI_TEXT_DRAW_OPENED             "已打开保存内容"
+#define UI_TEXT_DRAW_LOG_CLEAR          "清空画布"
+#define UI_TEXT_DRAW_LOG_SAVE           "保存绘图"
+#define UI_TEXT_DRAW_LOG_OPEN           "打开绘图"
+
+#define UI_TEXT_MUSIC_TRACK             "曲目: 简单旋律 A"
+#define UI_TEXT_MUSIC_STATUS_FMT        "状态:%s  音量:%u%%"
+#define UI_TEXT_MUSIC_PLAYING           "播放中"
+#define UI_TEXT_MUSIC_STOPPED           "已停止"
+#define UI_TEXT_MUSIC_PLAY              "播放"
+#define UI_TEXT_MUSIC_STOP              "停止"
+#define UI_TEXT_MUSIC_EXIT_TIP          "退出应用会停止播放状态"
+#define UI_TEXT_MUSIC_LOG_PLAY          "音乐播放"
+#define UI_TEXT_MUSIC_LOG_STOP          "音乐停止"
+
+#define UI_TEXT_LOG_CLEAR               "清空日志"
+
+#define UI_TEXT_MONITOR_FMT             "运行时间:%lus\n系统状态:%s\n输入事件:%lu\n丢弃事件:%lu\n错误事件:%lu\n任务数量:%lu\n当前栈水位:%lu\nRTOS剩余堆:%luB\nLVGL空闲:%u%%"
+#define UI_TEXT_STATUS_MUSIC            "音乐播放"
+#define UI_TEXT_STATUS_NORMAL           "正常"
+
+#define UI_TEXT_SETTING_SENSITIVITY     "灵敏度"
+#define UI_TEXT_SETTING_CURSOR_SIZE     "光标大小"
+#define UI_TEXT_SETTING_BRIGHTNESS      "亮度"
+#define UI_TEXT_SETTING_VOLUME          "音量"
+#define UI_TEXT_SETTING_TIMEOUT         "熄屏秒"
+#define UI_TEXT_SETTING_TIP             "设置变化立即生效并保存"
+#define UI_TEXT_SETTING_CHANGED         "修改设置"
+
+#define UI_TEXT_SYSTEM_START            "系统启动"
+
+#endif

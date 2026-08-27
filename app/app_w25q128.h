@@ -47,6 +47,10 @@ extern "C" {
 #define APP_W25Q128_RESOURCE_SIZE       0x0B0000U
 #define APP_W25Q128_RESOURCE_END        (APP_W25Q128_RESOURCE_START + APP_W25Q128_RESOURCE_SIZE)
 
+#define APP_W25Q128_FONT16_HEADER_ADDR  APP_W25Q128_RESOURCE_START
+#define APP_W25Q128_FONT16_DATA_ADDR    (APP_W25Q128_FONT16_HEADER_ADDR + W25Q128_SECTOR_SIZE)
+#define APP_W25Q128_FONT16_MAX_SIZE     0x020000U
+
 #define APP_W25Q128_FILE_DATA_START     0x100000U
 #define APP_W25Q128_FILE_DATA_SIZE      0xE00000U
 #define APP_W25Q128_FILE_DATA_END       (APP_W25Q128_FILE_DATA_START + APP_W25Q128_FILE_DATA_SIZE)
@@ -59,6 +63,11 @@ extern "C" {
 
 #define APP_W25Q128_RECORD_MAGIC        0x425A5731U
 #define APP_W25Q128_RECORD_VERSION      1U
+#define APP_W25Q128_FONT_MAGIC          0x46545731U
+#define APP_W25Q128_FONT_VERSION        1U
+
+//临时烧录字库，1烧/0不烧
+#define APP_W25Q128_FONT_PROGRAMMER_ENABLE 0U
 
 typedef struct
 {
@@ -69,6 +78,17 @@ typedef struct
     uint32_t page_size;
 } app_w25q128_info_t;
 
+typedef struct
+{
+    uint32_t magic;
+    uint16_t version;
+    uint16_t header_size;
+    uint32_t data_addr;
+    uint32_t data_size;
+    uint32_t data_crc32;
+    char name[32];
+} app_w25q128_font_header_t;
+
 bsp_w25q128_status_t app_w25q128_init(void);
 bool app_w25q128_is_ready(void);
 const app_w25q128_info_t *app_w25q128_get_info(void);
@@ -78,6 +98,9 @@ bsp_w25q128_status_t app_w25q128_write(uint32_t addr, const void *data, size_t l
 bsp_w25q128_status_t app_w25q128_erase_sector(uint32_t addr);
 
 bsp_w25q128_status_t app_w25q128_self_test(void);
+bsp_w25q128_status_t app_w25q128_program_ui_font_image(void);
+bsp_w25q128_status_t app_w25q128_verify_ui_font_image(void);
+bsp_w25q128_status_t app_w25q128_get_last_font_program_status(void);
 
 #ifdef __cplusplus
 }
