@@ -93,6 +93,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_SPI1_Init();
+  MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
   
   /* USER CODE END 2 */
@@ -183,7 +184,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE END Callback 0 */
   if (htim->Instance == TIM11) {
     HAL_IncTick();
-    lv_tick_inc(1);
   }
   /* USER CODE BEGIN Callback 1 */
 

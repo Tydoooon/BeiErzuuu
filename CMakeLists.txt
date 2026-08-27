@@ -52,8 +52,10 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     app/app_led.c
     app/app_lcd.c
     app/app_mouse.c
+    app/app_w25q128.c
     bsp/bsp_led.c
     bsp/bsp_lcd.c
+    bsp/bsp_w25q128.c
     dev/dev_head.h
     dev/dev_lcd.c
     dev/dev_led.c

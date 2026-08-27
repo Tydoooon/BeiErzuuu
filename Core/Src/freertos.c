@@ -30,6 +30,7 @@
 #include "app_lvgl.h"
 #include "app_mouse.h"
 #include "app_ui.h"
+#include "app_w25q128.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -52,6 +53,7 @@
 osThreadId_t startTaskHandle;
 osThreadId_t keyTaskHandle;
 osThreadId_t lcdTaskHandle;
+osThreadId_t w25q128TaskHandle;
 const osThreadAttr_t startTask_attributes = {
   .name = "startTask",
   .stack_size = 128 * 4,
@@ -65,6 +67,11 @@ const osThreadAttr_t keyTask_attributes = {
 const osThreadAttr_t lcdTask_attributes = {
   .name = "lcdTask",
   .stack_size = 4096,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+const osThreadAttr_t w25q128Task_attributes = {
+  .name = "w25q128Task",
+  .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* USER CODE END Variables */
@@ -81,6 +88,7 @@ const osThreadAttr_t defaultTask_attributes = {
 void StartStartTask(void *argument);
 void StartKeyTask(void *argument);
 void StartLCDTask(void *argument);
+void StartW25Q128Task(void *argument);
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
@@ -157,6 +165,7 @@ void StartStartTask(void *argument)
   (void)argument;
   keyTaskHandle = osThreadNew(StartKeyTask, NULL, &keyTask_attributes);
   lcdTaskHandle = osThreadNew(StartLCDTask, NULL, &lcdTask_attributes);
+  w25q128TaskHandle = osThreadNew(StartW25Q128Task, NULL, &w25q128Task_attributes);
   
   osThreadExit();
 }
@@ -186,6 +195,20 @@ void StartLCDTask(void *argument)
     lv_timer_handler();
     osDelay(5);
   }
+}
+void StartW25Q128Task(void *argument)
+{
+  (void)argument;
+  bsp_w25q128_status_t ret;
+
+  ret = app_w25q128_init();
+  if(ret == BSP_W25Q128_OK) {
+    
+  } else {
+    
+  }
+
+  osThreadExit();
 }
 /* USER CODE END Application */
 
