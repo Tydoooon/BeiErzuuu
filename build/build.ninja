@@ -89,7 +89,7 @@ build CMakeFiles/BeiErZu.dir/app/app_w25q128.c.obj: C_COMPILER__BeiErZu_unscanne
   OBJECT_FILE_DIR = CMakeFiles\BeiErZu.dir\app
   TARGET_SUPPORT_DIR = CMakeFiles\BeiErZu.dir
 
-build CMakeFiles/BeiErZu.dir/app/app_w25q128_font_image.S.obj: ASM_COMPILER__BeiErZu_unscanned_Debug E$:/code/nortos/BeiErZu/app/app_w25q128_font_image.S || cmake_object_order_depends_target_BeiErZu
+build CMakeFiles/BeiErZu.dir/app/app_w25q128_font_image.S.obj: ASM_COMPILER__BeiErZu_unscanned_Debug E$:/code/nortos/BeiErZu/app/app_w25q128_font_image.S | E$:/code/nortos/BeiErZu/tools/ui_font_w25q128.img || cmake_object_order_depends_target_BeiErZu
   CONFIG = Debug
   DEFINES = -DDEBUG -DSTM32F407xx -DUI_FONT_W25Q128_IMG_PATH=\"E:/code/nortos/BeiErZu/tools/ui_font_w25q128.img\" -DUSE_HAL_DRIVER
   DEP_FILE = CMakeFiles\BeiErZu.dir\app\app_w25q128_font_image.S.obj.d

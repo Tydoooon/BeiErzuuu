@@ -782,7 +782,7 @@ Discarded input sections
  .data          0x00000000        0x0 CMakeFiles/BeiErZu.dir/app/app_w25q128_font_image.S.obj
  .bss           0x00000000        0x0 CMakeFiles/BeiErZu.dir/app/app_w25q128_font_image.S.obj
  .rodata.ui_font_w25q128_img
-                0x00000000     0x4a64 CMakeFiles/BeiErZu.dir/app/app_w25q128_font_image.S.obj
+                0x00000000     0x6c84 CMakeFiles/BeiErZu.dir/app/app_w25q128_font_image.S.obj
  .ARM.attributes
                 0x00000000       0x20 CMakeFiles/BeiErZu.dir/app/app_w25q128_font_image.S.obj
  .group         0x00000000        0xc CMakeFiles/BeiErZu.dir/app/app_ui_font.c.obj

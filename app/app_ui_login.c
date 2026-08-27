@@ -68,24 +68,25 @@ void ui_create_login(void)
     lv_label_set_text(title, UI_TEXT_LOGIN_TITLE);
     lv_obj_set_style_text_font(title, UI_FONT, 0);
     lv_obj_set_style_text_color(title, lv_color_hex(0x1F6FD0), 0);
-    lv_obj_align(title, LV_ALIGN_TOP_MID, 0, 12);
+    lv_obj_align(title, LV_ALIGN_TOP_MID, 0, 8);
+
+    g_login_hint = lv_label_create(panel);
+    lv_label_set_text(g_login_hint, UI_TEXT_LOGIN_HINT);
+    lv_obj_set_style_text_font(g_login_hint, UI_FONT, 0);
+    lv_obj_set_style_text_color(g_login_hint, lv_color_hex(0x6B7280), 0);
+    lv_obj_align(g_login_hint, LV_ALIGN_TOP_MID, 0, 30);
 
     g_password_ta = lv_textarea_create(panel);
     lv_obj_set_size(g_password_ta, 164, 36);
-    lv_obj_align(g_password_ta, LV_ALIGN_TOP_MID, 0, 44);
+    lv_obj_align(g_password_ta, LV_ALIGN_TOP_MID, 0, 50);
     lv_textarea_set_one_line(g_password_ta, true);
     lv_textarea_set_password_mode(g_password_ta, true);
     lv_textarea_set_max_length(g_password_ta, 8);
     lv_textarea_set_accepted_chars(g_password_ta, "0123456789");
     lv_obj_set_style_text_font(g_password_ta, UI_FONT, 0);
 
-    g_login_hint = lv_label_create(panel);
-    lv_label_set_text(g_login_hint, UI_TEXT_LOGIN_HINT);
-    lv_obj_set_style_text_font(g_login_hint, UI_FONT, 0);
-    lv_obj_set_style_text_color(g_login_hint, lv_color_hex(0x6B7280), 0);
-    lv_obj_align(g_login_hint, LV_ALIGN_TOP_MID, 0, 86);
-
-    ui_button(panel, UI_TEXT_LOGIN_BUTTON, 68, 108, 80, 34, login_button_event_cb, NULL);
+    //“登录”按钮位置
+    ui_button(panel, UI_TEXT_LOGIN_BUTTON, 52, 92, 80, 34, login_button_event_cb, NULL);
 
     lv_obj_t *keypad = lv_btnmatrix_create(panel);
     lv_btnmatrix_set_map(keypad, key_map);

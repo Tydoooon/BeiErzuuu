@@ -266,6 +266,10 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
     UI_FONT_W25Q128_IMG_PATH="${CMAKE_SOURCE_DIR}/tools/ui_font_w25q128.img"
 )
 
+set_source_files_properties(app/app_w25q128_font_image.S PROPERTIES
+    OBJECT_DEPENDS "${CMAKE_SOURCE_DIR}/tools/ui_font_w25q128.img"
+)
+
 # Add linked libraries
 target_link_libraries(${CMAKE_PROJECT_NAME}
     stm32cubemx

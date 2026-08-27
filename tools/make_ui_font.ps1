@@ -3,6 +3,7 @@ param(
     [string]$Font,
 
     [string]$Chars = "tools/ui_font_chars.txt",
+    [string[]]$Scan = @("app/app_ui_text.h"),
     [string]$Out = "tools/ui_font_16.bin",
     [string]$ImageOut = "tools/ui_font_w25q128.img",
     [int]$Size = 16,
@@ -69,6 +70,11 @@ if ($imageDir -and -not (Test-Path -LiteralPath $imageDir)) {
 }
 
 $charsText = Get-Content -LiteralPath $Chars -Raw -Encoding UTF8
+foreach ($scanPath in $Scan) {
+    if (Test-Path -LiteralPath $scanPath) {
+        $charsText += Get-Content -LiteralPath $scanPath -Raw -Encoding UTF8
+    }
+}
 $charsText = $charsText -replace "\s", ""
 if ([string]::IsNullOrWhiteSpace($charsText)) {
     throw "Character list is empty."
