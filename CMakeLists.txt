@@ -49,6 +49,7 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
     Core/Src
+    app/app_backlight.c
     app/app_led.c
     app/app_lcd.c
     app/app_mouse.c

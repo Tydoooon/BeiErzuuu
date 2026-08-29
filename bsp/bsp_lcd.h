@@ -78,8 +78,6 @@ static inline void lcd_delay_ms(uint32_t ms)
 #define GRAY1 0x8410
 #define GRAY2 0x4208
 
-#define LCD_LED_PORT TFT_BL_GPIO_Port
-#define LCD_LED TFT_BL_Pin
 #define LCD_RS_PORT TFT_DC_GPIO_Port
 #define LCD_RS TFT_DC_Pin
 #define LCD_CS_PORT TFT_CS_GPIO_Port
@@ -90,12 +88,12 @@ static inline void lcd_delay_ms(uint32_t ms)
 #define LCD_CS_SET HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS, GPIO_PIN_SET)
 #define LCD_RS_SET HAL_GPIO_WritePin(LCD_RS_PORT, LCD_RS, GPIO_PIN_SET)
 #define LCD_RST_SET HAL_GPIO_WritePin(LCD_RST_PORT, LCD_RST, GPIO_PIN_SET)
-#define LCD_LED_SET HAL_GPIO_WritePin(LCD_LED_PORT, LCD_LED, GPIO_PIN_SET)
+#define LCD_LED_SET do { } while (0)
 
 #define LCD_CS_CLR HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS, GPIO_PIN_RESET)
 #define LCD_RS_CLR HAL_GPIO_WritePin(LCD_RS_PORT, LCD_RS, GPIO_PIN_RESET)
 #define LCD_RST_CLR HAL_GPIO_WritePin(LCD_RST_PORT, LCD_RST, GPIO_PIN_RESET)
-#define LCD_LED_CLR HAL_GPIO_WritePin(LCD_LED_PORT, LCD_LED, GPIO_PIN_RESET)
+#define LCD_LED_CLR do { } while (0)
 
 typedef struct
 {

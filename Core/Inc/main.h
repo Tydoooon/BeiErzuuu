@@ -57,8 +57,6 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define TFT_BL_Pin GPIO_PIN_0
-#define TFT_BL_GPIO_Port GPIOA
 #define TFT_CS_Pin GPIO_PIN_3
 #define TFT_CS_GPIO_Port GPIOA
 #define TFT_RES_Pin GPIO_PIN_0

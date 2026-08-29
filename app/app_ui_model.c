@@ -1,5 +1,7 @@
 #include "app_ui_internal.h"
 
+#include "app_backlight.h"
+
 #include <stddef.h>
 
 #define UI_STORAGE_MAGIC               0x31495355U
@@ -373,6 +375,5 @@ void ui_apply_brightness(void)
         g_settings.screen_brightness = 80U;
     }
 
-    HAL_GPIO_WritePin(TFT_BL_GPIO_Port, TFT_BL_Pin,
-                      g_settings.screen_brightness == 0 ? GPIO_PIN_RESET : GPIO_PIN_SET);
+    app_backlight_set_percent(g_settings.screen_brightness);
 }

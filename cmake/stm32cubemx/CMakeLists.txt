@@ -32,6 +32,7 @@ target_sources(stm32cubemx INTERFACE
     ../../Core/Src/gpio.c
     ../../Core/Src/freertos.c
     ../../Core/Src/spi.c
+    ../../Core/Src/tim.c
     ../../Core/Src/stm32f4xx_it.c
     ../../Core/Src/stm32f4xx_hal_msp.c
     ../../Core/Src/stm32f4xx_hal_timebase_tim.c

@@ -159,6 +159,7 @@ void StartDefaultTask(void *argument)
 {
   (void)argument;
 
+  /* USER CODE BEGIN StartDefaultTask */
   /* Infinite loop */
   for(;;)
   {
