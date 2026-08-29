@@ -23,6 +23,7 @@ void ui_create_log_app(void)
     ui_refresh_logs(list);
 
     ui_button(scr, UI_TEXT_LOG_CLEAR, 70, 266, 100, 34, log_clear_event_cb, NULL);
+    ui_label(scr, "K4 Exit", 94, 304);
     ui_load_screen(scr);
 }
 

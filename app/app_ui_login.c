@@ -44,7 +44,7 @@ static void login_keypad_event_cb(lv_event_t *e)
 
 void ui_create_login(void)
 {
-    static const char *key_map[] = {
+    static const char * const key_map[] = {
         "1", "2", "3", "\n",
         "4", "5", "6", "\n",
         "7", "8", "9", "\n",
@@ -89,7 +89,7 @@ void ui_create_login(void)
     ui_button(panel, UI_TEXT_LOGIN_BUTTON, 52, 92, 80, 34, login_button_event_cb, NULL);
 
     lv_obj_t *keypad = lv_btnmatrix_create(panel);
-    lv_btnmatrix_set_map(keypad, key_map);
+    lv_btnmatrix_set_map(keypad, (const char **)key_map);
     lv_obj_set_size(keypad, 184, 124);
     lv_obj_align(keypad, LV_ALIGN_BOTTOM_MID, 0, -10);
     lv_obj_set_style_text_font(keypad, UI_FONT, LV_PART_ITEMS);

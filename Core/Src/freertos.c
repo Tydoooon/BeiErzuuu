@@ -54,6 +54,7 @@ osThreadId_t startTaskHandle;
 osThreadId_t keyTaskHandle;
 osThreadId_t lcdTaskHandle;
 osThreadId_t w25q128TaskHandle;
+osThreadId_t usbinitTaskHandle;
 const osThreadAttr_t startTask_attributes = {
   .name = "startTask",
 #if APP_W25Q128_FONT_PROGRAMMER_ENABLE
@@ -78,6 +79,11 @@ const osThreadAttr_t w25q128Task_attributes = {
   .stack_size = 1024,
   .priority = (osPriority_t) osPriorityNormal,
 };
+const osThreadAttr_t usbinitTask_attributes = {
+  .name = "usbinitTask",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -93,6 +99,7 @@ void StartStartTask(void *argument);
 void StartKeyTask(void *argument);
 void StartLCDTask(void *argument);
 void StartW25Q128Task(void *argument);
+void StartUSBInitTask(void *argument);
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
@@ -150,10 +157,8 @@ void MX_FREERTOS_Init(void) {
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void *argument)
 {
-  /* init code for USB_HOST */
-  MX_USB_HOST_Init();
-  /* USER CODE BEGIN StartDefaultTask */
   (void)argument;
+
   /* Infinite loop */
   for(;;)
   {
@@ -173,6 +178,7 @@ void StartStartTask(void *argument)
   keyTaskHandle = osThreadNew(StartKeyTask, NULL, &keyTask_attributes);
   lcdTaskHandle = osThreadNew(StartLCDTask, NULL, &lcdTask_attributes);
   w25q128TaskHandle = osThreadNew(StartW25Q128Task, NULL, &w25q128Task_attributes);
+  usbinitTaskHandle = osThreadNew(StartUSBInitTask, NULL, &usbinitTask_attributes);
   
   osThreadExit();
 }
@@ -180,7 +186,8 @@ void StartStartTask(void *argument)
 void StartKeyTask(void *argument)
 {
   (void)argument;
-  
+  g_key_queue = KeyQueueInit();
+
   for(;;)
   {
     key_scan();
@@ -190,14 +197,22 @@ void StartKeyTask(void *argument)
 
 void StartLCDTask(void *argument)
 {
+  uint8_t key_id;
   (void)argument;
   lv_init();
   lv_port_disp_init();
   app_ui_create();
+  lv_timer_handler();
+  osDelay(10);
   app_mouse_init();
 
   for(;;)
   {
+    while (g_key_queue != NULL && xQueueReceive(g_key_queue, &key_id, 0) == pdPASS)
+    {
+      app_ui_key_push(key_id);
+    }
+
     app_ui_process_keys();
     lv_timer_handler();
     osDelay(5);
@@ -210,11 +225,20 @@ void StartW25Q128Task(void *argument)
 
   ret = app_w25q128_init();
   if(ret == BSP_W25Q128_OK) {
-    
+    while(!app_ui_is_created()) {
+      osDelay(10);
+    }
+    app_ui_load_w25q128_resources();
   } else {
     
   }
 
+  osThreadExit();
+}
+void StartUSBInitTask(void *argument)
+{
+  (void)argument;
+  MX_USB_HOST_Init();
   osThreadExit();
 }
 /* USER CODE END Application */

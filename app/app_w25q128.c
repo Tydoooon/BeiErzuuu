@@ -1,8 +1,13 @@
 #include "app_w25q128.h"
 
+#include "FreeRTOS.h"
+#include "semphr.h"
+#include "task.h"
+
 #include <string.h>
 
 #define APP_W25Q128_PROGRAM_CHUNK_SIZE 256U
+#define APP_W25Q128_LOCK_TIMEOUT_MS    1000U
 
 #if APP_W25Q128_FONT_PROGRAMMER_ENABLE
 extern const uint8_t g_ui_font_w25q128_img[];
@@ -17,6 +22,12 @@ static app_w25q128_info_t g_w25q128_info = {
     .page_size = W25Q128_PAGE_SIZE,
 };
 static bsp_w25q128_status_t g_last_font_program_status = BSP_W25Q128_NOT_FOUND;
+static StaticSemaphore_t g_w25q128_mutex_buf;
+static SemaphoreHandle_t g_w25q128_mutex;
+
+static SemaphoreHandle_t app_w25q128_get_mutex(void);
+static bool app_w25q128_lock(void);
+static void app_w25q128_unlock(void);
 
 bsp_w25q128_status_t app_w25q128_init(void)
 {
@@ -26,11 +37,19 @@ bsp_w25q128_status_t app_w25q128_init(void)
     if (g_w25q128_info.ready) {
         return BSP_W25Q128_OK;
     }
+    if (!app_w25q128_lock()) {
+        return BSP_W25Q128_TIMEOUT;
+    }
+    if (g_w25q128_info.ready) {
+        app_w25q128_unlock();
+        return BSP_W25Q128_OK;
+    }
 
     ret = BSP_W25Q128_Init();
     if (ret != BSP_W25Q128_OK) {
         g_w25q128_info.ready = false;
         g_w25q128_info.jedec_id = 0;
+        app_w25q128_unlock();
         return ret;
     }
 
@@ -38,11 +57,13 @@ bsp_w25q128_status_t app_w25q128_init(void)
     if (ret != BSP_W25Q128_OK) {
         g_w25q128_info.ready = false;
         g_w25q128_info.jedec_id = 0;
+        app_w25q128_unlock();
         return ret;
     }
 
     g_w25q128_info.ready = true;
     g_w25q128_info.jedec_id = id;
+    app_w25q128_unlock();
     return BSP_W25Q128_OK;
 }
 
@@ -58,29 +79,50 @@ const app_w25q128_info_t *app_w25q128_get_info(void)
 
 bsp_w25q128_status_t app_w25q128_read(uint32_t addr, void *data, size_t len)
 {
+    bsp_w25q128_status_t ret;
+
     if (!g_w25q128_info.ready) {
         return BSP_W25Q128_NOT_FOUND;
     }
 
-    return BSP_W25Q128_Read(addr, (uint8_t *)data, len);
+    if (!app_w25q128_lock()) {
+        return BSP_W25Q128_TIMEOUT;
+    }
+    ret = BSP_W25Q128_Read(addr, (uint8_t *)data, len);
+    app_w25q128_unlock();
+    return ret;
 }
 
 bsp_w25q128_status_t app_w25q128_write(uint32_t addr, const void *data, size_t len)
 {
+    bsp_w25q128_status_t ret;
+
     if (!g_w25q128_info.ready) {
         return BSP_W25Q128_NOT_FOUND;
     }
 
-    return BSP_W25Q128_Write(addr, (const uint8_t *)data, len);
+    if (!app_w25q128_lock()) {
+        return BSP_W25Q128_TIMEOUT;
+    }
+    ret = BSP_W25Q128_Write(addr, (const uint8_t *)data, len);
+    app_w25q128_unlock();
+    return ret;
 }
 
 bsp_w25q128_status_t app_w25q128_erase_sector(uint32_t addr)
 {
+    bsp_w25q128_status_t ret;
+
     if (!g_w25q128_info.ready) {
         return BSP_W25Q128_NOT_FOUND;
     }
 
-    return BSP_W25Q128_EraseSector(addr);
+    if (!app_w25q128_lock()) {
+        return BSP_W25Q128_TIMEOUT;
+    }
+    ret = BSP_W25Q128_EraseSector(addr);
+    app_w25q128_unlock();
+    return ret;
 }
 
 bsp_w25q128_status_t app_w25q128_self_test(void)
@@ -242,4 +284,41 @@ bsp_w25q128_status_t app_w25q128_verify_ui_font_image(void)
 bsp_w25q128_status_t app_w25q128_get_last_font_program_status(void)
 {
     return g_last_font_program_status;
+}
+
+static SemaphoreHandle_t app_w25q128_get_mutex(void)
+{
+    if (g_w25q128_mutex == NULL) {
+        taskENTER_CRITICAL();
+        if (g_w25q128_mutex == NULL) {
+            g_w25q128_mutex = xSemaphoreCreateMutexStatic(&g_w25q128_mutex_buf);
+        }
+        taskEXIT_CRITICAL();
+    }
+
+    return g_w25q128_mutex;
+}
+
+static bool app_w25q128_lock(void)
+{
+    SemaphoreHandle_t mutex = app_w25q128_get_mutex();
+
+    if (mutex == NULL) {
+        return false;
+    }
+    if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED) {
+        return true;
+    }
+
+    return xSemaphoreTake(mutex, pdMS_TO_TICKS(APP_W25Q128_LOCK_TIMEOUT_MS)) == pdTRUE;
+}
+
+static void app_w25q128_unlock(void)
+{
+    if (g_w25q128_mutex == NULL ||
+        xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED) {
+        return;
+    }
+
+    (void)xSemaphoreGive(g_w25q128_mutex);
 }

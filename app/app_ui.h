@@ -5,12 +5,15 @@
 extern "C" {
 #endif
 
+#include <stdbool.h>
 #include <stdint.h>
 
 /**
  * @brief 创建 LVGL 应用界面，从登录界面开始运行。
  */
 void app_ui_create(void);
+bool app_ui_is_created(void);
+void app_ui_load_w25q128_resources(void);
 
 /**
  * @brief 获取当前系统音量，音乐播放输出可按该值缩放。

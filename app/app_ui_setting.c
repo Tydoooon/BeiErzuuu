@@ -44,10 +44,11 @@ void ui_create_setting_app(void)
 
     ui_setting_row(scr, UI_TEXT_SETTING_SENSITIVITY, 0, 1, 100, g_settings.cursor_sensitivity, 58);
     ui_setting_row(scr, UI_TEXT_SETTING_CURSOR_SIZE, 1, 4, 32, g_settings.cursor_size, 96);
-    ui_setting_row(scr, UI_TEXT_SETTING_BRIGHTNESS, 2, 0, 100, g_settings.screen_brightness, 134);
+    ui_setting_row(scr, UI_TEXT_SETTING_BRIGHTNESS, 2, 1, 100, g_settings.screen_brightness, 134);
     ui_setting_row(scr, UI_TEXT_SETTING_VOLUME, 3, 0, 100, g_settings.system_volume, 172);
     ui_setting_row(scr, UI_TEXT_SETTING_TIMEOUT, 4, 10, 300, g_settings.screen_timeout_s, 210);
-    ui_label(scr, UI_TEXT_SETTING_TIP, 30, 266);
+    ui_label(scr, UI_TEXT_SETTING_TIP, 30, 260);
+    ui_label(scr, "K4 Exit", 94, 292);
 
     ui_load_screen(scr);
 }

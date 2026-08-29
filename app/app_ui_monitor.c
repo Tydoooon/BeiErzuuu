@@ -14,6 +14,7 @@ void ui_create_monitor_app(void)
 
     g_monitor_label = ui_label(scr, "", 14, 52);
     lv_obj_set_width(g_monitor_label, 212);
+    ui_label(scr, "K4 Exit", 94, 286);
     ui_monitor_refresh();
     ui_load_screen(scr);
 

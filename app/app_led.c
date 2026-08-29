@@ -1,11 +1,12 @@
 #include "app_led.h"
-#include "app_ui.h"
 
-extern uint8_t lcd_num;
+QueueHandle_t g_key_queue = NULL;
 uint8_t B1 = 0,B2 = 0,B3 = 0,B4 = 0,B5 = 0;
 uint8_t B1_last = 1,B2_last = 1,B3_last = 1,B4_last = 1,B5_last = 1;
 void key_scan(void)
 {
+    uint8_t key_id = 0;
+
     B1 = HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_7);
     B2 = HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_8);
     B3 = HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_9);
@@ -14,29 +15,31 @@ void key_scan(void)
 
     if(B1 == 0 && B1_last == 1)
     {
-        app_ui_key_push(1);
+        key_id = 1;
         LED1_ON();
         LED3_ON();
     }
-    if(B2 == 0 && B2_last == 1)
+    else if(B2 == 0 && B2_last == 1)
     {
-        app_ui_key_push(2);
+        key_id = 2;
         LED1_OFF();
         LED3_OFF();
     }
-    if(B3 == 0 && B3_last == 1)
+    else if(B3 == 0 && B3_last == 1)
     {
-        app_ui_key_push(3);
-        lcd_num ++;
+        key_id = 3;
     }
-    if(B4 == 0 && B4_last == 1)
+    else if(B4 == 0 && B4_last == 1)
     {
-        app_ui_key_push(4);
-        lcd_num --;
+        key_id = 4;
     }
-    if(B5 == 0 && B5_last == 1)
+    else if(B5 == 0 && B5_last == 1)
     {
-        app_ui_key_push(5);
+        key_id = 5;
+    }
+
+    if (key_id != 0 && g_key_queue != NULL) {
+        xQueueSend(g_key_queue, &key_id, 0);
     }
 
     B1_last = B1;
@@ -44,4 +47,11 @@ void key_scan(void)
     B3_last = B3;
     B4_last = B4;
     B5_last = B5;
+}
+
+QueueHandle_t KeyQueueInit(void)
+{
+    QueueHandle_t KeyQueue;
+    KeyQueue = xQueueCreate(5,sizeof(uint8_t));
+    return KeyQueue;
 }

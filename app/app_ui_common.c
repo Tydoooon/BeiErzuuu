@@ -74,19 +74,19 @@ lv_obj_t *ui_create_app_frame(const char *title)
     lv_obj_t *scr = ui_create_screen();
 
     lv_obj_t *bar = lv_obj_create(scr);
-    lv_obj_set_size(bar, 240, 36);
+    lv_obj_set_size(bar, 240, 40);
     lv_obj_align(bar, LV_ALIGN_TOP_LEFT, 0, 0);
-    lv_obj_set_style_bg_color(bar, lv_color_hex(0x1F2937), 0);
+    lv_obj_set_style_bg_color(bar, lv_color_hex(0xEEF3F8), 0);
     lv_obj_set_style_border_width(bar, 0, 0);
     lv_obj_clear_flag(bar, LV_OBJ_FLAG_SCROLLABLE);
 
-    ui_button(bar, "<", 4, 4, 32, 28, back_event_cb, NULL);
+    ui_button(bar, "<", 8, 0, 40, 28, back_event_cb, NULL);
 
     lv_obj_t *label = lv_label_create(bar);
     lv_label_set_text(label, title);
     lv_obj_set_style_text_font(label, UI_FONT, 0);
-    lv_obj_set_style_text_color(label, lv_color_white(), 0);
-    lv_obj_align(label, LV_ALIGN_TOP_LEFT, 46, 9);
+    lv_obj_set_style_text_color(label, lv_color_hex(0x1F2937), 0);
+    lv_obj_align(label, LV_ALIGN_TOP_LEFT, 60, 7);
 
     return scr;
 }
