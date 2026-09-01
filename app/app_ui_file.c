@@ -6,6 +6,7 @@ static int ui_file_find(const char *name);
 static int ui_file_find_free_slot(void);
 static bool ui_file_name_has_ext(const char *name, const char *ext);
 static void ui_file_make_name(const char *input, const char *ext, char *out, size_t out_size);
+static bool ui_file_make_unique_name(const char *input, const char *ext, char *out, size_t out_size);
 static bool ui_create_file_named(const char *input);
 static void ui_create_file(void);
 static void ui_delete_file(void);
@@ -257,6 +258,70 @@ static void ui_file_make_name(const char *input, const char *ext, char *out, siz
     }
 }
 
+static bool ui_file_make_unique_name(const char *input, const char *ext, char *out, size_t out_size)
+{
+    char candidate[UI_FILE_NAME_LEN];
+    char stem[UI_FILE_NAME_LEN];
+    char ext_part[UI_FILE_NAME_LEN];
+    char suffix[8];
+    const char *dot;
+    size_t stem_len;
+    size_t ext_len;
+
+    if (out == NULL || out_size == 0U) return false;
+
+    ui_file_make_name(input, ext, candidate, sizeof(candidate));
+    if (ui_file_find(candidate) < 0) {
+        snprintf(out, out_size, "%s", candidate);
+        return true;
+    }
+
+    dot = strrchr(candidate, '.');
+    if (dot != NULL && dot != candidate) {
+        stem_len = (size_t)(dot - candidate);
+        snprintf(ext_part, sizeof(ext_part), "%s", dot);
+    } else {
+        stem_len = strlen(candidate);
+        ext_part[0] = '\0';
+    }
+
+    if (stem_len >= sizeof(stem)) {
+        stem_len = sizeof(stem) - 1U;
+    }
+    memcpy(stem, candidate, stem_len);
+    stem[stem_len] = '\0';
+
+    for (uint16_t index = 1U; index < 1000U; index++) {
+        size_t max_stem_len;
+        size_t copy_len;
+        size_t suffix_len;
+
+        snprintf(suffix, sizeof(suffix), "%u", (unsigned)index);
+        suffix_len = strlen(suffix);
+        ext_len = strlen(ext_part);
+        if ((suffix_len + ext_len + 1U) >= out_size) {
+            return false;
+        }
+
+        max_stem_len = out_size - suffix_len - ext_len - 1U;
+        copy_len = strlen(stem);
+        if (copy_len > max_stem_len) {
+            copy_len = max_stem_len;
+        }
+        memcpy(candidate, stem, copy_len);
+        memcpy(candidate + copy_len, suffix, suffix_len);
+        memcpy(candidate + copy_len + suffix_len, ext_part, ext_len);
+        candidate[copy_len + suffix_len + ext_len] = '\0';
+
+        if (ui_file_find(candidate) < 0) {
+            snprintf(out, out_size, "%s", candidate);
+            return true;
+        }
+    }
+
+    return false;
+}
+
 static bool ui_create_file_named(const char *input)
 {
     int slot = ui_file_find_free_slot();
@@ -268,8 +333,7 @@ static bool ui_create_file_named(const char *input)
         return false;
     }
 
-    ui_file_make_name(input, ".txt", name, sizeof(name));
-    if (ui_file_find(name) >= 0) {
+    if (!ui_file_make_unique_name(input, ".txt", name, sizeof(name))) {
         g_error_events++;
         ui_log(UI_TEXT_FILE_NAME_DUP);
         return false;
