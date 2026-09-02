@@ -6,7 +6,7 @@
 
 #define APP_BACKLIGHT_PWM_CHANNEL       TIM_CHANNEL_1
 #define APP_BACKLIGHT_ACTIVE_LOW        0U
-#define APP_BACKLIGHT_MIN_PERCENT       1U
+#define APP_BACKLIGHT_MIN_PERCENT       0U
 #define APP_BACKLIGHT_MAX_PERCENT       100U
 
 static bool g_backlight_pwm_started;
@@ -36,9 +36,6 @@ void app_backlight_set_percent(uint8_t percent)
 
 static uint8_t app_backlight_clamp_percent(uint8_t percent)
 {
-    if (percent < APP_BACKLIGHT_MIN_PERCENT) {
-        return APP_BACKLIGHT_MIN_PERCENT;
-    }
     if (percent > APP_BACKLIGHT_MAX_PERCENT) {
         return APP_BACKLIGHT_MAX_PERCENT;
     }

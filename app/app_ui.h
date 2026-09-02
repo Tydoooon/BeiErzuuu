@@ -14,12 +14,18 @@ extern "C" {
 void app_ui_create(void);
 bool app_ui_is_created(void);
 void app_ui_load_w25q128_resources(void);
+void app_ui_notify_activity(void);
+void app_ui_handle_idle(void);
+void app_ui_sleep_now(void);
+void app_ui_lock_screen(void);
 
 /**
  * @brief 获取当前系统音量，音乐播放输出可按该值缩放。
  * @return 音量百分比，范围 0~100。
  */
 uint8_t app_ui_get_system_volume(void);
+uint8_t app_ui_get_cursor_sensitivity(void);
+uint8_t app_ui_get_cursor_size(void);
 
 /**
  * @brief 从按键扫描任务投递一个 UI 按键事件。

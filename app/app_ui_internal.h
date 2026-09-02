@@ -115,10 +115,12 @@ lv_obj_t *ui_create_screen(void);
 lv_obj_t *ui_label(lv_obj_t *parent, const char *text, lv_coord_t x, lv_coord_t y);
 lv_obj_t *ui_button(lv_obj_t *parent, const char *text, lv_coord_t x, lv_coord_t y,
                     lv_coord_t w, lv_coord_t h, lv_event_cb_t cb, void *user_data);
+lv_obj_t *ui_add_sleep_button(lv_obj_t *parent, lv_coord_t x, lv_coord_t y);
 lv_obj_t *ui_create_app_frame(const char *title);
 void ui_open_app(ui_app_id_t app);
 
 void ui_login_submit(void);
+void ui_login_handle_key(uint8_t key_id);
 void ui_create_login(void);
 void ui_create_main(void);
 void ui_home_refresh_key_focus(void);

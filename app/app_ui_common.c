@@ -1,5 +1,12 @@
 #include "app_ui_internal.h"
 
+static void sleep_event_cb(lv_event_t *e)
+{
+    (void)e;
+    g_input_events++;
+    app_ui_sleep_now();
+}
+
 void ui_load_screen(lv_obj_t *scr)
 {
     lv_obj_t *old = lv_scr_act();
@@ -58,6 +65,11 @@ lv_obj_t *ui_button(lv_obj_t *parent, const char *text, lv_coord_t x, lv_coord_t
     return btn;
 }
 
+lv_obj_t *ui_add_sleep_button(lv_obj_t *parent, lv_coord_t x, lv_coord_t y)
+{
+    return ui_button(parent, UI_TEXT_SLEEP, x, y, 44, 28, sleep_event_cb, NULL);
+}
+
 static void back_event_cb(lv_event_t *e)
 {
     (void)e;
@@ -81,6 +93,7 @@ lv_obj_t *ui_create_app_frame(const char *title)
     lv_obj_clear_flag(bar, LV_OBJ_FLAG_SCROLLABLE);
 
     ui_button(bar, "<", 8, 0, 40, 28, back_event_cb, NULL);
+    ui_add_sleep_button(bar, 188, 0);
 
     lv_obj_t *label = lv_label_create(bar);
     lv_label_set_text(label, title);

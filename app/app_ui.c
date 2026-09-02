@@ -1,5 +1,9 @@
 #include "app_ui_internal.h"
 
+#include "app_backlight.h"
+
+static uint16_t app_ui_get_screen_timeout_s(void);
+
 lv_obj_t *g_password_ta;
 lv_obj_t *g_login_hint;
 lv_obj_t *g_file_list;
@@ -34,6 +38,8 @@ uint8_t g_home_selected;
 ui_app_id_t g_current_app = UI_APP_NONE;
 
 static volatile bool g_app_ui_created;
+static bool g_screen_sleeping;
+static uint32_t g_last_activity_tick;
 
 static void app_ui_process_key(uint8_t key_id);
 static void app_ui_process_home_key(uint8_t key_id);
@@ -43,6 +49,7 @@ void app_ui_create(void)
 {
     ui_model_init();
     ui_font_init();
+    app_ui_notify_activity();
     ui_create_login();
     g_app_ui_created = true;
 }
@@ -55,11 +62,69 @@ bool app_ui_is_created(void)
 void app_ui_load_w25q128_resources(void)
 {
     (void)ui_storage_load_persisted();
+    app_ui_notify_activity();
+}
+
+void app_ui_notify_activity(void)
+{
+    g_last_activity_tick = lv_tick_get();
+    if (g_screen_sleeping) {
+        g_screen_sleeping = false;
+        ui_apply_brightness();
+    }
+}
+
+void app_ui_handle_idle(void)
+{
+    uint32_t now = lv_tick_get();
+    uint32_t timeout_ms = (uint32_t)app_ui_get_screen_timeout_s() * 1000U;
+
+    if (g_screen_sleeping || timeout_ms == 0U) {
+        return;
+    }
+    if ((uint32_t)(now - g_last_activity_tick) < timeout_ms) {
+        return;
+    }
+
+    app_backlight_set_percent(0U);
+    g_screen_sleeping = true;
+}
+
+void app_ui_sleep_now(void)
+{
+    g_last_activity_tick = lv_tick_get();
+    app_backlight_set_percent(0U);
+    g_screen_sleeping = true;
+}
+
+void app_ui_lock_screen(void)
+{
+    g_home_active = false;
+    g_current_app = UI_APP_NONE;
+    ui_create_login();
 }
 
 uint8_t app_ui_get_system_volume(void)
 {
     return g_settings.system_volume;
+}
+
+uint8_t app_ui_get_cursor_sensitivity(void)
+{
+    if (g_settings.cursor_sensitivity < 1U || g_settings.cursor_sensitivity > 100U) {
+        return 50U;
+    }
+
+    return g_settings.cursor_sensitivity;
+}
+
+uint8_t app_ui_get_cursor_size(void)
+{
+    if (g_settings.cursor_size < 4U || g_settings.cursor_size > 32U) {
+        return 12U;
+    }
+
+    return g_settings.cursor_size;
 }
 
 void app_ui_key_push(uint8_t key_id)
@@ -82,6 +147,7 @@ void app_ui_process_keys(void)
     for (uint8_t key_id = 1U; key_id <= 5U; key_id++) {
         if ((keys & (uint8_t)(1U << (key_id - 1U))) == 0U) continue;
 
+        app_ui_notify_activity();
         app_ui_process_key(key_id);
     }
 }
@@ -105,16 +171,7 @@ void ui_open_app(ui_app_id_t app)
 static void app_ui_process_key(uint8_t key_id)
 {
     if (g_login_active && g_password_ta != NULL) {
-        g_input_events++;
-        if (key_id == 5U) {
-            ui_login_submit();
-        } else if (strlen(lv_textarea_get_text(g_password_ta)) < 8U) {
-            char digit[2] = { (char)('0' + key_id), '\0' };
-            lv_textarea_add_text(g_password_ta, digit);
-            lv_label_set_text(g_login_hint, UI_TEXT_KEY_HINT);
-        } else {
-            g_discarded_events++;
-        }
+        ui_login_handle_key(key_id);
         return;
     }
 
@@ -164,4 +221,13 @@ static void app_ui_process_current_app_key(uint8_t key_id)
     if (key_id == 4U) {
         ui_create_main();
     }
+}
+
+static uint16_t app_ui_get_screen_timeout_s(void)
+{
+    if (g_settings.screen_timeout_s < 10U || g_settings.screen_timeout_s > 300U) {
+        return 60U;
+    }
+
+    return g_settings.screen_timeout_s;
 }

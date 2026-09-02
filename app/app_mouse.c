@@ -1,5 +1,6 @@
 #include "app_mouse.h"
 
+#include "app_ui.h"
 #include "bsp_lcd.h"
 #include "FreeRTOS.h"
 #include "task.h"
@@ -14,16 +15,22 @@
 #define APP_MOUSE_INVERT_Y 0
 #define APP_MOUSE_FP_SHIFT 8
 #define APP_MOUSE_FP_SCALE (1 << APP_MOUSE_FP_SHIFT)
-#define APP_MOUSE_SPEED_X_FP  APP_MOUSE_FP_SCALE
-#define APP_MOUSE_SPEED_Y_FP  ((APP_MOUSE_FP_SCALE + 2) / 5)
+#define APP_MOUSE_DEFAULT_SENSITIVITY 50U
+#define APP_MOUSE_SPEED_Y_NUM 2
+#define APP_MOUSE_SPEED_Y_DEN 5
 #define APP_MOUSE_SWAP_XY  0
 #define APP_MOUSE_EVENT_QUEUE_LEN 16
-#define APP_MOUSE_CURSOR_W 14
-#define APP_MOUSE_CURSOR_H 20
+#define APP_MOUSE_CURSOR_SRC_W 14
+#define APP_MOUSE_CURSOR_SRC_H 20
+#define APP_MOUSE_CURSOR_MIN_SIZE 4U
+#define APP_MOUSE_CURSOR_MAX_SIZE 32U
 
 static lv_indev_t *g_mouse_indev;
 static lv_obj_t *g_mouse_cursor;
-static lv_color_t g_mouse_cursor_buf[APP_MOUSE_CURSOR_W * APP_MOUSE_CURSOR_H];
+static lv_color_t g_mouse_cursor_buf[APP_MOUSE_CURSOR_MAX_SIZE * APP_MOUSE_CURSOR_MAX_SIZE];
+static uint8_t g_mouse_cursor_w;
+static uint8_t g_mouse_cursor_h;
+static uint8_t g_mouse_cursor_size;
 static int16_t g_mouse_x;
 static int16_t g_mouse_y;
 static int32_t g_mouse_x_fp;
@@ -37,6 +44,10 @@ static QueueHandle_t g_mouse_event_queue = NULL;
 
 static int32_t clamp_coord_fp(int32_t value, int16_t max_value);
 static void create_cursor(void);
+static uint8_t get_cursor_size(void);
+static uint8_t cursor_width_from_size(uint8_t size);
+static int32_t scale_dx_fp(int32_t dx);
+static int32_t scale_dy_fp(int32_t dy);
 static void fill_cursor_buffer(void);
 static void enqueue_mouse_event(const mouse_event_t *evt);
 static void apply_mouse_report(void);
@@ -67,10 +78,32 @@ void app_mouse_init(void)
     create_cursor();
 }
 
+void app_mouse_apply_settings(void)
+{
+    uint8_t size = get_cursor_size();
+
+    if (g_mouse_cursor == NULL || size == g_mouse_cursor_size) {
+        return;
+    }
+
+    g_mouse_cursor_size = size;
+    g_mouse_cursor_h = size;
+    g_mouse_cursor_w = cursor_width_from_size(size);
+
+    lv_canvas_set_buffer(g_mouse_cursor, g_mouse_cursor_buf,
+                         g_mouse_cursor_w, g_mouse_cursor_h,
+                         LV_IMG_CF_TRUE_COLOR_CHROMA_KEYED);
+    lv_obj_set_size(g_mouse_cursor, g_mouse_cursor_w, g_mouse_cursor_h);
+    fill_cursor_buffer();
+    lv_obj_set_pos(g_mouse_cursor, g_mouse_x, g_mouse_y);
+    lv_obj_invalidate(g_mouse_cursor);
+}
+
 void app_mouse_read(lv_indev_drv_t *drv, lv_indev_data_t *data)
 {
     (void)drv;
 
+    app_mouse_apply_settings();
     apply_mouse_report();
 
     data->point.x = g_mouse_x;
@@ -152,6 +185,7 @@ static void apply_mouse_report(void)
     // taskEXIT_CRITICAL();
 
     if ((dx != 0) || (dy != 0) || (g_mouse_pressed != (pressed != 0U))) {
+        app_ui_notify_activity();
 
 #if APP_MOUSE_INVERT_X
         dx = -dx;
@@ -165,9 +199,9 @@ static void apply_mouse_report(void)
         dy = tmp;
 #endif
 
-        g_mouse_x_fp = clamp_coord_fp(g_mouse_x_fp + dx * APP_MOUSE_SPEED_X_FP,
+        g_mouse_x_fp = clamp_coord_fp(g_mouse_x_fp + scale_dx_fp(dx),
                                       (int16_t)lcddev.width);
-        g_mouse_y_fp = clamp_coord_fp(g_mouse_y_fp + dy * APP_MOUSE_SPEED_Y_FP,
+        g_mouse_y_fp = clamp_coord_fp(g_mouse_y_fp + scale_dy_fp(dy),
                                       (int16_t)lcddev.height);
         g_mouse_x = (int16_t)(g_mouse_x_fp >> APP_MOUSE_FP_SHIFT);
         g_mouse_y = (int16_t)(g_mouse_y_fp >> APP_MOUSE_FP_SHIFT);
@@ -178,6 +212,42 @@ static void apply_mouse_report(void)
             lv_obj_set_pos(g_mouse_cursor, g_mouse_x, g_mouse_y);
         }
     }
+}
+
+static uint8_t get_cursor_size(void)
+{
+    uint8_t size = app_ui_get_cursor_size();
+
+    if (size < APP_MOUSE_CURSOR_MIN_SIZE) {
+        return APP_MOUSE_CURSOR_MIN_SIZE;
+    }
+    if (size > APP_MOUSE_CURSOR_MAX_SIZE) {
+        return APP_MOUSE_CURSOR_MAX_SIZE;
+    }
+
+    return size;
+}
+
+static uint8_t cursor_width_from_size(uint8_t size)
+{
+    uint8_t width = (uint8_t)(((uint16_t)size * APP_MOUSE_CURSOR_SRC_W +
+                               APP_MOUSE_CURSOR_SRC_H / 2U) /
+                              APP_MOUSE_CURSOR_SRC_H);
+
+    return width < APP_MOUSE_CURSOR_MIN_SIZE ? APP_MOUSE_CURSOR_MIN_SIZE : width;
+}
+
+static int32_t scale_dx_fp(int32_t dx)
+{
+    uint8_t sensitivity = app_ui_get_cursor_sensitivity();
+
+    return (dx * (int32_t)sensitivity * APP_MOUSE_FP_SCALE) /
+           (int32_t)APP_MOUSE_DEFAULT_SENSITIVITY;
+}
+
+static int32_t scale_dy_fp(int32_t dy)
+{
+    return (scale_dx_fp(dy) * APP_MOUSE_SPEED_Y_NUM) / APP_MOUSE_SPEED_Y_DEN;
 }
 
 static int32_t clamp_coord_fp(int32_t value, int16_t max_value)
@@ -207,10 +277,15 @@ static void create_cursor(void)
         return;
     }
 
+    g_mouse_cursor_size = get_cursor_size();
+    g_mouse_cursor_h = g_mouse_cursor_size;
+    g_mouse_cursor_w = cursor_width_from_size(g_mouse_cursor_size);
+
     lv_obj_remove_style_all(g_mouse_cursor);
     lv_canvas_set_buffer(g_mouse_cursor, g_mouse_cursor_buf,
-                         APP_MOUSE_CURSOR_W, APP_MOUSE_CURSOR_H,
+                         g_mouse_cursor_w, g_mouse_cursor_h,
                          LV_IMG_CF_TRUE_COLOR_CHROMA_KEYED);
+    lv_obj_set_size(g_mouse_cursor, g_mouse_cursor_w, g_mouse_cursor_h);
     fill_cursor_buffer();
 
     lv_obj_clear_flag(g_mouse_cursor, LV_OBJ_FLAG_CLICKABLE);
@@ -221,7 +296,7 @@ static void create_cursor(void)
 
 static void fill_cursor_buffer(void)
 {
-    static const char * const shape[APP_MOUSE_CURSOR_H] = {
+    static const char * const shape[APP_MOUSE_CURSOR_SRC_H] = {
         "W.............",
         "WB............",
         "WBB...........",
@@ -247,15 +322,23 @@ static void fill_cursor_buffer(void)
     lv_color_t black = lv_color_black();
     lv_color_t white = lv_color_white();
 
-    for (uint8_t y = 0; y < APP_MOUSE_CURSOR_H; y++) {
-        for (uint8_t x = 0; x < APP_MOUSE_CURSOR_W; x++) {
-            char px = shape[y][x];
+    for (uint16_t i = 0U; i < (uint16_t)APP_MOUSE_CURSOR_MAX_SIZE * APP_MOUSE_CURSOR_MAX_SIZE; i++) {
+        g_mouse_cursor_buf[i] = transparent;
+    }
+
+    for (uint8_t y = 0; y < g_mouse_cursor_h; y++) {
+        uint8_t src_y = (uint8_t)(((uint16_t)y * APP_MOUSE_CURSOR_SRC_H) / g_mouse_cursor_h);
+
+        for (uint8_t x = 0; x < g_mouse_cursor_w; x++) {
+            uint8_t src_x = (uint8_t)(((uint16_t)x * APP_MOUSE_CURSOR_SRC_W) / g_mouse_cursor_w);
+            char px = shape[src_y][src_x];
+
             if (px == 'B') {
-                g_mouse_cursor_buf[(uint32_t)y * APP_MOUSE_CURSOR_W + x] = black;
+                g_mouse_cursor_buf[(uint32_t)y * g_mouse_cursor_w + x] = black;
             } else if (px == 'W') {
-                g_mouse_cursor_buf[(uint32_t)y * APP_MOUSE_CURSOR_W + x] = white;
+                g_mouse_cursor_buf[(uint32_t)y * g_mouse_cursor_w + x] = white;
             } else {
-                g_mouse_cursor_buf[(uint32_t)y * APP_MOUSE_CURSOR_W + x] = transparent;
+                g_mouse_cursor_buf[(uint32_t)y * g_mouse_cursor_w + x] = transparent;
             }
         }
     }

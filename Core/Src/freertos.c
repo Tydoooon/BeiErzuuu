@@ -215,6 +215,7 @@ void StartLCDTask(void *argument)
     }
 
     app_ui_process_keys();
+    app_ui_handle_idle();
     lv_timer_handler();
     osDelay(5);
   }

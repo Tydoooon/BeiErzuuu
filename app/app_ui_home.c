@@ -1,5 +1,12 @@
 #include "app_ui_internal.h"
 
+static void home_lock_event_cb(lv_event_t *e)
+{
+    (void)e;
+    g_input_events++;
+    app_ui_lock_screen();
+}
+
 static void main_app_event_cb(lv_event_t *e)
 {
     ui_app_id_t app = (ui_app_id_t)(uintptr_t)lv_event_get_user_data(e);
@@ -27,6 +34,8 @@ void ui_create_main(void)
         g_home_selected = 0U;
     }
     ui_label(scr, UI_TEXT_HOME_TITLE, 12, 10);
+    ui_button(scr, UI_TEXT_HOME_LOCK, 124, 8, 52, 28, home_lock_event_cb, NULL);
+    ui_add_sleep_button(scr, 188, 8);
 
     for (uint8_t i = 0; i < UI_APP_COUNT; i++) {
         lv_coord_t x = (i % 2) == 0 ? 12 : 124;

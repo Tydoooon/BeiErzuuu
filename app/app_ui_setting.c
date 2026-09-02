@@ -1,4 +1,5 @@
 #include "app_ui_internal.h"
+#include "app_mouse.h"
 
 static void setting_slider_event_cb(lv_event_t *e)
 {
@@ -8,8 +9,12 @@ static void setting_slider_event_cb(lv_event_t *e)
 
     g_input_events++;
 
-    if (id == 0) g_settings.cursor_sensitivity = (uint8_t)value;
-    else if (id == 1) g_settings.cursor_size = (uint8_t)value;
+    if (id == 0) {
+        g_settings.cursor_sensitivity = (uint8_t)value;
+    } else if (id == 1) {
+        g_settings.cursor_size = (uint8_t)value;
+        app_mouse_apply_settings();
+    }
     else if (id == 2) {
         g_settings.screen_brightness = (uint8_t)value;
         ui_apply_brightness();

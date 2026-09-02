@@ -17,6 +17,7 @@ typedef struct {
 } mouse_event_t;
 
 void app_mouse_init(void);
+void app_mouse_apply_settings(void);
 void app_mouse_read(lv_indev_drv_t *drv, lv_indev_data_t *data);
 
 #ifdef __cplusplus

@@ -5,11 +5,16 @@
 #define UI_TEXT_LOGIN_HINT              "请输入密码"
 #define UI_TEXT_LOGIN_BUTTON            "登录"
 #define UI_TEXT_LOGIN_WRONG             "密码错误"
+#define UI_TEXT_LOGIN_LOCKED            "界面锁定"
+#define UI_TEXT_LOGIN_WRONG_COUNT_FMT   "密码错误 %u/5 次"
+#define UI_TEXT_LOGIN_LOCKED_FMT        "已锁定 %lus"
 #define UI_TEXT_LOGIN_SUCCESS           "登录成功"
 #define UI_TEXT_LOGIN_FAILED            "登录失败"
 #define UI_TEXT_KEY_HINT                "按 1-4 输入，5 确认"
 
 #define UI_TEXT_HOME_TITLE              "LVGL 主界面"
+#define UI_TEXT_HOME_LOCK               "锁定"
+#define UI_TEXT_SLEEP                   "息屏"
 #define UI_TEXT_STORAGE_DIRTY           "存储: 有未同步状态"
 #define UI_TEXT_STORAGE_SYNCED          "存储: 已同步"
 
