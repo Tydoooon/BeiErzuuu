@@ -1,6 +1,7 @@
 #include "app_w25q128.h"
 
 #include "FreeRTOS.h"
+#include "app_event.h"
 #include "semphr.h"
 #include "task.h"
 
@@ -35,6 +36,7 @@ bsp_w25q128_status_t app_w25q128_init(void)
     uint32_t id = 0;
 
     if (g_w25q128_info.ready) {
+        app_event_set(APP_EVT_FLASH_READY);
         return BSP_W25Q128_OK;
     }
     if (!app_w25q128_lock()) {
@@ -42,6 +44,7 @@ bsp_w25q128_status_t app_w25q128_init(void)
     }
     if (g_w25q128_info.ready) {
         app_w25q128_unlock();
+        app_event_set(APP_EVT_FLASH_READY);
         return BSP_W25Q128_OK;
     }
 
@@ -49,6 +52,7 @@ bsp_w25q128_status_t app_w25q128_init(void)
     if (ret != BSP_W25Q128_OK) {
         g_w25q128_info.ready = false;
         g_w25q128_info.jedec_id = 0;
+        app_event_clear(APP_EVT_FLASH_READY);
         app_w25q128_unlock();
         return ret;
     }
@@ -57,12 +61,14 @@ bsp_w25q128_status_t app_w25q128_init(void)
     if (ret != BSP_W25Q128_OK) {
         g_w25q128_info.ready = false;
         g_w25q128_info.jedec_id = 0;
+        app_event_clear(APP_EVT_FLASH_READY);
         app_w25q128_unlock();
         return ret;
     }
 
     g_w25q128_info.ready = true;
     g_w25q128_info.jedec_id = id;
+    app_event_set(APP_EVT_FLASH_READY);
     app_w25q128_unlock();
     return BSP_W25Q128_OK;
 }

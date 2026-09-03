@@ -1,6 +1,12 @@
 #include "app_ui_internal.h"
 #include "app_mouse.h"
 
+#define UI_SETTING_COUNT 5U
+
+static lv_obj_t *g_setting_value_labels[UI_SETTING_COUNT];
+
+static void ui_setting_update_value_label(uint8_t id, int32_t value);
+
 static void setting_slider_event_cb(lv_event_t *e)
 {
     uint8_t id = (uint8_t)(uintptr_t)lv_event_get_user_data(e);
@@ -24,7 +30,9 @@ static void setting_slider_event_cb(lv_event_t *e)
         g_settings.screen_timeout_s = (uint16_t)value;
     }
 
-    g_storage_dirty = true;
+    ui_setting_update_value_label(id, value);
+
+    ui_storage_mark_dirty();
     ui_storage_commit();
     ui_log(UI_TEXT_SETTING_CHANGED);
 }
@@ -41,11 +49,18 @@ static void ui_setting_row(lv_obj_t *parent, const char *name, uint8_t id,
     lv_slider_set_range(slider, min, max);
     lv_slider_set_value(slider, value, LV_ANIM_OFF);
     lv_obj_add_event_cb(slider, setting_slider_event_cb, LV_EVENT_VALUE_CHANGED, (void *)(uintptr_t)id);
+
+    if (id < UI_SETTING_COUNT) {
+        g_setting_value_labels[id] = ui_label(parent, "", 94, y + 17);
+        ui_setting_update_value_label(id, value);
+    }
 }
 
 void ui_create_setting_app(void)
 {
     lv_obj_t *scr = ui_create_app_frame(UI_TEXT_APP_SETTING);
+
+    memset(g_setting_value_labels, 0, sizeof(g_setting_value_labels));
 
     ui_setting_row(scr, UI_TEXT_SETTING_SENSITIVITY, 0, 1, 100, g_settings.cursor_sensitivity, 58);
     ui_setting_row(scr, UI_TEXT_SETTING_CURSOR_SIZE, 1, 4, 32, g_settings.cursor_size, 96);
@@ -56,4 +71,19 @@ void ui_create_setting_app(void)
     ui_label(scr, "K4 Exit", 94, 292);
 
     ui_load_screen(scr);
+}
+
+static void ui_setting_update_value_label(uint8_t id, int32_t value)
+{
+    if (id >= UI_SETTING_COUNT || g_setting_value_labels[id] == NULL) {
+        return;
+    }
+
+    if (id == 2U || id == 3U) {
+        lv_label_set_text_fmt(g_setting_value_labels[id], "%ld%%", (long)value);
+    } else if (id == 4U) {
+        lv_label_set_text_fmt(g_setting_value_labels[id], "%lds", (long)value);
+    } else {
+        lv_label_set_text_fmt(g_setting_value_labels[id], "%ld", (long)value);
+    }
 }

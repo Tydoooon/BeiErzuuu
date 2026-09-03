@@ -1,5 +1,4 @@
 #include "app_ui_internal.h"
-
 #include "app_backlight.h"
 
 static uint16_t app_ui_get_screen_timeout_s(void);
@@ -37,8 +36,6 @@ bool g_home_active;
 uint8_t g_home_selected;
 ui_app_id_t g_current_app = UI_APP_NONE;
 
-static volatile bool g_app_ui_created;
-static bool g_screen_sleeping;
 static uint32_t g_last_activity_tick;
 
 static void app_ui_process_key(uint8_t key_id);
@@ -51,12 +48,12 @@ void app_ui_create(void)
     ui_font_init();
     app_ui_notify_activity();
     ui_create_login();
-    g_app_ui_created = true;
+    app_event_set(APP_EVT_UI_READY);
 }
 
 bool app_ui_is_created(void)
 {
-    return g_app_ui_created;
+    return app_event_is_set(APP_EVT_UI_READY);
 }
 
 void app_ui_load_w25q128_resources(void)
@@ -68,8 +65,8 @@ void app_ui_load_w25q128_resources(void)
 void app_ui_notify_activity(void)
 {
     g_last_activity_tick = lv_tick_get();
-    if (g_screen_sleeping) {
-        g_screen_sleeping = false;
+    if (app_event_is_set(APP_EVT_SCREEN_SLEEP)) {
+        app_event_clear(APP_EVT_SCREEN_SLEEP);
         ui_apply_brightness();
     }
 }
@@ -79,7 +76,7 @@ void app_ui_handle_idle(void)
     uint32_t now = lv_tick_get();
     uint32_t timeout_ms = (uint32_t)app_ui_get_screen_timeout_s() * 1000U;
 
-    if (g_screen_sleeping || timeout_ms == 0U) {
+    if (app_event_is_set(APP_EVT_SCREEN_SLEEP) || timeout_ms == 0U) {
         return;
     }
     if ((uint32_t)(now - g_last_activity_tick) < timeout_ms) {
@@ -87,14 +84,14 @@ void app_ui_handle_idle(void)
     }
 
     app_backlight_set_percent(0U);
-    g_screen_sleeping = true;
+    app_event_set(APP_EVT_SCREEN_SLEEP);
 }
 
 void app_ui_sleep_now(void)
 {
     g_last_activity_tick = lv_tick_get();
     app_backlight_set_percent(0U);
-    g_screen_sleeping = true;
+    app_event_set(APP_EVT_SCREEN_SLEEP);
 }
 
 void app_ui_lock_screen(void)

@@ -25,6 +25,7 @@
 #include "usbh_hid.h"
 
 /* USER CODE BEGIN Includes */
+#include "app_event.h"
 
 /* USER CODE END Includes */
 
@@ -95,6 +96,7 @@ void MX_USB_HOST_Init(void)
 static void USBH_UserProcess  (USBH_HandleTypeDef *phost, uint8_t id)
 {
   /* USER CODE BEGIN CALL_BACK_1 */
+  (void)phost;
   switch(id)
   {
   case HOST_USER_SELECT_CONFIGURATION:
@@ -102,14 +104,17 @@ static void USBH_UserProcess  (USBH_HandleTypeDef *phost, uint8_t id)
 
   case HOST_USER_DISCONNECTION:
   Appli_state = APPLICATION_DISCONNECT;
+  app_event_clear(APP_EVT_USB_READY);
   break;
 
   case HOST_USER_CLASS_ACTIVE:
   Appli_state = APPLICATION_READY;
+  app_event_set(APP_EVT_USB_READY);
   break;
 
   case HOST_USER_CONNECTION:
   Appli_state = APPLICATION_START;
+  app_event_clear(APP_EVT_USB_READY);
   break;
 
   default:

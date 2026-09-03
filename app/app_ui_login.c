@@ -25,6 +25,7 @@ void ui_login_submit(void)
     if (strcmp(lv_textarea_get_text(g_password_ta), UI_PASSWORD) == 0) {
         g_login_wrong_count = 0U;
         g_login_lock_until = 0U;
+        app_event_clear(APP_EVT_LOGIN_LOCKED);
         ui_login_stop_lock_timer();
         ui_log(UI_TEXT_LOGIN_SUCCESS);
         ui_create_main();
@@ -102,6 +103,7 @@ void ui_create_login(void)
     g_login_active = true;
     g_login_wrong_count = 0U;
     g_login_lock_until = 0U;
+    app_event_clear(APP_EVT_LOGIN_LOCKED);
     ui_login_stop_lock_timer();
     lv_obj_set_style_bg_color(scr, lv_color_hex(0xE8EEF5), 0);
 
@@ -175,6 +177,7 @@ static bool ui_login_is_locked(void)
 
     g_login_lock_until = 0U;
     g_login_wrong_count = 0U;
+    app_event_clear(APP_EVT_LOGIN_LOCKED);
     ui_login_stop_lock_timer();
     ui_login_refresh_hint();
     return false;
@@ -199,6 +202,7 @@ static uint32_t ui_login_lock_remaining_ms(void)
 static void ui_login_start_lock(void)
 {
     g_login_lock_until = lv_tick_get() + UI_LOGIN_LOCK_MS;
+    app_event_set(APP_EVT_LOGIN_LOCKED);
     lv_textarea_set_text(g_password_ta, "");
     ui_log(UI_TEXT_LOGIN_LOCKED);
     ui_login_refresh_hint();

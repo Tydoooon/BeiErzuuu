@@ -52,20 +52,31 @@ void ui_storage_load(void)
 {
     ui_storage_load_defaults();
     g_storage_dirty = false;
+    app_event_clear(APP_EVT_STORAGE_DIRTY | APP_EVT_STORAGE_BUSY);
 }
 
 bool ui_storage_load_persisted(void)
 {
+    bool loaded;
+
     if (g_input_events != 0U || g_storage_dirty) {
         return false;
     }
-    if (!ui_storage_load_flash()) {
-        return false;
-    }
+    app_event_set(APP_EVT_STORAGE_BUSY);
+    loaded = ui_storage_load_flash();
+    app_event_clear(APP_EVT_STORAGE_BUSY);
+    if (!loaded) return false;
 
     ui_apply_brightness();
     g_storage_dirty = false;
+    app_event_clear(APP_EVT_STORAGE_DIRTY);
     return true;
+}
+
+void ui_storage_mark_dirty(void)
+{
+    g_storage_dirty = true;
+    app_event_set(APP_EVT_STORAGE_DIRTY);
 }
 
 void ui_storage_commit(void)
@@ -77,11 +88,15 @@ void ui_storage_commit(void)
         return;
     }
 
+    app_event_set(APP_EVT_STORAGE_BUSY);
+
     if (sizeof(ui_storage_record_t) > W25Q128_SECTOR_SIZE) {
+        app_event_clear(APP_EVT_STORAGE_BUSY);
         return;
     }
 
     if (!app_w25q128_is_ready() && app_w25q128_init() != BSP_W25Q128_OK) {
+        app_event_clear(APP_EVT_STORAGE_BUSY);
         return;
     }
 
@@ -93,13 +108,16 @@ void ui_storage_commit(void)
     if (ui_storage_write_record(addr, sequence)) {
         g_storage_sequence = sequence;
         g_storage_dirty = false;
+        app_event_clear(APP_EVT_STORAGE_DIRTY);
     }
+    app_event_clear(APP_EVT_STORAGE_BUSY);
 }
 
 bool ui_storage_save_draw_slot(uint8_t slot)
 {
     uint32_t addr;
     size_t offset = 0U;
+    bool ok = false;
 
     if (slot >= UI_FILE_MAX || slot >= APP_W25Q128_DRAW_SLOT_COUNT) {
         return false;
@@ -107,16 +125,19 @@ bool ui_storage_save_draw_slot(uint8_t slot)
     if (UI_DRAW_SAVE_BYTES > APP_W25Q128_DRAW_SLOT_SIZE) {
         return false;
     }
+
+    app_event_set(APP_EVT_STORAGE_BUSY);
+
     if (!app_w25q128_is_ready() && app_w25q128_init() != BSP_W25Q128_OK) {
-        return false;
+        goto done;
     }
 
     addr = ui_storage_draw_addr(slot);
     if (app_w25q128_erase_sector(addr) != BSP_W25Q128_OK) {
-        return false;
+        goto done;
     }
     if (app_w25q128_write(addr, g_draw_slots[slot], UI_DRAW_SAVE_BYTES) != BSP_W25Q128_OK) {
-        return false;
+        goto done;
     }
 
     while (offset < UI_DRAW_SAVE_BYTES) {
@@ -127,17 +148,21 @@ bool ui_storage_save_draw_slot(uint8_t slot)
         if (app_w25q128_read(addr + (uint32_t)offset,
                              g_storage_verify_chunk,
                              chunk) != BSP_W25Q128_OK) {
-            return false;
+            goto done;
         }
         if (memcmp(g_storage_verify_chunk,
                    &g_draw_slots[slot][offset],
                    chunk) != 0) {
-            return false;
+            goto done;
         }
         offset += chunk;
     }
 
-    return true;
+    ok = true;
+
+done:
+    app_event_clear(APP_EVT_STORAGE_BUSY);
+    return ok;
 }
 
 static void ui_storage_load_defaults(void)
@@ -171,6 +196,7 @@ static void ui_storage_load_defaults(void)
     g_file_serial = 1;
     g_storage_sequence = 0;
     g_storage_dirty = false;
+    app_event_clear(APP_EVT_STORAGE_DIRTY);
 }
 
 static bool ui_storage_load_flash(void)

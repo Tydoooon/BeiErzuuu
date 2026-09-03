@@ -31,6 +31,7 @@
 #include "app_mouse.h"
 #include "app_ui.h"
 #include "app_w25q128.h"
+#include "app_event.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -79,8 +80,8 @@ const osThreadAttr_t w25q128Task_attributes = {
   .stack_size = 1024,
   .priority = (osPriority_t) osPriorityNormal,
 };
-const osThreadAttr_t usbinitTask_attributes = {
-  .name = "usbinitTask",
+const osThreadAttr_t initTask_attributes = {
+  .name = "initTask",
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
@@ -99,7 +100,7 @@ void StartStartTask(void *argument);
 void StartKeyTask(void *argument);
 void StartLCDTask(void *argument);
 void StartW25Q128Task(void *argument);
-void StartUSBInitTask(void *argument);
+void StartInitTask(void *argument);
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
@@ -114,6 +115,7 @@ void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
   */
 void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
+  app_event_init();
 
   /* USER CODE END Init */
 
@@ -179,7 +181,7 @@ void StartStartTask(void *argument)
   keyTaskHandle = osThreadNew(StartKeyTask, NULL, &keyTask_attributes);
   lcdTaskHandle = osThreadNew(StartLCDTask, NULL, &lcdTask_attributes);
   w25q128TaskHandle = osThreadNew(StartW25Q128Task, NULL, &w25q128Task_attributes);
-  usbinitTaskHandle = osThreadNew(StartUSBInitTask, NULL, &usbinitTask_attributes);
+  usbinitTaskHandle = osThreadNew(StartInitTask, NULL, &initTask_attributes);
   
   osThreadExit();
 }
@@ -227,17 +229,16 @@ void StartW25Q128Task(void *argument)
 
   ret = app_w25q128_init();
   if(ret == BSP_W25Q128_OK) {
-    while(!app_ui_is_created()) {
-      osDelay(10);
+    if (app_event_wait(APP_EVT_UI_READY, portMAX_DELAY)) {
+      app_ui_load_w25q128_resources();
     }
-    app_ui_load_w25q128_resources();
   } else {
     
   }
 
   osThreadExit();
 }
-void StartUSBInitTask(void *argument)
+void StartInitTask(void *argument)
 {
   (void)argument;
   MX_USB_HOST_Init();

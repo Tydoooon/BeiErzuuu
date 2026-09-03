@@ -75,6 +75,7 @@ static void back_event_cb(lv_event_t *e)
     (void)e;
     if (g_music_playing) {
         g_music_playing = false;
+        app_event_clear(APP_EVT_MUSIC_PLAYING);
         ui_log(UI_TEXT_BACK_MUSIC_STOP);
     }
     g_input_events++;

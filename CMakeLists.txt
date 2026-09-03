@@ -74,6 +74,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     app/app_ui_log.c
     app/app_ui_monitor.c
     app/app_ui_setting.c
+    app/app_event.c
     gui/pic.c
     LVGL/GUI/lvgl/src/core/lv_disp.c
     LVGL/GUI/lvgl/src/core/lv_event.c

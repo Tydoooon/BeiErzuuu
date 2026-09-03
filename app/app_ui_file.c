@@ -135,7 +135,7 @@ bool ui_file_save_draw_snapshot(const char *name, uint32_t size)
         return false;
     }
 
-    g_storage_dirty = true;
+    ui_storage_mark_dirty();
     ui_storage_commit();
     if (g_storage_dirty) {
         g_error_events++;
@@ -346,7 +346,7 @@ static bool ui_create_file_named(const char *input)
     g_files[slot].storage_addr = APP_W25Q128_FILE_DATA_START + (uint32_t)slot * UI_STORAGE_SLOT_SIZE;
     g_files[slot].state = UI_FILE_STATE_NORMAL;
     g_selected_file = (uint8_t)slot;
-    g_storage_dirty = true;
+    ui_storage_mark_dirty();
     ui_storage_commit();
     ui_log(UI_TEXT_FILE_CREATED);
     return true;
@@ -362,7 +362,7 @@ static void ui_delete_file(void)
     if (g_files[g_selected_file].state != UI_FILE_STATE_NORMAL) return;
 
     g_files[g_selected_file].state = UI_FILE_STATE_DELETED;
-    g_storage_dirty = true;
+    ui_storage_mark_dirty();
     ui_storage_commit();
     ui_log(UI_TEXT_FILE_DELETED);
 }
@@ -375,7 +375,7 @@ static void ui_save_file(void)
 
     snprintf(file->content, sizeof(file->content), "Saved at %lus.", (unsigned long)(lv_tick_get() / 1000U));
     file->size = strlen(file->content);
-    g_storage_dirty = true;
+    ui_storage_mark_dirty();
     ui_storage_commit();
     ui_log(UI_TEXT_FILE_SAVED);
 }

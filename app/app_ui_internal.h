@@ -5,6 +5,7 @@
 
 #include "FreeRTOS.h"
 #include "task.h"
+#include "app_event.h"
 #include "app_lvgl.h"
 #include "app_ui_font.h"
 #include "app_ui_text.h"
@@ -105,6 +106,7 @@ extern ui_app_id_t g_current_app;
 void ui_model_init(void);
 void ui_storage_load(void);
 bool ui_storage_load_persisted(void);
+void ui_storage_mark_dirty(void);
 void ui_storage_commit(void);
 bool ui_storage_save_draw_slot(uint8_t slot);
 void ui_log(const char *text);
