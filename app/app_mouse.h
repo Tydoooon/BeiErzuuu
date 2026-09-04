@@ -9,6 +9,8 @@ extern "C" {
 #include "FreeRTOS.h"
 #include "queue.h"
 
+#include <stdint.h>
+
 typedef struct {
     int16_t dx;
     int16_t dy;
@@ -19,6 +21,7 @@ typedef struct {
 void app_mouse_init(void);
 void app_mouse_apply_settings(void);
 void app_mouse_read(lv_indev_drv_t *drv, lv_indev_data_t *data);
+int16_t app_mouse_take_wheel_delta(void);
 
 #ifdef __cplusplus
 }

@@ -18,11 +18,11 @@
 #include <string.h>
 
 #define UI_PASSWORD                  "1234"
-#define UI_FILE_MAX                  8
+#define UI_FILE_MAX                  12
 #define UI_FILE_NAME_LEN             24
 #define UI_FILE_TYPE_LEN             8
 #define UI_FILE_CONTENT_LEN          96
-#define UI_LOG_MAX                   12
+#define UI_LOG_MAX                   32
 #define UI_LOG_TEXT_LEN              72
 #define UI_DRAW_W                    160
 #define UI_DRAW_H                    100
@@ -128,6 +128,7 @@ void ui_create_main(void);
 void ui_home_refresh_key_focus(void);
 void ui_create_file_app(void);
 void ui_file_handle_key(uint8_t key_id);
+void ui_file_handle_wheel(int16_t wheel_delta);
 bool ui_file_save_draw_snapshot(const char *name, uint32_t size);
 bool ui_file_is_draw_file(uint8_t slot);
 void ui_create_draw_app(void);
@@ -135,6 +136,7 @@ void ui_draw_handle_key(uint8_t key_id);
 void ui_create_music_app(void);
 void ui_music_handle_key(uint8_t key_id);
 void ui_create_log_app(void);
+void ui_log_handle_wheel(int16_t wheel_delta);
 void ui_create_monitor_app(void);
 void ui_create_setting_app(void);
 

@@ -36,9 +36,7 @@ static int16_t g_mouse_y;
 static int32_t g_mouse_x_fp;
 static int32_t g_mouse_y_fp;
 static bool g_mouse_pressed;
-static volatile int32_t g_mouse_dx_acc;
-static volatile int32_t g_mouse_dy_acc;
-static volatile uint8_t g_mouse_button_raw;
+static volatile int16_t g_mouse_wheel_acc;
 
 static QueueHandle_t g_mouse_event_queue = NULL;
 
@@ -65,9 +63,7 @@ void app_mouse_init(void)
     g_mouse_x_fp = (int32_t)g_mouse_x * APP_MOUSE_FP_SCALE;
     g_mouse_y_fp = (int32_t)g_mouse_y * APP_MOUSE_FP_SCALE;
     g_mouse_pressed = false;
-    g_mouse_dx_acc = 0;
-    g_mouse_dy_acc = 0;
-    g_mouse_button_raw = 0U;
+    g_mouse_wheel_acc = 0;
 
     lv_indev_drv_init(&indev_drv);
     indev_drv.type = LV_INDEV_TYPE_POINTER;
@@ -111,9 +107,24 @@ void app_mouse_read(lv_indev_drv_t *drv, lv_indev_data_t *data)
     data->state = g_mouse_pressed ? LV_INDEV_STATE_PR : LV_INDEV_STATE_REL;
 }
 
-//USB鼠标回调
+int16_t app_mouse_take_wheel_delta(void)
+{
+    int16_t wheel;
+
+    taskENTER_CRITICAL();
+    wheel = g_mouse_wheel_acc;
+    g_mouse_wheel_acc = 0;
+    taskEXIT_CRITICAL();
+
+    return wheel;
+}
+
 void USBH_HID_EventCallback(USBH_HandleTypeDef *phost)
 {
+    HID_MOUSE_Info_TypeDef *info;
+    mouse_event_t evt;
+    int16_t wheel;
+
     if (Appli_state != APPLICATION_READY) {
         return;
     }
@@ -121,25 +132,28 @@ void USBH_HID_EventCallback(USBH_HandleTypeDef *phost)
         return;
     }
 
-    HID_MOUSE_Info_TypeDef *info = USBH_HID_GetMouseInfo(phost);
+    info = USBH_HID_GetMouseInfo(phost);
     if (info == NULL) {
         return;
     }
 
-    mouse_event_t evt;
     evt.dx = (int16_t)(int8_t)info->x;
     evt.dy = (int16_t)(int8_t)info->y;
+    wheel = (int16_t)info->wheel;
+    if (wheel != 0) {
+        evt.dx = 0;
+        evt.dy = 0;
+    }
     evt.pressed = (uint8_t)(info->buttons[0] != 0U);
     evt.tick = xTaskGetTickCount();
 
-    enqueue_mouse_event(&evt);
+    if (wheel != 0) {
+        taskENTER_CRITICAL();
+        g_mouse_wheel_acc += wheel;
+        taskEXIT_CRITICAL();
+    }
 
-    // //进入临界区
-    // taskENTER_CRITICAL();
-    // g_mouse_dx_acc += (int16_t)(int8_t)info->x;
-    // g_mouse_dy_acc += (int16_t)(int8_t)info->y;
-    // g_mouse_button_raw = (uint8_t)(info->buttons[0] != 0U);
-    // taskEXIT_CRITICAL();
+    enqueue_mouse_event(&evt);
 }
 
 static void enqueue_mouse_event(const mouse_event_t *evt)
@@ -150,7 +164,6 @@ static void enqueue_mouse_event(const mouse_event_t *evt)
         return;
     }
 
-    //队列满
     if (xQueueSend(g_mouse_event_queue, evt, 0) != pdPASS) {
         (void)xQueueReceive(g_mouse_event_queue, &drop, 0);
         (void)xQueueSend(g_mouse_event_queue, evt, 0);
@@ -174,43 +187,34 @@ static void apply_mouse_report(void)
     if (dx == 0 && dy == 0 && g_mouse_pressed == (pressed != 0U)) {
         return;
     }
-    
-    // //进入临界区
-    // taskENTER_CRITICAL();
-    // dx = g_mouse_dx_acc;
-    // dy = g_mouse_dy_acc;
-    // pressed = g_mouse_button_raw;
-    // g_mouse_dx_acc = 0;
-    // g_mouse_dy_acc = 0;
-    // taskEXIT_CRITICAL();
 
-    if ((dx != 0) || (dy != 0) || (g_mouse_pressed != (pressed != 0U))) {
-        app_ui_notify_activity();
+    app_ui_notify_activity();
 
 #if APP_MOUSE_INVERT_X
-        dx = -dx;
+    dx = -dx;
 #endif
 #if APP_MOUSE_INVERT_Y
-        dy = -dy;
+    dy = -dy;
 #endif
 #if APP_MOUSE_SWAP_XY
+    {
         int32_t tmp = dx;
         dx = dy;
         dy = tmp;
+    }
 #endif
 
-        g_mouse_x_fp = clamp_coord_fp(g_mouse_x_fp + scale_dx_fp(dx),
-                                      (int16_t)lcddev.width);
-        g_mouse_y_fp = clamp_coord_fp(g_mouse_y_fp + scale_dy_fp(dy),
-                                      (int16_t)lcddev.height);
-        g_mouse_x = (int16_t)(g_mouse_x_fp >> APP_MOUSE_FP_SHIFT);
-        g_mouse_y = (int16_t)(g_mouse_y_fp >> APP_MOUSE_FP_SHIFT);
-        g_mouse_pressed = (pressed != 0U);
+    g_mouse_x_fp = clamp_coord_fp(g_mouse_x_fp + scale_dx_fp(dx),
+                                  (int16_t)lcddev.width);
+    g_mouse_y_fp = clamp_coord_fp(g_mouse_y_fp + scale_dy_fp(dy),
+                                  (int16_t)lcddev.height);
+    g_mouse_x = (int16_t)(g_mouse_x_fp >> APP_MOUSE_FP_SHIFT);
+    g_mouse_y = (int16_t)(g_mouse_y_fp >> APP_MOUSE_FP_SHIFT);
+    g_mouse_pressed = (pressed != 0U);
 
-        if (g_mouse_cursor != NULL) {
-            lv_obj_clear_flag(g_mouse_cursor, LV_OBJ_FLAG_HIDDEN);
-            lv_obj_set_pos(g_mouse_cursor, g_mouse_x, g_mouse_y);
-        }
+    if (g_mouse_cursor != NULL) {
+        lv_obj_clear_flag(g_mouse_cursor, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_pos(g_mouse_cursor, g_mouse_x, g_mouse_y);
     }
 }
 

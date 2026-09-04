@@ -16,14 +16,12 @@ void key_scan(void)
     if(B1 == 0 && B1_last == 1)
     {
         key_id = 1;
-        LED1_ON();
-        LED3_ON();
+        LED_ON();
     }
     else if(B2 == 0 && B2_last == 1)
     {
         key_id = 2;
-        LED1_OFF();
-        LED3_OFF();
+        LED_OFF();
     }
     else if(B3 == 0 && B3_last == 1)
     {

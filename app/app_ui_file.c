@@ -1,5 +1,7 @@
 #include "app_ui_internal.h"
 
+#define UI_FILE_WHEEL_STEP 28
+
 static void ui_refresh_file_list(void);
 static void ui_refresh_file_detail(void);
 static int ui_file_find(const char *name);
@@ -54,6 +56,8 @@ void ui_create_file_app(void)
     lv_obj_set_size(g_file_list, 216, 142);
     lv_obj_align(g_file_list, LV_ALIGN_TOP_LEFT, 12, 46);
     lv_obj_set_style_text_font(g_file_list, UI_FONT, 0);
+    lv_obj_set_scroll_dir(g_file_list, LV_DIR_VER);
+    lv_obj_set_scrollbar_mode(g_file_list, LV_SCROLLBAR_MODE_AUTO);
 
     g_file_detail = ui_label(scr, "", 12, 196);
     lv_obj_set_width(g_file_detail, 216);
@@ -102,6 +106,15 @@ void ui_file_handle_key(uint8_t key_id)
         ui_refresh_file_list();
         ui_refresh_file_detail();
     }
+}
+
+void ui_file_handle_wheel(int16_t wheel_delta)
+{
+    if (g_file_list == NULL || wheel_delta == 0) {
+        return;
+    }
+
+    lv_obj_scroll_by_bounded(g_file_list, 0, (lv_coord_t)wheel_delta * UI_FILE_WHEEL_STEP, LV_ANIM_OFF);
 }
 
 bool ui_file_save_draw_snapshot(const char *name, uint32_t size)

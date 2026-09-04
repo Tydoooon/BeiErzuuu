@@ -1,5 +1,6 @@
 #include "app_ui_internal.h"
 #include "app_backlight.h"
+#include "app_mouse.h"
 
 static uint16_t app_ui_get_screen_timeout_s(void);
 
@@ -41,6 +42,7 @@ static uint32_t g_last_activity_tick;
 static void app_ui_process_key(uint8_t key_id);
 static void app_ui_process_home_key(uint8_t key_id);
 static void app_ui_process_current_app_key(uint8_t key_id);
+static void app_ui_process_mouse_wheel(void);
 
 void app_ui_create(void)
 {
@@ -75,6 +77,8 @@ void app_ui_handle_idle(void)
 {
     uint32_t now = lv_tick_get();
     uint32_t timeout_ms = (uint32_t)app_ui_get_screen_timeout_s() * 1000U;
+
+    app_ui_process_mouse_wheel();
 
     if (app_event_is_set(APP_EVT_SCREEN_SLEEP) || timeout_ms == 0U) {
         return;
@@ -217,6 +221,29 @@ static void app_ui_process_current_app_key(uint8_t key_id)
 
     if (key_id == 4U) {
         ui_create_main();
+    }
+}
+
+static void app_ui_process_mouse_wheel(void)
+{
+    int16_t wheel_delta = app_mouse_take_wheel_delta();
+
+    if (wheel_delta == 0) {
+        return;
+    }
+
+    app_ui_notify_activity();
+    g_input_events++;
+
+    switch (g_current_app) {
+    case UI_APP_FILE:
+        ui_file_handle_wheel(wheel_delta);
+        break;
+    case UI_APP_LOG:
+        ui_log_handle_wheel(wheel_delta);
+        break;
+    default:
+        break;
     }
 }
 

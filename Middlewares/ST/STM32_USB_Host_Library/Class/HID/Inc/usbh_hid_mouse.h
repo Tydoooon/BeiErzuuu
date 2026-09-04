@@ -53,6 +53,7 @@ typedef struct _HID_MOUSE_Info
 {
   uint8_t x;
   uint8_t y;
+  int8_t wheel;
   uint8_t buttons[3];
 }
 HID_MOUSE_Info_TypeDef;
@@ -116,4 +117,3 @@ HID_MOUSE_Info_TypeDef *USBH_HID_GetMouseInfo(USBH_HandleTypeDef *phost);
 /**
   * @}
   */
-
