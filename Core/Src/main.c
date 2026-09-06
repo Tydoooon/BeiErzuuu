@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "i2s.h"
 #include "spi.h"
 #include "tim.h"
 #include "usb_host.h"
@@ -97,6 +98,7 @@ int main(void)
   MX_SPI1_Init();
   MX_SPI2_Init();
   MX_TIM5_Init();
+  MX_I2S3_Init();
   /* USER CODE BEGIN 2 */
   app_backlight_init(50);
   

@@ -53,7 +53,7 @@
             "command": "openocd",
             "args": [
                 "-f",
-                "interface/stlink.cfg",
+                "interface/stlink-hla.cfg",
                 "-f",
                 "target/stm32f4x.cfg",
                 "-c",

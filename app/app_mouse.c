@@ -16,10 +16,9 @@
 #define APP_MOUSE_FP_SHIFT 8
 #define APP_MOUSE_FP_SCALE (1 << APP_MOUSE_FP_SHIFT)
 #define APP_MOUSE_DEFAULT_SENSITIVITY 50U
-#define APP_MOUSE_SPEED_Y_NUM 2
-#define APP_MOUSE_SPEED_Y_DEN 5
+#define APP_MOUSE_SPEED_Y_NUM 1
+#define APP_MOUSE_SPEED_Y_DEN 3
 #define APP_MOUSE_SWAP_XY  0
-#define APP_MOUSE_EVENT_QUEUE_LEN 16
 #define APP_MOUSE_CURSOR_SRC_W 14
 #define APP_MOUSE_CURSOR_SRC_H 20
 #define APP_MOUSE_CURSOR_MIN_SIZE 4U
@@ -37,8 +36,10 @@ static int32_t g_mouse_x_fp;
 static int32_t g_mouse_y_fp;
 static bool g_mouse_pressed;
 static volatile int16_t g_mouse_wheel_acc;
-
-static QueueHandle_t g_mouse_event_queue = NULL;
+static volatile int32_t g_mouse_pending_dx;
+static volatile int32_t g_mouse_pending_dy;
+static volatile uint8_t g_mouse_pending_pressed;
+static volatile uint8_t g_mouse_event_pending;
 
 static int32_t clamp_coord_fp(int32_t value, int16_t max_value);
 static void create_cursor(void);
@@ -47,16 +48,11 @@ static uint8_t cursor_width_from_size(uint8_t size);
 static int32_t scale_dx_fp(int32_t dx);
 static int32_t scale_dy_fp(int32_t dy);
 static void fill_cursor_buffer(void);
-static void enqueue_mouse_event(const mouse_event_t *evt);
 static void apply_mouse_report(void);
 
 void app_mouse_init(void)
 {
     static lv_indev_drv_t indev_drv;
-
-    if (g_mouse_event_queue == NULL) {
-        g_mouse_event_queue = xQueueCreate(APP_MOUSE_EVENT_QUEUE_LEN, sizeof(mouse_event_t));
-    }
 
     g_mouse_x = (int16_t)(lcddev.width / 2U);
     g_mouse_y = (int16_t)(lcddev.height / 2U);
@@ -64,6 +60,10 @@ void app_mouse_init(void)
     g_mouse_y_fp = (int32_t)g_mouse_y * APP_MOUSE_FP_SCALE;
     g_mouse_pressed = false;
     g_mouse_wheel_acc = 0;
+    g_mouse_pending_dx = 0;
+    g_mouse_pending_dy = 0;
+    g_mouse_pending_pressed = 0U;
+    g_mouse_event_pending = 0U;
 
     lv_indev_drv_init(&indev_drv);
     indev_drv.type = LV_INDEV_TYPE_POINTER;
@@ -122,7 +122,8 @@ int16_t app_mouse_take_wheel_delta(void)
 void USBH_HID_EventCallback(USBH_HandleTypeDef *phost)
 {
     HID_MOUSE_Info_TypeDef *info;
-    mouse_event_t evt;
+    int16_t dx;
+    int16_t dy;
     int16_t wheel;
 
     if (Appli_state != APPLICATION_READY) {
@@ -137,52 +138,41 @@ void USBH_HID_EventCallback(USBH_HandleTypeDef *phost)
         return;
     }
 
-    evt.dx = (int16_t)(int8_t)info->x;
-    evt.dy = (int16_t)(int8_t)info->y;
+    dx = (int16_t)(int8_t)info->x;
+    dy = (int16_t)(int8_t)info->y;
     wheel = (int16_t)info->wheel;
     if (wheel != 0) {
-        evt.dx = 0;
-        evt.dy = 0;
+        dx = 0;
+        dy = 0;
     }
-    evt.pressed = (uint8_t)(info->buttons[0] != 0U);
-    evt.tick = xTaskGetTickCount();
 
+    taskENTER_CRITICAL();
     if (wheel != 0) {
-        taskENTER_CRITICAL();
         g_mouse_wheel_acc += wheel;
-        taskEXIT_CRITICAL();
     }
-
-    enqueue_mouse_event(&evt);
-}
-
-static void enqueue_mouse_event(const mouse_event_t *evt)
-{
-    mouse_event_t drop;
-
-    if (g_mouse_event_queue == NULL || evt == NULL) {
-        return;
-    }
-
-    if (xQueueSend(g_mouse_event_queue, evt, 0) != pdPASS) {
-        (void)xQueueReceive(g_mouse_event_queue, &drop, 0);
-        (void)xQueueSend(g_mouse_event_queue, evt, 0);
-    }
+    g_mouse_pending_dx += dx;
+    g_mouse_pending_dy += dy;
+    g_mouse_pending_pressed = (uint8_t)(info->buttons[0] != 0U);
+    g_mouse_event_pending = 1U;
+    taskEXIT_CRITICAL();
 }
 
 static void apply_mouse_report(void)
 {
-    mouse_event_t evt;
     int32_t dx = 0;
     int32_t dy = 0;
     uint8_t pressed = g_mouse_pressed;
 
-    while (g_mouse_event_queue != NULL &&
-           xQueueReceive(g_mouse_event_queue, &evt, 0) == pdPASS) {
-        dx += evt.dx;
-        dy += evt.dy;
-        pressed = evt.pressed;
+    taskENTER_CRITICAL();
+    if (g_mouse_event_pending != 0U) {
+        dx = g_mouse_pending_dx;
+        dy = g_mouse_pending_dy;
+        pressed = g_mouse_pending_pressed;
+        g_mouse_pending_dx = 0;
+        g_mouse_pending_dy = 0;
+        g_mouse_event_pending = 0U;
     }
+    taskEXIT_CRITICAL();
 
     if (dx == 0 && dy == 0 && g_mouse_pressed == (pressed != 0U)) {
         return;

@@ -51,7 +51,7 @@ extern "C" {
   * @{
   */
 
-#define HID_MIN_POLL                                10U
+#define HID_MIN_POLL                                1U
 #define HID_REPORT_SIZE                             16U
 #define HID_MAX_USAGE                               10U
 #define HID_MAX_NBR_REPORT_FMT                      10U
@@ -339,4 +339,3 @@ uint16_t  USBH_HID_FifoWrite(FIFO_TypeDef *f, void *buf, uint16_t nbytes);
 /**
   * @}
   */
-

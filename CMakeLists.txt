@@ -58,6 +58,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     app/app_ui_font.c
     bsp/bsp_led.c
     bsp/bsp_lcd.c
+    bsp/bsp_tfcard.c
     bsp/bsp_w25q128.c
     dev/dev_head.h
     dev/dev_lcd.c

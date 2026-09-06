@@ -71,12 +71,20 @@ void Error_Handler(void);
 #define KEYE10_GPIO_Port GPIOE
 #define KEYE11_Pin GPIO_PIN_11
 #define KEYE11_GPIO_Port GPIOE
+#define TF_MISO_Pin GPIO_PIN_11
+#define TF_MISO_GPIO_Port GPIOB
+#define TF_CS_Pin GPIO_PIN_12
+#define TF_CS_GPIO_Port GPIOB
 #define LED_Pin GPIO_PIN_13
 #define LED_GPIO_Port GPIOB
 #define USB_EN_Pin GPIO_PIN_9
 #define USB_EN_GPIO_Port GPIOD
 #define TFT_CS_Pin GPIO_PIN_6
 #define TFT_CS_GPIO_Port GPIOC
+#define TF_SCK_Pin GPIO_PIN_9
+#define TF_SCK_GPIO_Port GPIOB
+#define TF_MOSI_Pin GPIO_PIN_1
+#define TF_MOSI_GPIO_Port GPIOE
 
 /* USER CODE BEGIN Private defines */
 

@@ -117,3 +117,4 @@ HID_MOUSE_Info_TypeDef *USBH_HID_GetMouseInfo(USBH_HandleTypeDef *phost);
 /**
   * @}
   */
+

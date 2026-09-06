@@ -165,14 +165,6 @@ SECTIONS
     _eccmram = .;       /* create a global symbol at ccmram end */
   } >CCMRAM AT> FLASH
 
-  .ccm_bss (NOLOAD) :
-  {
-    . = ALIGN(4);
-    *(.ccm_bss)
-    *(.ccm_bss*)
-    . = ALIGN(4);
-  } >CCMRAM
-
   
   /* Uninitialized data section */
   . = ALIGN(4);

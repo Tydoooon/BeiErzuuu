@@ -612,3 +612,4 @@ static int16_t USBH_HID_MouseReadSignedField(const uint8_t *data,
 /**
   * @}
   */
+

@@ -219,7 +219,7 @@ void StartLCDTask(void *argument)
     app_ui_process_keys();
     app_ui_handle_idle();
     lv_timer_handler();
-    osDelay(5);
+    osDelay(2);
   }
 }
 void StartW25Q128Task(void *argument)

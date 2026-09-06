@@ -19,9 +19,9 @@ lv_obj_t *g_home_key_hint;
 ui_file_entry_t g_files[UI_FILE_MAX];
 ui_settings_t g_settings;
 ui_log_entry_t g_logs[UI_LOG_MAX];
-lv_color_t g_canvas_buf[UI_DRAW_W * UI_DRAW_H] __attribute__((section(".ccm_bss")));
+lv_color_t g_canvas_buf[UI_DRAW_W * UI_DRAW_H] __attribute__((section(".ccmram")));
 uint8_t g_draw_save[UI_DRAW_SAVE_BYTES];
-uint8_t g_draw_slots[UI_FILE_MAX][UI_DRAW_SAVE_BYTES] __attribute__((section(".ccm_bss")));
+uint8_t g_draw_slots[UI_FILE_MAX][UI_DRAW_SAVE_BYTES] __attribute__((section(".ccmram")));
 
 uint8_t g_log_count;
 uint8_t g_selected_file;

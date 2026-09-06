@@ -1,7 +1,7 @@
 #include "app_lvgl.h"
 #include "bsp_lcd.h"
 
-#define APP_LVGL_DRAW_BUF_LINES 10
+#define APP_LVGL_DRAW_BUF_LINES 20
 #define APP_LVGL_DRAW_BUF_SIZE  (X_MAX_PIXEL * APP_LVGL_DRAW_BUF_LINES)
 
 static void disp_init(void);
