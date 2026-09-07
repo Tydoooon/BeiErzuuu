@@ -79,6 +79,7 @@ void app_ui_handle_idle(void)
     uint32_t timeout_ms = (uint32_t)app_ui_get_screen_timeout_s() * 1000U;
 
     app_ui_process_mouse_wheel();
+    ui_music_sync_state();
 
     if (app_event_is_set(APP_EVT_SCREEN_SLEEP) || timeout_ms == 0U) {
         return;

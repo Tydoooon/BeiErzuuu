@@ -39,6 +39,7 @@ static void tfcard_mosi_low(void);
 static void tfcard_mosi_high(void);
 static GPIO_PinState tfcard_miso_read(void);
 static uint8_t tfcard_spi_rw(uint8_t tx);
+static uint8_t tfcard_spi_rw_fast(uint8_t tx);
 static void tfcard_send_clocks(uint32_t bytes);
 static uint8_t tfcard_wait_ready(uint32_t timeout_ms);
 static uint8_t tfcard_send_cmd(uint8_t cmd, uint32_t arg, uint8_t crc);
@@ -381,6 +382,35 @@ static uint8_t tfcard_spi_rw(uint8_t tx)
     return rx;
 }
 
+/* 数据读取热路径：延时固定为 TFCARD_SPI_DATA_DELAY_CYCLES(2 个 NOP)、无循环、
+ * 直接写寄存器。-O0 下 tfcard_spi_rw 的可变延时循环每次迭代有大量栈存取，
+ * 读 512B 数据块慢到赶不上 46ms 的 DMA 播放窗口 -> 下溢(D:00000008)。 */
+static uint8_t tfcard_spi_rw_fast(uint8_t tx)
+{
+    uint8_t rx = 0;
+
+    for (uint8_t mask = 0x80U; mask != 0U; mask >>= 1) {
+        if ((tx & mask) != 0U) {
+            TF_MOSI_GPIO_Port->BSRR = TF_MOSI_Pin;
+        } else {
+            TF_MOSI_GPIO_Port->BSRR = (uint32_t)TF_MOSI_Pin << 16;
+        }
+        __NOP();
+        __NOP();
+        TF_SCK_GPIO_Port->BSRR = TF_SCK_Pin;                        /* SCK 上升沿 */
+        __NOP();
+        __NOP();
+        if ((TF_MISO_GPIO_Port->IDR & TF_MISO_Pin) != 0U) {
+            rx |= mask;
+        }
+        TF_SCK_GPIO_Port->BSRR = (uint32_t)TF_SCK_Pin << 16;        /* SCK 下降沿 */
+        __NOP();
+        __NOP();
+    }
+
+    return rx;
+}
+
 static void tfcard_send_clocks(uint32_t bytes)
 {
     while (bytes-- > 0U) {
@@ -450,7 +480,7 @@ static bsp_tfcard_status_t tfcard_read_data(uint8_t *data, size_t len)
     uint8_t token;
 
     do {
-        token = tfcard_spi_rw(TFCARD_DUMMY_BYTE);
+        token = tfcard_spi_rw_fast(TFCARD_DUMMY_BYTE);
         if (token == TFCARD_START_BLOCK_TOKEN) {
             break;
         }
@@ -460,11 +490,11 @@ static bsp_tfcard_status_t tfcard_read_data(uint8_t *data, size_t len)
     } while (true);
 
     for (size_t i = 0; i < len; i++) {
-        data[i] = tfcard_spi_rw(TFCARD_DUMMY_BYTE);
+        data[i] = tfcard_spi_rw_fast(TFCARD_DUMMY_BYTE);
     }
 
-    (void)tfcard_spi_rw(TFCARD_DUMMY_BYTE);
-    (void)tfcard_spi_rw(TFCARD_DUMMY_BYTE);
+    (void)tfcard_spi_rw_fast(TFCARD_DUMMY_BYTE);
+    (void)tfcard_spi_rw_fast(TFCARD_DUMMY_BYTE);
 
     return BSP_TFCARD_OK;
 }

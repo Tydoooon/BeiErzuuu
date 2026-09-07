@@ -1,0 +1,81 @@
+﻿ M .mxproject
+ M BeiErZu.ioc
+ M CMakeLists.txt
+ M Core/Inc/main.h
+ M Core/Src/freertos.c
+ M Core/Src/gpio.c
+ M Core/Src/i2s.c
+ M Core/Src/main.c
+ M USB_HOST/App/usb_host.c
+ M app/app_ui.c
+ M app/app_ui_common.c
+ M app/app_ui_internal.h
+ M app/app_ui_music.c
+ M build/.ninja_deps
+ M build/.ninja_log
+ M build/BeiErZu.elf
+ M build/BeiErZu.map
+ M build/CMakeCache.txt
+ M build/CMakeFiles/BeiErZu.dir/Core/Src/freertos.c.obj
+ M build/CMakeFiles/BeiErZu.dir/Core/Src/gpio.c.obj
+ M build/CMakeFiles/BeiErZu.dir/Core/Src/i2s.c.obj
+ M build/CMakeFiles/BeiErZu.dir/Core/Src/main.c.obj
+ M build/CMakeFiles/BeiErZu.dir/Core/Src/spi.c.obj
+ M build/CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_hal_msp.c.obj
+ M build/CMakeFiles/BeiErZu.dir/Core/Src/stm32f4xx_it.c.obj
+ M build/CMakeFiles/BeiErZu.dir/Core/Src/tim.c.obj
+ M build/CMakeFiles/BeiErZu.dir/Middlewares/ST/STM32_USB_Host_Library/Class/HID/Src/usbh_hid.c.obj
+ M build/CMakeFiles/BeiErZu.dir/Middlewares/ST/STM32_USB_Host_Library/Class/HID/Src/usbh_hid_keybd.c.obj
+ M build/CMakeFiles/BeiErZu.dir/Middlewares/ST/STM32_USB_Host_Library/Class/HID/Src/usbh_hid_mouse.c.obj
+ M build/CMakeFiles/BeiErZu.dir/Middlewares/ST/STM32_USB_Host_Library/Class/HID/Src/usbh_hid_parser.c.obj
+ M build/CMakeFiles/BeiErZu.dir/Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_core.c.obj
+ M build/CMakeFiles/BeiErZu.dir/Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_ctlreq.c.obj
+ M build/CMakeFiles/BeiErZu.dir/Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_ioreq.c.obj
+ M build/CMakeFiles/BeiErZu.dir/Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_pipes.c.obj
+ M build/CMakeFiles/BeiErZu.dir/USB_HOST/App/usb_host.c.obj
+ M build/CMakeFiles/BeiErZu.dir/USB_HOST/Target/usbh_conf.c.obj
+ M build/CMakeFiles/BeiErZu.dir/app/app_backlight.c.obj
+ M build/CMakeFiles/BeiErZu.dir/app/app_lcd.c.obj
+ M build/CMakeFiles/BeiErZu.dir/app/app_led.c.obj
+ M build/CMakeFiles/BeiErZu.dir/app/app_lvgl.c.obj
+ M build/CMakeFiles/BeiErZu.dir/app/app_mouse.c.obj
+ M build/CMakeFiles/BeiErZu.dir/app/app_ui.c.obj
+ M build/CMakeFiles/BeiErZu.dir/app/app_ui_common.c.obj
+ M build/CMakeFiles/BeiErZu.dir/app/app_ui_draw.c.obj
+ M build/CMakeFiles/BeiErZu.dir/app/app_ui_file.c.obj
+ M build/CMakeFiles/BeiErZu.dir/app/app_ui_font.c.obj
+ M build/CMakeFiles/BeiErZu.dir/app/app_ui_home.c.obj
+ M build/CMakeFiles/BeiErZu.dir/app/app_ui_log.c.obj
+ M build/CMakeFiles/BeiErZu.dir/app/app_ui_login.c.obj
+ M build/CMakeFiles/BeiErZu.dir/app/app_ui_model.c.obj
+ M build/CMakeFiles/BeiErZu.dir/app/app_ui_monitor.c.obj
+ M build/CMakeFiles/BeiErZu.dir/app/app_ui_music.c.obj
+ M build/CMakeFiles/BeiErZu.dir/app/app_ui_setting.c.obj
+ M build/CMakeFiles/BeiErZu.dir/app/app_w25q128.c.obj
+ M build/CMakeFiles/BeiErZu.dir/bsp/bsp_lcd.c.obj
+ M build/CMakeFiles/BeiErZu.dir/bsp/bsp_led.c.obj
+ M build/CMakeFiles/BeiErZu.dir/bsp/bsp_tfcard.c.obj
+ M build/CMakeFiles/BeiErZu.dir/bsp/bsp_w25q128.c.obj
+ M build/CMakeFiles/BeiErZu.dir/dev/dev_lcd.c.obj
+ M build/CMakeFiles/BeiErZu.dir/dev/dev_led.c.obj
+ M build/CMakeFiles/InstallScripts.json
+ M build/CMakeFiles/TargetDirectories.txt
+ M build/CMakeFiles/rules.ninja
+ M build/build.ninja
+ M build/cmake_install.cmake
+ M build/compile_commands.json
+ M cmake/stm32cubemx/CMakeLists.txt
+?? FATFS/
+?? Middlewares/Third_Party/FatFs/
+?? app/app_music_player.c
+?? app/app_music_player.h
+?? app/app_wav.c
+?? app/app_wav.h
+?? bsp/bsp_max98357a.c
+?? bsp/bsp_max98357a.h
+?? build/CMakeFiles/BeiErZu.dir/FATFS/
+?? build/CMakeFiles/BeiErZu.dir/Middlewares/Third_Party/FatFs/
+?? build/CMakeFiles/BeiErZu.dir/app/app_music_player.c.obj
+?? build/CMakeFiles/BeiErZu.dir/app/app_wav.c.obj
+?? build/CMakeFiles/BeiErZu.dir/bsp/bsp_max98357a.c.obj
+?? tools/cubemx_restore_snapshot/

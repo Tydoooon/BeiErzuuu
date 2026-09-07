@@ -60,6 +60,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     bsp/bsp_lcd.c
     bsp/bsp_tfcard.c
     bsp/bsp_w25q128.c
+    bsp/bsp_max98357a.c
+    bsp/bsp_buzzer.c
     dev/dev_head.h
     dev/dev_lcd.c
     dev/dev_led.c
@@ -76,6 +78,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     app/app_ui_monitor.c
     app/app_ui_setting.c
     app/app_event.c
+    app/app_music_player.c
+    app/app_wav.c
     gui/pic.c
     LVGL/GUI/lvgl/src/core/lv_disp.c
     LVGL/GUI/lvgl/src/core/lv_event.c
@@ -186,7 +190,6 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     LVGL/GUI/lvgl/src/font/lv_font_montserrat_8.c
     LVGL/GUI/lvgl/src/font/lv_font_simsun_16_cjk.c
     LVGL/GUI/lvgl/src/font/lv_font_unscii_16.c
-    LVGL/GUI/lvgl/src/font/lv_font_unscii_8.c
     LVGL/GUI/lvgl/src/draw/stm32_dma2d/lv_gpu_stm32_dma2d.c
     LVGL/GUI/lvgl/src/draw/sdl/lv_draw_sdl.c
     LVGL/GUI/lvgl/src/draw/sdl/lv_draw_sdl_arc.c

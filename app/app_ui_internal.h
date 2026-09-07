@@ -135,6 +135,8 @@ void ui_create_draw_app(void);
 void ui_draw_handle_key(uint8_t key_id);
 void ui_create_music_app(void);
 void ui_music_handle_key(uint8_t key_id);
+void ui_music_stop(void);
+void ui_music_sync_state(void);
 void ui_create_log_app(void);
 void ui_log_handle_wheel(int16_t wheel_delta);
 void ui_create_monitor_app(void);

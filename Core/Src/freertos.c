@@ -29,6 +29,7 @@
 #include "app_lcd.h"
 #include "app_lvgl.h"
 #include "app_mouse.h"
+#include "app_music_player.h"
 #include "app_ui.h"
 #include "app_w25q128.h"
 #include "app_event.h"
@@ -56,6 +57,7 @@ osThreadId_t keyTaskHandle;
 osThreadId_t lcdTaskHandle;
 osThreadId_t w25q128TaskHandle;
 osThreadId_t usbinitTaskHandle;
+osThreadId_t audioTaskHandle;
 const osThreadAttr_t startTask_attributes = {
   .name = "startTask",
 #if APP_W25Q128_FONT_PROGRAMMER_ENABLE
@@ -85,6 +87,14 @@ const osThreadAttr_t initTask_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+const osThreadAttr_t audioTask_attributes = {
+  .name = "audioTask",
+  .stack_size = 2048,
+  /* 音频任务优先级必须高于 LCD/按键任务（同为 osPriorityNormal）：
+   * 读卡填缓冲是“忙等不释放 CPU”的软件 SPI，若与 LVGL 渲染同优先级时间片轮转，
+   * 容易被抢断导致读卡赶不上 46ms 的 DMA 播放窗口 -> underrun -> I2S transmit failed。 */
+  .priority = (osPriority_t) osPriorityAboveNormal,
+};
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -101,6 +111,7 @@ void StartKeyTask(void *argument);
 void StartLCDTask(void *argument);
 void StartW25Q128Task(void *argument);
 void StartInitTask(void *argument);
+void StartAudioTask(void *argument);
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
@@ -182,6 +193,8 @@ void StartStartTask(void *argument)
   lcdTaskHandle = osThreadNew(StartLCDTask, NULL, &lcdTask_attributes);
   w25q128TaskHandle = osThreadNew(StartW25Q128Task, NULL, &w25q128Task_attributes);
   usbinitTaskHandle = osThreadNew(StartInitTask, NULL, &initTask_attributes);
+  app_music_player_init();
+  audioTaskHandle = osThreadNew(StartAudioTask, NULL, &audioTask_attributes);
   
   osThreadExit();
 }
@@ -242,6 +255,11 @@ void StartInitTask(void *argument)
 {
   (void)argument;
   MX_USB_HOST_Init();
+  osThreadExit();
+}
+void StartAudioTask(void *argument)
+{
+  app_music_player_task(argument);
   osThreadExit();
 }
 /* USER CODE END Application */
