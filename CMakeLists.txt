@@ -80,6 +80,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     app/app_event.c
     app/app_music_player.c
     app/app_wav.c
+    app/app_power.c
     gui/pic.c
     LVGL/GUI/lvgl/src/core/lv_disp.c
     LVGL/GUI/lvgl/src/core/lv_event.c

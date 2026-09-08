@@ -4,6 +4,7 @@
 
 #define UI_MUSIC_MAX_TRACKS 12U
 #define UI_MUSIC_SYNC_INTERVAL_MS 100U
+#define UI_MUSIC_WHEEL_STEP 24
 
 static void ui_music_set_playing(bool playing);
 static void ui_music_apply_play_state(bool playing);
@@ -11,6 +12,7 @@ static void ui_music_toggle(void);
 static void ui_music_scan_tracks(void);
 static void ui_music_refresh_list(void);
 static void ui_music_refresh_detail(void);
+static void ui_music_refresh_progress(void);
 static void ui_music_select_track(uint8_t track);
 static void ui_music_select_next(void);
 static void ui_music_select_prev(void);
@@ -22,6 +24,7 @@ static const char *ui_music_wav_status_text(app_wav_status_t status);
 static app_wav_track_t g_music_tracks[UI_MUSIC_MAX_TRACKS];
 static lv_obj_t *g_music_list;
 static lv_obj_t *g_music_detail;
+static lv_obj_t *g_music_progress;
 static lv_obj_t *g_music_play_button;
 static size_t g_music_track_count;
 static uint8_t g_music_selected;
@@ -44,6 +47,53 @@ static void music_play_event_cb(lv_event_t *e)
     ui_log(g_music_playing ? UI_TEXT_MUSIC_LOG_PLAY : UI_TEXT_MUSIC_LOG_STOP);
 }
 
+static void ui_music_progress_event_cb(lv_event_t *e)
+{
+    app_music_player_status_t status;
+    lv_indev_t *indev = lv_indev_get_act();
+    lv_obj_t *bar = lv_event_get_target(e);
+    lv_point_t point;
+    lv_area_t area;
+    int32_t x;
+    int32_t w;
+    uint32_t total;
+    uint32_t offset;
+
+    if (indev == NULL || bar == NULL) {
+        return;
+    }
+
+    app_music_player_get_status(&status);
+    if (status.state != APP_MUSIC_PLAYER_STATE_PLAYING &&
+        status.state != APP_MUSIC_PLAYER_STATE_LOADING) {
+        return;   /* 未在播放，不响应跳转 */
+    }
+    total = status.wav_info.data_size;
+    if (total == 0U) {
+        return;
+    }
+
+    lv_indev_get_point(indev, &point);
+    lv_obj_get_coords(bar, &area);
+    w = (int32_t)(area.x2 - area.x1) + 1;
+    if (w <= 0) {
+        return;
+    }
+    x = point.x - area.x1;
+    if (x < 0) {
+        x = 0;
+    } else if (x > w) {
+        x = w;
+    }
+
+    /* 点击位置 -> 字节偏移（帧对齐在 app_wav_seek_data 内完成） */
+    offset = (uint32_t)(((uint64_t)total * (uint32_t)x) / (uint32_t)w);
+
+    g_input_events++;
+    app_ui_notify_activity();
+    app_music_player_request_seek(offset);
+}
+
 void ui_music_handle_key(uint8_t key_id)
 {
     if (key_id == 1U) {
@@ -57,14 +107,15 @@ void ui_music_handle_key(uint8_t key_id)
         ui_music_scan_tracks();
         ui_music_refresh_list();
         ui_music_refresh_detail();
-    } else if (key_id == 4U) {
-        ui_music_stop();
-    }
+    } /* K4：由上层退出到主界面，音乐后台继续播放，不在此停止 */
 }
 
 void ui_create_music_app(void)
 {
     lv_obj_t *scr = ui_create_app_frame(UI_TEXT_APP_MUSIC);
+
+    /* 重新进入时立即同步一次播放状态（可能曲目已在后台播完） */
+    g_music_last_sync_tick = 0;
 
     g_music_list = lv_list_create(scr);
     lv_obj_set_size(g_music_list, 216, 122);
@@ -73,20 +124,40 @@ void ui_create_music_app(void)
     lv_obj_set_scroll_dir(g_music_list, LV_DIR_VER);
     lv_obj_set_scrollbar_mode(g_music_list, LV_SCROLLBAR_MODE_AUTO);
 
-    g_music_detail = ui_label(scr, "", 12, 176);
+    g_music_detail = ui_label(scr, "", 12, 174);
     lv_obj_set_width(g_music_detail, 216);
 
-    g_music_status = ui_label(scr, "", 12, 232);
+    g_music_progress = lv_bar_create(scr);
+    lv_obj_set_size(g_music_progress, 216, 10);
+    lv_obj_align(g_music_progress, LV_ALIGN_TOP_LEFT, 12, 232);
+    lv_bar_set_range(g_music_progress, 0, 100);
+    lv_bar_set_value(g_music_progress, 0, LV_ANIM_OFF);
+    lv_obj_set_style_bg_color(g_music_progress, lv_color_hex(0xD1D5DB), LV_PART_MAIN);
+    lv_obj_set_style_bg_color(g_music_progress, lv_color_hex(0x2F80ED), LV_PART_INDICATOR);
+    lv_obj_add_flag(g_music_progress, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_event_cb(g_music_progress, ui_music_progress_event_cb, LV_EVENT_CLICKED, NULL);
+
+    g_music_status = ui_label(scr, "", 12, 248);
     lv_obj_set_width(g_music_status, 216);
 
     g_music_play_button = ui_button(scr, g_music_playing ? UI_TEXT_MUSIC_STOP : UI_TEXT_MUSIC_PLAY,
-                                    44, 260, 80, 32, music_play_event_cb, NULL);
+                                    44, 268, 80, 32, music_play_event_cb, NULL);
     ui_label(scr, "K1 Play  K2 Prev  K3 Next  K4 Exit  K5 Scan", 4, 304);
 
     ui_music_scan_tracks();
     ui_music_refresh_list();
     ui_music_refresh_detail();
     ui_load_screen(scr);
+}
+
+void ui_music_handle_wheel(int16_t wheel_delta)
+{
+    if (g_music_list == NULL || wheel_delta == 0) {
+        return;
+    }
+
+    lv_obj_scroll_by_bounded(g_music_list, 0,
+                             (lv_coord_t)wheel_delta * UI_MUSIC_WHEEL_STEP, LV_ANIM_OFF);
 }
 
 static void ui_music_set_playing(bool playing)
@@ -150,6 +221,7 @@ void ui_music_sync_state(void)
 
     g_music_last_status = status.last_status;
     ui_music_refresh_detail();
+    ui_music_refresh_progress();
 }
 
 static void ui_music_scan_tracks(void)
@@ -223,14 +295,12 @@ static void ui_music_refresh_detail(void)
         lv_label_set_text(g_music_detail, "TF: no WAV file in root or /Music");
     } else if (status.state == APP_MUSIC_PLAYER_STATE_LOADING ||
                status.state == APP_MUSIC_PLAYER_STATE_PLAYING) {
-        snprintf(detail, sizeof(detail), "%s\n%s\n%luHz %uch %ubit\n%lu/%luB",
+        snprintf(detail, sizeof(detail), "%s\n%s\n%luHz %uch %ubit",
                  status.track_name[0] != '\0' ? status.track_name : g_music_tracks[g_music_selected].name,
                  ui_music_state_text(status.state),
                  (unsigned long)status.wav_info.sample_rate,
                  (unsigned)status.wav_info.channels,
-                 (unsigned)status.wav_info.bits_per_sample,
-                 (unsigned long)status.bytes_played,
-                 (unsigned long)status.wav_info.data_size);
+                 (unsigned)status.wav_info.bits_per_sample);
         lv_label_set_text(g_music_detail, detail);
     } else {
         snprintf(detail, sizeof(detail), "%s\nSize: %luB",
@@ -243,6 +313,39 @@ static void ui_music_refresh_detail(void)
                           g_music_playing ? UI_TEXT_MUSIC_PLAYING : UI_TEXT_MUSIC_STOPPED,
                           g_settings.system_volume,
                           (unsigned)g_music_track_count);
+}
+
+static void ui_music_refresh_progress(void)
+{
+    app_music_player_status_t status;
+    bool playing;
+    uint32_t total;
+    uint32_t played;
+    int32_t pct;
+
+    if (g_music_progress == NULL) {
+        return;
+    }
+
+    app_music_player_get_status(&status);
+    playing = (status.state == APP_MUSIC_PLAYER_STATE_LOADING ||
+               status.state == APP_MUSIC_PLAYER_STATE_PLAYING);
+    total = status.wav_info.data_size;
+    played = status.bytes_played;
+
+    if (!playing || total == 0U) {
+        lv_bar_set_value(g_music_progress, 0, LV_ANIM_OFF);
+        return;
+    }
+
+    pct = (int32_t)(((uint64_t)played * 100U) / total);
+    if (pct > 100) {
+        pct = 100;
+    } else if (pct < 0) {
+        pct = 0;
+    }
+
+    lv_bar_set_value(g_music_progress, pct, LV_ANIM_OFF);
 }
 
 static void ui_music_select_track(uint8_t track)

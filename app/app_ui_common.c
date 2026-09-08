@@ -73,10 +73,7 @@ lv_obj_t *ui_add_sleep_button(lv_obj_t *parent, lv_coord_t x, lv_coord_t y)
 static void back_event_cb(lv_event_t *e)
 {
     (void)e;
-    if (g_music_playing) {
-        ui_music_stop();
-        ui_log(UI_TEXT_BACK_MUSIC_STOP);
-    }
+    /* 返回主界面不再停止音乐：音频任务独立在后台继续播放 */
     g_input_events++;
     ui_create_main();
 }

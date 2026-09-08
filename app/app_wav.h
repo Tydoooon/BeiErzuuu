@@ -57,6 +57,7 @@ app_wav_status_t app_wav_scan_root(app_wav_track_t *tracks, size_t max_tracks, s
 app_wav_status_t app_wav_open(app_wav_file_t *wav, const char *path);
 app_wav_status_t app_wav_read(app_wav_file_t *wav, void *buffer, uint32_t bytes_to_read, uint32_t *bytes_read);
 app_wav_status_t app_wav_rewind_data(app_wav_file_t *wav);
+app_wav_status_t app_wav_seek_data(app_wav_file_t *wav, uint32_t byte_offset);
 void app_wav_close(app_wav_file_t *wav);
 
 #ifdef __cplusplus

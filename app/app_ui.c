@@ -1,6 +1,7 @@
 #include "app_ui_internal.h"
 #include "app_backlight.h"
 #include "app_mouse.h"
+#include "app_power.h"
 
 static uint16_t app_ui_get_screen_timeout_s(void);
 
@@ -43,6 +44,7 @@ static void app_ui_process_key(uint8_t key_id);
 static void app_ui_process_home_key(uint8_t key_id);
 static void app_ui_process_current_app_key(uint8_t key_id);
 static void app_ui_process_mouse_wheel(void);
+static void app_ui_process_mouse_right_click(void);
 
 void app_ui_create(void)
 {
@@ -79,6 +81,7 @@ void app_ui_handle_idle(void)
     uint32_t timeout_ms = (uint32_t)app_ui_get_screen_timeout_s() * 1000U;
 
     app_ui_process_mouse_wheel();
+    app_ui_process_mouse_right_click();
     ui_music_sync_state();
 
     if (app_event_is_set(APP_EVT_SCREEN_SLEEP) || timeout_ms == 0U) {
@@ -88,15 +91,23 @@ void app_ui_handle_idle(void)
         return;
     }
 
-    app_backlight_set_percent(0U);
-    app_event_set(APP_EVT_SCREEN_SLEEP);
+    app_ui_sleep_now();
 }
 
 void app_ui_sleep_now(void)
 {
-    g_last_activity_tick = lv_tick_get();
-    app_backlight_set_percent(0U);
-    app_event_set(APP_EVT_SCREEN_SLEEP);
+    if (app_power_can_sleep()) {
+        /* 真低功耗：进入 STOP，按键唤醒后恢复 */
+        app_event_set(APP_EVT_SCREEN_SLEEP);
+        app_power_enter_stop();
+        app_event_clear(APP_EVT_SCREEN_SLEEP);
+        g_last_activity_tick = lv_tick_get();
+    } else {
+        /* 有音乐播放或 USB 鼠标活动时，仅关背光（不进入低功耗） */
+        g_last_activity_tick = lv_tick_get();
+        app_backlight_set_percent(0U);
+        app_event_set(APP_EVT_SCREEN_SLEEP);
+    }
 }
 
 void app_ui_lock_screen(void)
@@ -243,8 +254,28 @@ static void app_ui_process_mouse_wheel(void)
     case UI_APP_LOG:
         ui_log_handle_wheel(wheel_delta);
         break;
+    case UI_APP_MUSIC:
+        ui_music_handle_wheel(wheel_delta);
+        break;
+    case UI_APP_MONITOR:
+        ui_monitor_handle_wheel(wheel_delta);
+        break;
     default:
         break;
+    }
+}
+
+static void app_ui_process_mouse_right_click(void)
+{
+    if (!app_mouse_take_right_click()) {
+        return;
+    }
+
+    app_ui_notify_activity();
+    g_input_events++;
+
+    if (g_current_app == UI_APP_FILE) {
+        ui_file_handle_right_click(app_mouse_get_x(), app_mouse_get_y());
     }
 }
 

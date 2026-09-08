@@ -32,12 +32,11 @@
 #define UI_TEXT_HINT_MONITOR            "任务/内存/状态"
 #define UI_TEXT_HINT_SETTING            "亮度/音量/熄屏"
 
-#define UI_TEXT_BACK_MUSIC_STOP         "退出音乐应用并停止播放"
-
 #define UI_TEXT_FILE_NEW                "新建"
 #define UI_TEXT_FILE_DELETE             "删除"
 #define UI_TEXT_FILE_SAVE               "保存"
 #define UI_TEXT_FILE_OPEN               "打开"
+#define UI_TEXT_FILE_RENAME             "重命名"
 #define UI_TEXT_FILE_EMPTY              "暂无文件"
 #define UI_TEXT_FILE_NONE               "未选择文件"
 #define UI_TEXT_FILE_DETAIL_FMT         "名称:%s\n类型:%s  大小:%luB\n位置:0x%08lX  状态:正常\n内容:%s"
@@ -47,6 +46,8 @@
 #define UI_TEXT_FILE_DELETED            "删除文件"
 #define UI_TEXT_FILE_SAVED              "保存文件"
 #define UI_TEXT_FILE_OPENED             "打开文件"
+#define UI_TEXT_FILE_RENAMED            "重命名文件"
+#define UI_TEXT_FILE_CLOSE              "关闭"
 
 #define UI_TEXT_DRAW_TIP                "鼠标/触摸拖动画图"
 #define UI_TEXT_DRAW_CLEAR              "清空"
@@ -69,7 +70,9 @@
 
 #define UI_TEXT_LOG_CLEAR               "清空日志"
 
-#define UI_TEXT_MONITOR_FMT             "运行时间:%lus\n系统状态:%s\n输入事件:%lu\n丢弃事件:%lu\n错误事件:%lu\n任务数量:%lu\n当前栈水位:%lu\nRTOS剩余堆:%luB\nLVGL空闲:%u%%"
+#define UI_TEXT_MONITOR_FMT             "运行时间:%lus\n系统状态:%s\n输入事件:%lu\n丢弃事件:%lu\n错误事件:%lu\nRTOS剩余堆:%luB\nLVGL空闲:%u%%"
+#define UI_TEXT_MONITOR_TASKS           "任务列表"
+#define UI_TEXT_MONITOR_NO_TASK         "无任务信息"
 #define UI_TEXT_STATUS_NORMAL           "正常"
 
 #define UI_TEXT_SETTING_SENSITIVITY     "灵敏度"

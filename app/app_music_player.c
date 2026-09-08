@@ -33,13 +33,15 @@
 typedef enum
 {
     APP_MUSIC_PLAYER_CMD_PLAY = 0,
-    APP_MUSIC_PLAYER_CMD_STOP
+    APP_MUSIC_PLAYER_CMD_STOP,
+    APP_MUSIC_PLAYER_CMD_SEEK
 } app_music_player_cmd_type_t;
 
 typedef struct
 {
     app_music_player_cmd_type_t type;
     app_wav_track_t track;
+    uint32_t offset;      /* CMD_SEEK 的目标字节偏移 */
 } app_music_player_cmd_t;
 
 static QueueHandle_t g_music_cmd_queue;
@@ -56,6 +58,8 @@ static volatile uint16_t *g_armed;        /* 已填好、等待发送完成中�
 static volatile bool      g_dma_running;  /* 当前是否有一个 DMA 正在播放 */
 static volatile bool      g_stream_eof;   /* PCM 已读完（任务置 1） */
 static volatile bool      g_stop_req;     /* 请求停止（任务置 1，中断据此不再续传） */
+static volatile bool      g_seek_pending; /* 有 seek 待处理（任务置 1） */
+static volatile uint32_t  g_seek_offset;  /* seek 目标字节偏移 */
 static volatile bool      g_i2s_error;    /* I2S/DMA 出错 */
 static TaskHandle_t       g_audio_task_h;
 
@@ -70,7 +74,7 @@ static uint32_t app_music_player_pcm_to_words(const uint8_t *in, uint32_t in_byt
                                               const app_wav_info_t *info, uint8_t volume);
 static uint16_t app_music_player_le16(const uint8_t *data);
 static int app_music_player_wait_event(uint32_t timeout_ms);
-static bool app_music_player_poll_stop(void);
+static void app_music_player_poll_command(void);
 static app_music_player_error_t app_music_player_error_from_wav_status(app_wav_status_t status);
 static void app_music_player_stream_reset_flags(void);
 static void app_music_player_audio_cleanup(void);
@@ -190,6 +194,20 @@ void app_music_player_request_stop(void)
     (void)app_music_player_send_cmd(&cmd);
 }
 
+void app_music_player_request_seek(uint32_t byte_offset)
+{
+    app_music_player_cmd_t cmd;
+
+    if (g_music_cmd_queue == NULL) {
+        return;
+    }
+
+    cmd.type = APP_MUSIC_PLAYER_CMD_SEEK;
+    memset(&cmd.track, 0, sizeof(cmd.track));
+    cmd.offset = byte_offset;
+    (void)app_music_player_send_cmd(&cmd);
+}
+
 app_music_player_state_t app_music_player_get_state(void)
 {
     app_music_player_state_t state;
@@ -236,6 +254,11 @@ void app_music_player_task(void *argument)
             app_music_player_audio_cleanup();
             app_music_player_set_state(APP_MUSIC_PLAYER_STATE_IDLE, APP_WAV_OK, APP_MUSIC_PLAYER_ERROR_NONE);
             app_event_clear(APP_EVT_MUSIC_PLAYING);
+            continue;
+        }
+
+        if (cmd.type == APP_MUSIC_PLAYER_CMD_SEEK) {
+            /* 空闲状态下收到的 seek 无意义（UI 仅在播放中发送），直接丢弃 */
             continue;
         }
 
@@ -299,6 +322,10 @@ static void app_music_player_play_track(const app_wav_track_t *track)
         return;
     }
 
+    /* 清除上一次可能残留的 seek 状态（例如 seek 与 I2S 错误并发时） */
+    g_seek_pending = false;
+    g_seek_offset = 0U;
+
     app_music_player_set_state(APP_MUSIC_PLAYER_STATE_LOADING, APP_WAV_OK, APP_MUSIC_PLAYER_ERROR_NONE);
     taskENTER_CRITICAL();
     memset(g_music_status.track_name, 0, sizeof(g_music_status.track_name));
@@ -341,8 +368,6 @@ static void app_music_player_play_track(const app_wav_track_t *track)
         return;
     }
 
-    app_music_player_stream_reset_flags();
-
     /* 开功放（SD=1）并回读确认 */
     (void)BSP_MAX98357A_Enable(true);
     {
@@ -358,7 +383,25 @@ static void app_music_player_play_track(const app_wav_track_t *track)
     app_music_player_set_state(APP_MUSIC_PLAYER_STATE_PLAYING, APP_WAV_OK, APP_MUSIC_PLAYER_ERROR_NONE);
     app_event_set(APP_EVT_MUSIC_PLAYING);
 
-    err = app_music_player_stream(&wav);
+    for (;;) {
+        err = app_music_player_stream(&wav);
+
+        if (g_seek_pending && !g_i2s_error) {
+            /* 播放中 seek：软停 DMA（不关功放）、跳转、重新起播 */
+            uint32_t target = g_seek_offset;
+
+            g_seek_pending = false;
+            g_armed = NULL;
+            g_dma_running = false;
+            (void)BSP_MAX98357A_TxStopDma();
+            if (app_wav_seek_data(&wav, target) != APP_WAV_OK) {
+                err = APP_MUSIC_PLAYER_ERROR_WAV_SEEK;
+                break;
+            }
+            continue;
+        }
+        break;
+    }
 
     bytes_played = wav.data_read;
     taskENTER_CRITICAL();
@@ -395,6 +438,8 @@ static app_music_player_error_t app_music_player_stream(app_wav_file_t *wav)
     uint16_t *armed_next = NULL;
     uint32_t got;
 
+    app_music_player_stream_reset_flags();
+
     got = app_music_player_fill(g_music_tx[0], wav, &wav->info);
     if (got == 0U) {
         /* 空文件/无数据 */
@@ -418,7 +463,7 @@ static app_music_player_error_t app_music_player_stream(app_wav_file_t *wav)
     }
 
     while (!g_stop_req && !g_i2s_error) {
-        (void)app_music_player_poll_stop();
+        app_music_player_poll_command();
         if (g_stop_req || g_i2s_error) {
             break;
         }
@@ -506,6 +551,12 @@ static uint32_t app_music_player_fill(uint16_t *dst, app_wav_file_t *wav, const 
     if (bytes_read == 0U) {
         return 0U;
     }
+
+    /* 实时回填“已播放字节数”，供 UI 进度条读取。
+     * 否则 bytes_played 只在整曲流式结束后更新一次，进度条整首停在 0%。 */
+    taskENTER_CRITICAL();
+    g_music_status.bytes_played = wav->data_read;
+    taskEXIT_CRITICAL();
 
     {
         uint32_t out_words = app_music_player_pcm_to_words(g_music_in_buf, bytes_read,
@@ -617,7 +668,7 @@ static int app_music_player_wait_event(uint32_t timeout_ms)
     uint32_t waited = 0U;
 
     while (waited < timeout_ms) {
-        (void)app_music_player_poll_stop();
+        app_music_player_poll_command();
         if (g_stop_req || g_i2s_error) {
             return 0;
         }
@@ -630,21 +681,32 @@ static int app_music_player_wait_event(uint32_t timeout_ms)
 }
 
 /**
- * @brief 检查是否有 STOP 命令在队列里，有则消费并置停止标志。
+ * @brief 检查命令队列（流式播放期间轮询），消费 STOP/SEEK 并置对应标志。
+ *        仅消费队首一条命令：STOP 优先于 SEEK 的语义由 FIFO 顺序保证。
  */
-static bool app_music_player_poll_stop(void)
+static void app_music_player_poll_command(void)
 {
     app_music_player_cmd_t cmd;
 
     if (g_music_cmd_queue == NULL) {
-        return false;
+        return;
     }
-    if (xQueuePeek(g_music_cmd_queue, &cmd, 0) == pdPASS && cmd.type == APP_MUSIC_PLAYER_CMD_STOP) {
+    if (xQueuePeek(g_music_cmd_queue, &cmd, 0) != pdPASS) {
+        return;
+    }
+
+    if (cmd.type == APP_MUSIC_PLAYER_CMD_STOP) {
         (void)xQueueReceive(g_music_cmd_queue, &cmd, 0);
         g_stop_req = true;
-        return true;
+        return;
     }
-    return false;
+    if (cmd.type == APP_MUSIC_PLAYER_CMD_SEEK) {
+        (void)xQueueReceive(g_music_cmd_queue, &cmd, 0);
+        g_seek_offset = cmd.offset;
+        g_seek_pending = true;
+        g_stop_req = true;   /* 中断当前流，交由 play_track 处理跳转并重新起播 */
+        return;
+    }
 }
 
 /* ================================================================== */

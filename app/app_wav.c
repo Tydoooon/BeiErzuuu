@@ -140,6 +140,29 @@ app_wav_status_t app_wav_rewind_data(app_wav_file_t *wav)
     return APP_WAV_OK;
 }
 
+app_wav_status_t app_wav_seek_data(app_wav_file_t *wav, uint32_t byte_offset)
+{
+    if (wav == NULL || !wav->opened) {
+        return APP_WAV_INVALID_PARAM;
+    }
+
+    if (byte_offset > wav->info.data_size) {
+        byte_offset = wav->info.data_size;
+    }
+
+    /* 对齐到完整帧（block_align 整数倍），避免从半帧处解码出爆音 */
+    if (wav->info.block_align > 1U) {
+        byte_offset -= byte_offset % wav->info.block_align;
+    }
+
+    if (f_lseek(&wav->file, wav->info.data_offset + byte_offset) != FR_OK) {
+        return APP_WAV_SEEK_FAILED;
+    }
+
+    wav->data_read = byte_offset;
+    return APP_WAV_OK;
+}
+
 void app_wav_close(app_wav_file_t *wav)
 {
     if (wav == NULL || !wav->opened) {

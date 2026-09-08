@@ -46,6 +46,7 @@ typedef struct
 void app_music_player_init(void);
 bool app_music_player_request_play(const app_wav_track_t *track);
 void app_music_player_request_stop(void);
+void app_music_player_request_seek(uint32_t byte_offset);
 app_music_player_state_t app_music_player_get_state(void);
 void app_music_player_get_status(app_music_player_status_t *status);
 void app_music_player_task(void *argument);

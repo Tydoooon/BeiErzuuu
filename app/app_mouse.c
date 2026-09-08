@@ -40,6 +40,8 @@ static volatile int32_t g_mouse_pending_dx;
 static volatile int32_t g_mouse_pending_dy;
 static volatile uint8_t g_mouse_pending_pressed;
 static volatile uint8_t g_mouse_event_pending;
+static volatile uint8_t g_mouse_right_click_pending;
+static uint8_t g_mouse_right_state;
 
 static int32_t clamp_coord_fp(int32_t value, int16_t max_value);
 static void create_cursor(void);
@@ -64,6 +66,8 @@ void app_mouse_init(void)
     g_mouse_pending_dy = 0;
     g_mouse_pending_pressed = 0U;
     g_mouse_event_pending = 0U;
+    g_mouse_right_click_pending = 0U;
+    g_mouse_right_state = 0U;
 
     lv_indev_drv_init(&indev_drv);
     indev_drv.type = LV_INDEV_TYPE_POINTER;
@@ -119,12 +123,35 @@ int16_t app_mouse_take_wheel_delta(void)
     return wheel;
 }
 
+int16_t app_mouse_get_x(void)
+{
+    return g_mouse_x;
+}
+
+int16_t app_mouse_get_y(void)
+{
+    return g_mouse_y;
+}
+
+bool app_mouse_take_right_click(void)
+{
+    bool clicked;
+
+    taskENTER_CRITICAL();
+    clicked = g_mouse_right_click_pending != 0U;
+    g_mouse_right_click_pending = 0U;
+    taskEXIT_CRITICAL();
+
+    return clicked;
+}
+
 void USBH_HID_EventCallback(USBH_HandleTypeDef *phost)
 {
     HID_MOUSE_Info_TypeDef *info;
     int16_t dx;
     int16_t dy;
     int16_t wheel;
+    uint8_t right;
 
     if (Appli_state != APPLICATION_READY) {
         return;
@@ -141,6 +168,7 @@ void USBH_HID_EventCallback(USBH_HandleTypeDef *phost)
     dx = (int16_t)(int8_t)info->x;
     dy = (int16_t)(int8_t)info->y;
     wheel = (int16_t)info->wheel;
+    right = (uint8_t)(info->buttons[1] != 0U);
     if (wheel != 0) {
         dx = 0;
         dy = 0;
@@ -153,6 +181,10 @@ void USBH_HID_EventCallback(USBH_HandleTypeDef *phost)
     g_mouse_pending_dx += dx;
     g_mouse_pending_dy += dy;
     g_mouse_pending_pressed = (uint8_t)(info->buttons[0] != 0U);
+    if (right != 0U && g_mouse_right_state == 0U) {
+        g_mouse_right_click_pending = 1U;
+    }
+    g_mouse_right_state = right;
     g_mouse_event_pending = 1U;
     taskEXIT_CRITICAL();
 }

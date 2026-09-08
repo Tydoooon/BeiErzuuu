@@ -47,6 +47,21 @@ void key_scan(void)
     B5_last = B5;
 }
 
+void key_scan_reset(void)
+{
+    B1 = HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_7);
+    B2 = HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_8);
+    B3 = HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_9);
+    B4 = HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_10);
+    B5 = HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_11);
+
+    B1_last = B1;
+    B2_last = B2;
+    B3_last = B3;
+    B4_last = B4;
+    B5_last = B5;
+}
+
 QueueHandle_t KeyQueueInit(void)
 {
     QueueHandle_t KeyQueue;

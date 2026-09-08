@@ -9,6 +9,7 @@
 extern QueueHandle_t g_key_queue;
 
 void key_scan(void);
+void key_scan_reset(void);
 QueueHandle_t KeyQueueInit(void);
 
 #endif
