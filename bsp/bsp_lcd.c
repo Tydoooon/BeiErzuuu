@@ -5,6 +5,9 @@ _lcd_dev lcddev = {X_MAX_PIXEL, Y_MAX_PIXEL, 0x2C, 0x2A, 0x2B, USE_HORIZONTAL};
 u16 POINT_COLOR = BLACK;
 u16 BACK_COLOR = WHITE;
 
+/* RGB565 大端字节序转换 + 批量 SPI 发送用的行缓冲（宽 X_MAX_PIXEL 的一行 = 480B） */
+static u8 lcd_color_buf[X_MAX_PIXEL * 2];
+
 static void LCD_WriteByte(u8 data);
 
 static void LCD_WriteByte(u8 data)
@@ -37,6 +40,28 @@ void Lcd_WriteData_16Bit(u16 Data)
     LCD_RS_SET;
     LCD_WriteByte((u8)(Data >> 8));
     LCD_WriteByte((u8)Data);
+    LCD_CS_SET;
+}
+
+/* 批量写 RGB565 像素：CS/RS 只翻转一次，RGB565 转大端后一次 HAL 调用发整段。
+ * 相比 Lcd_WriteData_16Bit 逐像素翻转 CS/RS + 每字节一次 HAL_SPI_Transmit，
+ * 每像素开销从 ~数 us 降到 ~0.2us，是 LVGL 刷屏(鼠标/文字动画)流畅的关键。 */
+void Lcd_WriteColorBulk(const u16 *colors, u32 count)
+{
+    LCD_CS_CLR;
+    LCD_RS_SET;
+
+    while (count > 0U) {
+        u32 chunk = count > X_MAX_PIXEL ? (u32)X_MAX_PIXEL : count;
+        for (u32 i = 0U; i < chunk; i++) {
+            lcd_color_buf[i * 2U]      = (u8)(colors[i] >> 8);
+            lcd_color_buf[i * 2U + 1U] = (u8)colors[i];
+        }
+        (void)HAL_SPI_Transmit(&hspi1, lcd_color_buf, (u16)(chunk * 2U), 1000U);
+        colors += chunk;
+        count -= chunk;
+    }
+
     LCD_CS_SET;
 }
 

@@ -34,8 +34,6 @@ static void disp_init(void)
 
 static void disp_flush(lv_disp_drv_t *disp_drv, const lv_area_t *area, lv_color_t *color_p)
 {
-    int32_t x;
-    int32_t y;
     const int32_t area_width = area->x2 - area->x1 + 1;
 
     if (area->x2 < 0 || area->y2 < 0 ||
@@ -51,15 +49,25 @@ static void disp_flush(lv_disp_drv_t *disp_drv, const lv_area_t *area, lv_color_
     if (clipped_area.x2 >= lcddev.width) clipped_area.x2 = lcddev.width - 1;
     if (clipped_area.y2 >= lcddev.height) clipped_area.y2 = lcddev.height - 1;
 
+    const int32_t w = clipped_area.x2 - clipped_area.x1 + 1;
+    const int32_t h = clipped_area.y2 - clipped_area.y1 + 1;
+
     Lcd_SetRegion((u16)clipped_area.x1, (u16)clipped_area.y1,
                   (u16)clipped_area.x2, (u16)clipped_area.y2);
 
-    for (y = clipped_area.y1; y <= clipped_area.y2; y++)
+    if (clipped_area.x1 == area->x1 && clipped_area.y1 == area->y1 &&
+        clipped_area.x2 == area->x2 && clipped_area.y2 == area->y2)
     {
-        for (x = clipped_area.x1; x <= clipped_area.x2; x++)
+        /* 区域完全在屏内（LVGL 常规情形）：整块连续流式发送，远快于逐像素 */
+        Lcd_WriteColorBulk((const u16 *)color_p, (u32)(w * h));
+    }
+    else
+    {
+        /* 区域部分越界（罕见兜底）：逐行发送，源地址按原 area 步进 */
+        for (int32_t y = clipped_area.y1; y <= clipped_area.y2; y++)
         {
-            const lv_color_t *pixel = color_p + (y - area->y1) * area_width + (x - area->x1);
-            Lcd_WriteData_16Bit((u16)pixel->full);
+            const lv_color_t *src = color_p + (y - area->y1) * area_width + (clipped_area.x1 - area->x1);
+            Lcd_WriteColorBulk((const u16 *)src, (u32)w);
         }
     }
 

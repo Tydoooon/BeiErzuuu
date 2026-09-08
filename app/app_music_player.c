@@ -2,7 +2,6 @@
 
 #include "app_event.h"
 #include "app_ui.h"
-#include "bsp_buzzer.h"
 #include "bsp_max98357a.h"
 #include "FreeRTOS.h"
 #include "queue.h"
@@ -31,21 +30,9 @@
 /* 等待一次 DMA 完成事件的超时 */
 #define APP_MUSIC_PLAYER_WAIT_TIMEOUT_MS    2000U
 
-/* ------------------------------------------------------------------ */
-/* 蜂鸣器/功放自检音参数                                               */
-/* ------------------------------------------------------------------ */
-#define APP_MUSIC_PLAYER_TONE_FREQ_HZ       880U
-#define APP_MUSIC_PLAYER_TONE_DURATION_MS   700U
-#define APP_MUSIC_PLAYER_BUZZER_DUTY        50U
-#define APP_MUSIC_PLAYER_SINE_RATE_HZ       48000U
-#define APP_MUSIC_PLAYER_SINE_FREQ_HZ       440U
-#define APP_MUSIC_PLAYER_SINE_DURATION_MS   1200U
-#define APP_MUSIC_PLAYER_SINE_TABLE_LEN     32U
-
 typedef enum
 {
     APP_MUSIC_PLAYER_CMD_PLAY = 0,
-    APP_MUSIC_PLAYER_CMD_TONE_TEST,
     APP_MUSIC_PLAYER_CMD_STOP
 } app_music_player_cmd_type_t;
 
@@ -63,7 +50,6 @@ static app_music_player_status_t g_music_status;
 /* 播放缓冲（静态，避免占用 FreeRTOS 堆） */
 static uint8_t  g_music_in_buf[APP_MUSIC_PLAYER_IN_BYTES];        /* TF 卡读出的原始 PCM */
 static uint16_t g_music_tx[2][APP_MUSIC_PLAYER_HALF_WORDS];       /* I2S DMA 双缓冲 */
-static uint16_t g_music_sine_buf[APP_MUSIC_PLAYER_SINE_TABLE_LEN * 2U];  /* 自检正弦小块缓冲 */
 
 /* 音频任务与 ISR 之间的流控状态 */
 static volatile uint16_t *g_armed;        /* 已填好、等待发送完成中断自动续传的缓冲；NULL=无 */
@@ -71,18 +57,12 @@ static volatile bool      g_dma_running;  /* 当前是否有一个 DMA 正在播
 static volatile bool      g_stream_eof;   /* PCM 已读完（任务置 1） */
 static volatile bool      g_stop_req;     /* 请求停止（任务置 1，中断据此不再续传） */
 static volatile bool      g_i2s_error;    /* I2S/DMA 出错 */
-static volatile uint32_t  g_underruns;    /* 数据供不上的次数（读卡太慢/缓冲太小） */
-static volatile uint32_t  g_diag;         /* 失败点诊断位掩码（ISR 也写，故 volatile） */
 static TaskHandle_t       g_audio_task_h;
 
 static void app_music_player_reset_status(void);
 static void app_music_player_set_state(app_music_player_state_t state, app_wav_status_t status, app_music_player_error_t error);
-static void app_music_player_set_sd_enabled(bool enabled);
-static void app_music_player_set_test_stage(app_music_player_test_stage_t stage);
-static void app_music_player_set_test_flags(bool sd_seen_high, bool tx_sent);
 static bool app_music_player_send_cmd(const app_music_player_cmd_t *cmd);
 static void app_music_player_play_track(const app_wav_track_t *track);
-static void app_music_player_play_tone_test(void);
 static app_music_player_error_t app_music_player_stream(app_wav_file_t *wav);
 static uint32_t app_music_player_fill(uint16_t *dst, app_wav_file_t *wav, const app_wav_info_t *info);
 static uint32_t app_music_player_pcm_to_words(const uint8_t *in, uint32_t in_bytes,
@@ -94,14 +74,6 @@ static bool app_music_player_poll_stop(void);
 static app_music_player_error_t app_music_player_error_from_wav_status(app_wav_status_t status);
 static void app_music_player_stream_reset_flags(void);
 static void app_music_player_audio_cleanup(void);
-
-/* 440Hz 正弦 32 点查找表（用于功放链路自检，不依赖任何文件） */
-static const int16_t g_music_sine_table[APP_MUSIC_PLAYER_SINE_TABLE_LEN] = {
-    0, 6393, 12539, 18204, 23170, 27245, 30273, 32137,
-    32767, 32137, 30273, 27245, 23170, 18204, 12539, 6393,
-    0, -6393, -12539, -18204, -23170, -27245, -30273, -32137,
-    -32767, -32137, -30273, -27245, -23170, -18204, -12539, -6393
-};
 
 /* ================================================================== */
 /* HAL I2S 回调（__weak 覆盖）—— 负责“无缝续传”与异常上报            */
@@ -134,10 +106,6 @@ void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s)
     }
 
     g_dma_running = false;
-    if (!g_stream_eof && !g_stop_req && !g_i2s_error) {
-        g_underruns++;   /* 任务没来得及填好下一片 -> 读卡太慢或缓冲太小 */
-        g_diag |= APP_MUSIC_PLAYER_DIAG_UNDERRUN;
-    }
     __HAL_I2S_DISABLE(hi2s);
     CLEAR_BIT(hi2s->Instance->CR2, SPI_CR2_TXDMAEN);
 
@@ -155,7 +123,6 @@ void HAL_I2S_ErrorCallback(I2S_HandleTypeDef *hi2s)
 
     g_i2s_error = true;
     g_dma_running = false;
-    g_diag |= APP_MUSIC_PLAYER_DIAG_DMA_ERROR;
     __HAL_I2S_DISABLE(hi2s);
     CLEAR_BIT(hi2s->Instance->CR2, SPI_CR2_TXDMAEN);
 
@@ -181,7 +148,6 @@ void app_music_player_init(void)
         xQueueReset(g_music_cmd_queue);
     }
 
-    (void)BSP_Buzzer_Init();
     (void)BSP_MAX98357A_Init();   /* 功放 SD 拉低 + I2S 默认 44.1k */
 }
 
@@ -203,28 +169,6 @@ bool app_music_player_request_play(const app_wav_track_t *track)
 
     cmd.type = APP_MUSIC_PLAYER_CMD_PLAY;
     cmd.track = *track;
-    if (!app_music_player_send_cmd(&cmd)) {
-        app_music_player_set_state(APP_MUSIC_PLAYER_STATE_ERROR, APP_WAV_ERROR, APP_MUSIC_PLAYER_ERROR_QUEUE_FULL);
-        return false;
-    }
-
-    return true;
-}
-
-bool app_music_player_request_tone_test(void)
-{
-    app_music_player_cmd_t cmd;
-
-    if (g_music_cmd_queue == NULL) {
-        app_music_player_init();
-    }
-    if (g_music_cmd_queue == NULL) {
-        app_music_player_set_state(APP_MUSIC_PLAYER_STATE_ERROR, APP_WAV_ERROR, APP_MUSIC_PLAYER_ERROR_QUEUE_FULL);
-        return false;
-    }
-
-    cmd.type = APP_MUSIC_PLAYER_CMD_TONE_TEST;
-    memset(&cmd.track, 0, sizeof(cmd.track));
     if (!app_music_player_send_cmd(&cmd)) {
         app_music_player_set_state(APP_MUSIC_PLAYER_STATE_ERROR, APP_WAV_ERROR, APP_MUSIC_PLAYER_ERROR_QUEUE_FULL);
         return false;
@@ -266,12 +210,6 @@ void app_music_player_get_status(app_music_player_status_t *status)
     taskENTER_CRITICAL();
     *status = g_music_status;
     taskEXIT_CRITICAL();
-    status->diag = g_diag;   /* 32bit 读取原子，无需临界区 */
-}
-
-uint32_t app_music_player_get_underrun_count(void)
-{
-    return (uint32_t)g_underruns;
 }
 
 void app_music_player_task(void *argument)
@@ -301,11 +239,6 @@ void app_music_player_task(void *argument)
             continue;
         }
 
-        if (cmd.type == APP_MUSIC_PLAYER_CMD_TONE_TEST) {
-            app_music_player_play_tone_test();
-            continue;
-        }
-
         app_music_player_play_track(&cmd.track);
     }
 }
@@ -321,10 +254,6 @@ static void app_music_player_reset_status(void)
     g_music_status.state = APP_MUSIC_PLAYER_STATE_IDLE;
     g_music_status.last_status = APP_WAV_OK;
     g_music_status.last_error = APP_MUSIC_PLAYER_ERROR_NONE;
-    g_music_status.sd_enabled = false;
-    g_music_status.test_stage = APP_MUSIC_PLAYER_TEST_STAGE_NONE;
-    g_music_status.test_sd_seen_high = false;
-    g_music_status.test_tx_sent = false;
     taskEXIT_CRITICAL();
 }
 
@@ -334,31 +263,6 @@ static void app_music_player_set_state(app_music_player_state_t state, app_wav_s
     g_music_status.state = state;
     g_music_status.last_status = status;
     g_music_status.last_error = error;
-    if (state != APP_MUSIC_PLAYER_STATE_PLAYING) {
-        g_music_status.sd_enabled = false;
-    }
-    taskEXIT_CRITICAL();
-}
-
-static void app_music_player_set_sd_enabled(bool enabled)
-{
-    taskENTER_CRITICAL();
-    g_music_status.sd_enabled = enabled;
-    taskEXIT_CRITICAL();
-}
-
-static void app_music_player_set_test_stage(app_music_player_test_stage_t stage)
-{
-    taskENTER_CRITICAL();
-    g_music_status.test_stage = stage;
-    taskEXIT_CRITICAL();
-}
-
-static void app_music_player_set_test_flags(bool sd_seen_high, bool tx_sent)
-{
-    taskENTER_CRITICAL();
-    g_music_status.test_sd_seen_high = sd_seen_high;
-    g_music_status.test_tx_sent = tx_sent;
     taskEXIT_CRITICAL();
 }
 
@@ -378,8 +282,6 @@ static void app_music_player_stream_reset_flags(void)
     g_stream_eof = false;
     g_stop_req = false;
     g_i2s_error = false;
-    g_underruns = 0U;
-    g_diag = 0U;
 }
 
 /* ================================================================== */
@@ -398,8 +300,6 @@ static void app_music_player_play_track(const app_wav_track_t *track)
     }
 
     app_music_player_set_state(APP_MUSIC_PLAYER_STATE_LOADING, APP_WAV_OK, APP_MUSIC_PLAYER_ERROR_NONE);
-    app_music_player_set_test_stage(APP_MUSIC_PLAYER_TEST_STAGE_NONE);
-    app_music_player_set_test_flags(false, false);
     taskENTER_CRITICAL();
     memset(g_music_status.track_name, 0, sizeof(g_music_status.track_name));
     memset(g_music_status.track_path, 0, sizeof(g_music_status.track_path));
@@ -412,7 +312,6 @@ static void app_music_player_play_track(const app_wav_track_t *track)
     if (status != APP_WAV_OK) {
         app_music_player_set_state(APP_MUSIC_PLAYER_STATE_ERROR, status, app_music_player_error_from_wav_status(status));
         app_event_clear(APP_EVT_MUSIC_PLAYING);
-        BSP_Buzzer_Stop();
         return;
     }
 
@@ -431,7 +330,6 @@ static void app_music_player_play_track(const app_wav_track_t *track)
         app_wav_close(&wav);
         app_music_player_set_state(APP_MUSIC_PLAYER_STATE_ERROR, APP_WAV_UNSUPPORTED, APP_MUSIC_PLAYER_ERROR_WAV_UNSUPPORTED);
         app_event_clear(APP_EVT_MUSIC_PLAYING);
-        BSP_Buzzer_Stop();
         return;
     }
 
@@ -440,7 +338,6 @@ static void app_music_player_play_track(const app_wav_track_t *track)
         app_wav_close(&wav);
         app_music_player_set_state(APP_MUSIC_PLAYER_STATE_ERROR, APP_WAV_ERROR, APP_MUSIC_PLAYER_ERROR_I2S_INIT);
         app_event_clear(APP_EVT_MUSIC_PLAYING);
-        BSP_Buzzer_Stop();
         return;
     }
 
@@ -455,11 +352,9 @@ static void app_music_player_play_track(const app_wav_track_t *track)
             (void)BSP_MAX98357A_Enable(false);
             app_music_player_set_state(APP_MUSIC_PLAYER_STATE_ERROR, APP_WAV_ERROR, APP_MUSIC_PLAYER_ERROR_SD_LOW);
             app_event_clear(APP_EVT_MUSIC_PLAYING);
-            BSP_Buzzer_Stop();
             return;
         }
     }
-    app_music_player_set_sd_enabled(true);
     app_music_player_set_state(APP_MUSIC_PLAYER_STATE_PLAYING, APP_WAV_OK, APP_MUSIC_PLAYER_ERROR_NONE);
     app_event_set(APP_EVT_MUSIC_PLAYING);
 
@@ -473,7 +368,6 @@ static void app_music_player_play_track(const app_wav_track_t *track)
     /* 收尾：停 DMA、关功放 */
     app_music_player_audio_cleanup();
     app_wav_close(&wav);
-    app_music_player_set_sd_enabled(false);
     app_event_clear(APP_EVT_MUSIC_PLAYING);
 
     if (g_stop_req && err == APP_MUSIC_PLAYER_ERROR_NONE && !g_i2s_error) {
@@ -508,8 +402,6 @@ static app_music_player_error_t app_music_player_stream(app_wav_file_t *wav)
     }
 
     if (BSP_MAX98357A_TxStartDma(g_music_tx[0], APP_MUSIC_PLAYER_HALF_WORDS) != BSP_MAX98357A_OK) {
-        g_diag |= APP_MUSIC_PLAYER_DIAG_FIRST_TX_FAIL;
-        g_diag |= ((uint32_t)hi2s3.State << APP_MUSIC_PLAYER_DIAG_I2S_STATE_SHIFT);
         return APP_MUSIC_PLAYER_ERROR_I2S_TRANSMIT;
     }
     g_dma_running = true;
@@ -534,8 +426,6 @@ static app_music_player_error_t app_music_player_stream(app_wav_file_t *wav)
         /* 等待一个“某片播完”事件 */
         if (app_music_player_wait_event(APP_MUSIC_PLAYER_WAIT_TIMEOUT_MS) != 1) {
             if (!g_stop_req && !g_i2s_error) {
-                g_diag |= APP_MUSIC_PLAYER_DIAG_TIMEOUT;
-                g_diag |= ((uint32_t)hi2s3.State << APP_MUSIC_PLAYER_DIAG_I2S_STATE_SHIFT);
                 err = APP_MUSIC_PLAYER_ERROR_I2S_TRANSMIT;
             }
             break;
@@ -567,8 +457,6 @@ static app_music_player_error_t app_music_player_stream(app_wav_file_t *wav)
                 while (!g_stop_req && !g_i2s_error && g_dma_running) {
                     if (app_music_player_wait_event(APP_MUSIC_PLAYER_WAIT_TIMEOUT_MS) != 1) {
                         if (!g_stop_req && !g_i2s_error) {
-                            g_diag |= APP_MUSIC_PLAYER_DIAG_TIMEOUT;
-                            g_diag |= ((uint32_t)hi2s3.State << APP_MUSIC_PLAYER_DIAG_I2S_STATE_SHIFT);
                             err = APP_MUSIC_PLAYER_ERROR_I2S_TRANSMIT;
                         }
                         break;
@@ -769,179 +657,8 @@ static void app_music_player_audio_cleanup(void)
     g_armed = NULL;
     (void)BSP_MAX98357A_TxStopDma();   /* 仅任务上下文调用 */
     (void)BSP_MAX98357A_Enable(false);
-    BSP_Buzzer_Stop();
     g_stream_eof = false;
     g_dma_running = false;
-}
-
-/* ================================================================== */
-/* 自检：蜂鸣器 880Hz 短音 + 功放 440Hz 正弦                          */
-/* （正弦不依赖 TF 卡/文件，用于把“链路”和“解析”分开排查）            */
-/* ================================================================== */
-
-static void app_music_player_play_tone_test(void)
-{
-    app_music_player_cmd_t cmd;
-    uint32_t elapsed = 0U;
-    bool aborted = false;
-
-    g_stop_req = false;
-
-    app_music_player_set_state(APP_MUSIC_PLAYER_STATE_LOADING, APP_WAV_OK, APP_MUSIC_PLAYER_ERROR_NONE);
-    app_music_player_set_test_stage(APP_MUSIC_PLAYER_TEST_STAGE_PREP);
-    app_music_player_set_test_flags(false, false);
-    taskENTER_CRITICAL();
-    memset(g_music_status.track_name, 0, sizeof(g_music_status.track_name));
-    memset(g_music_status.track_path, 0, sizeof(g_music_status.track_path));
-    memcpy(g_music_status.track_name, "Buzzer+Amp test tone", sizeof("Buzzer+Amp test tone"));
-    memcpy(g_music_status.track_path, "880Hz buzzer + 440Hz sine amp", sizeof("880Hz buzzer + 440Hz sine amp"));
-    memset(&g_music_status.wav_info, 0, sizeof(g_music_status.wav_info));
-    g_music_status.wav_info.sample_rate = APP_MUSIC_PLAYER_SINE_RATE_HZ;
-    g_music_status.wav_info.bits_per_sample = 16U;
-    g_music_status.bytes_played = 0U;
-    taskEXIT_CRITICAL();
-
-    /* --- 1) 蜂鸣器扫频自检（TIM5_CH4）：连续升调，确认是否无源(可变调)蜂鸣器 --- */
-    app_music_player_set_sd_enabled(true);
-    app_music_player_set_test_flags(true, false);
-    app_music_player_set_test_stage(APP_MUSIC_PLAYER_TEST_STAGE_SD_HIGH);
-    app_music_player_set_state(APP_MUSIC_PLAYER_STATE_PLAYING, APP_WAV_OK, APP_MUSIC_PLAYER_ERROR_NONE);
-    app_event_set(APP_EVT_MUSIC_PLAYING);
-
-    {
-        static const uint16_t sweep_freqs[] = { 440U, 660U, 880U, 1320U, 1760U };
-        const uint32_t note_ms = 250U;
-
-        for (uint32_t n = 0U; n < (uint32_t)(sizeof(sweep_freqs) / sizeof(sweep_freqs[0])); n++) {
-            if (BSP_Buzzer_PlayTone(sweep_freqs[n], APP_MUSIC_PLAYER_BUZZER_DUTY) != BSP_BUZZER_OK) {
-                app_music_player_set_state(APP_MUSIC_PLAYER_STATE_ERROR, APP_WAV_ERROR, APP_MUSIC_PLAYER_ERROR_BUZZER_OUTPUT);
-                app_music_player_set_test_stage(APP_MUSIC_PLAYER_TEST_STAGE_PREP);
-                app_event_clear(APP_EVT_MUSIC_PLAYING);
-                BSP_Buzzer_Stop();
-                return;
-            }
-
-            elapsed = 0U;
-            while (elapsed < note_ms && g_music_status.state == APP_MUSIC_PLAYER_STATE_PLAYING) {
-                if (xQueuePeek(g_music_cmd_queue, &cmd, 0) == pdPASS && cmd.type == APP_MUSIC_PLAYER_CMD_STOP) {
-                    (void)xQueueReceive(g_music_cmd_queue, &cmd, 0);
-                    aborted = true;
-                    break;
-                }
-                vTaskDelay(pdMS_TO_TICKS(20U));
-                elapsed += 20U;
-            }
-            if (aborted) {
-                break;
-            }
-        }
-        BSP_Buzzer_Stop();
-    }
-
-    /* 用户中途停止：直接结束，不再做功放正弦 */
-    if (aborted) {
-        (void)BSP_MAX98357A_Enable(false);
-        app_music_player_set_sd_enabled(false);
-        app_event_clear(APP_EVT_MUSIC_PLAYING);
-        app_music_player_set_state(APP_MUSIC_PLAYER_STATE_IDLE, APP_WAV_OK, APP_MUSIC_PLAYER_ERROR_NONE);
-        return;
-    }
-
-    /* --- 2) 功放 440Hz 正弦自检（I2S3 -> MAX98357A） --- */
-    if (BSP_MAX98357A_SetSampleRate(APP_MUSIC_PLAYER_SINE_RATE_HZ) != BSP_MAX98357A_OK) {
-        (void)BSP_MAX98357A_Enable(false);
-        app_music_player_set_state(APP_MUSIC_PLAYER_STATE_ERROR, APP_WAV_ERROR, APP_MUSIC_PLAYER_ERROR_I2S_INIT);
-        app_event_clear(APP_EVT_MUSIC_PLAYING);
-        app_music_player_set_sd_enabled(false);
-        return;
-    }
-
-    (void)BSP_MAX98357A_Enable(true);
-    {
-        bool sd_enabled = false;
-        if (BSP_MAX98357A_GetEnableState(&sd_enabled) != BSP_MAX98357A_OK || !sd_enabled) {
-            (void)BSP_MAX98357A_Enable(false);
-            app_music_player_set_state(APP_MUSIC_PLAYER_STATE_ERROR, APP_WAV_ERROR, APP_MUSIC_PLAYER_ERROR_SD_LOW);
-            app_event_clear(APP_EVT_MUSIC_PLAYING);
-            app_music_player_set_sd_enabled(false);
-            return;
-        }
-    }
-    app_music_player_set_sd_enabled(true);
-    /* 注意：TX_OK 阶段只在“第一次阻塞发送真正成功”后才置位，
-     * 之前停在 SD_HIGH，避免把失败误报成已发送。 */
-
-    {
-        /* 48kHz 16bit 立体声，440Hz，阻塞式整块发送（仅自检用） */
-        uint32_t phase = 0U;
-        uint32_t phase_step = (uint32_t)(((uint64_t)APP_MUSIC_PLAYER_SINE_FREQ_HZ << 32) /
-                                         APP_MUSIC_PLAYER_SINE_RATE_HZ);
-        uint32_t words_per_block = APP_MUSIC_PLAYER_SINE_TABLE_LEN * 2U;
-        uint32_t total_ms = APP_MUSIC_PLAYER_SINE_DURATION_MS;
-        uint32_t words_sent = 0U;
-        bool sine_failed = false;
-        bool first_ok = false;
-
-        elapsed = 0U;
-        while (elapsed < total_ms && g_music_status.state == APP_MUSIC_PLAYER_STATE_PLAYING) {
-            if (xQueuePeek(g_music_cmd_queue, &cmd, 0) == pdPASS && cmd.type == APP_MUSIC_PLAYER_CMD_STOP) {
-                (void)xQueueReceive(g_music_cmd_queue, &cmd, 0);
-                aborted = true;
-                break;
-            }
-
-            for (uint32_t i = 0U; i < (uint32_t)APP_MUSIC_PLAYER_SINE_TABLE_LEN; i++) {
-                uint32_t idx = (phase >> 27) & (APP_MUSIC_PLAYER_SINE_TABLE_LEN - 1U);
-                int16_t s = g_music_sine_table[idx];
-                g_music_sine_buf[i * 2U] = (uint16_t)s;
-                g_music_sine_buf[i * 2U + 1U] = (uint16_t)s;
-                phase += phase_step;
-            }
-
-            if (BSP_MAX98357A_TransmitWords(g_music_sine_buf, (uint16_t)words_per_block, 500U) != BSP_MAX98357A_OK) {
-                sine_failed = true;
-                break;
-            }
-            if (!first_ok) {
-                first_ok = true;
-                app_music_player_set_test_flags(true, true);
-                app_music_player_set_test_stage(APP_MUSIC_PLAYER_TEST_STAGE_TX_OK);
-            }
-            words_sent += words_per_block;
-            elapsed = (words_sent * 1000U) / (2U * APP_MUSIC_PLAYER_SINE_RATE_HZ);
-            taskENTER_CRITICAL();
-            g_music_status.bytes_played = elapsed;
-            taskEXIT_CRITICAL();
-        }
-
-        if (sine_failed) {
-            app_music_player_set_state(APP_MUSIC_PLAYER_STATE_ERROR, APP_WAV_ERROR, APP_MUSIC_PLAYER_ERROR_I2S_TRANSMIT);
-            if (!first_ok) {
-                /* 从未成功发送：说明 I2S 主模式没有产生位时钟 */
-                app_music_player_set_test_stage(APP_MUSIC_PLAYER_TEST_STAGE_PREP);
-                app_music_player_set_test_flags(true, false);
-            }
-        }
-    }
-
-    (void)BSP_MAX98357A_TransmitSilence(64U, 200U);
-    (void)BSP_MAX98357A_Enable(false);
-    app_music_player_set_sd_enabled(false);
-
-    if (aborted) {
-        app_event_clear(APP_EVT_MUSIC_PLAYING);
-        app_music_player_set_state(APP_MUSIC_PLAYER_STATE_IDLE, APP_WAV_OK, APP_MUSIC_PLAYER_ERROR_NONE);
-        return;
-    }
-
-    if (g_music_status.state != APP_MUSIC_PLAYER_STATE_ERROR && g_music_status.test_tx_sent) {
-        app_music_player_set_test_stage(APP_MUSIC_PLAYER_TEST_STAGE_DONE);
-    }
-    app_event_clear(APP_EVT_MUSIC_PLAYING);
-
-    if (g_music_status.state != APP_MUSIC_PLAYER_STATE_ERROR) {
-        app_music_player_set_state(APP_MUSIC_PLAYER_STATE_IDLE, APP_WAV_OK, APP_MUSIC_PLAYER_ERROR_NONE);
-    }
 }
 
 static app_music_player_error_t app_music_player_error_from_wav_status(app_wav_status_t status)

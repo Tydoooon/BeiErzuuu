@@ -60,20 +60,16 @@
 #define UI_TEXT_DRAW_LOG_SAVE           "保存绘图"
 #define UI_TEXT_DRAW_LOG_OPEN           "打开绘图"
 
-#define UI_TEXT_MUSIC_TRACK             "曲目: 简单旋律 A"
-#define UI_TEXT_MUSIC_STATUS_FMT        "状态:%s  音量:%u%%"
 #define UI_TEXT_MUSIC_PLAYING           "播放中"
 #define UI_TEXT_MUSIC_STOPPED           "已停止"
 #define UI_TEXT_MUSIC_PLAY              "播放"
 #define UI_TEXT_MUSIC_STOP              "停止"
-#define UI_TEXT_MUSIC_EXIT_TIP          "退出应用会停止播放状态"
 #define UI_TEXT_MUSIC_LOG_PLAY          "音乐播放"
 #define UI_TEXT_MUSIC_LOG_STOP          "音乐停止"
 
 #define UI_TEXT_LOG_CLEAR               "清空日志"
 
 #define UI_TEXT_MONITOR_FMT             "运行时间:%lus\n系统状态:%s\n输入事件:%lu\n丢弃事件:%lu\n错误事件:%lu\n任务数量:%lu\n当前栈水位:%lu\nRTOS剩余堆:%luB\nLVGL空闲:%u%%"
-#define UI_TEXT_STATUS_MUSIC            "音乐播放"
 #define UI_TEXT_STATUS_NORMAL           "正常"
 
 #define UI_TEXT_SETTING_SENSITIVITY     "灵敏度"

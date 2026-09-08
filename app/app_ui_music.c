@@ -15,12 +15,9 @@ static void ui_music_select_track(uint8_t track);
 static void ui_music_select_next(void);
 static void ui_music_select_prev(void);
 static void ui_music_update_play_button(void);
-static void ui_music_start_tone_test(void);
 static const char *ui_music_state_text(app_music_player_state_t state);
 static const char *ui_music_error_text(app_music_player_error_t error);
 static const char *ui_music_wav_status_text(app_wav_status_t status);
-static const char *ui_music_pwm_text(bool enabled);
-static const char *ui_music_test_stage_text(app_music_player_test_stage_t stage);
 
 static app_wav_track_t g_music_tracks[UI_MUSIC_MAX_TRACKS];
 static lv_obj_t *g_music_list;
@@ -45,13 +42,6 @@ static void music_play_event_cb(lv_event_t *e)
     g_input_events++;
     ui_music_toggle();
     ui_log(g_music_playing ? UI_TEXT_MUSIC_LOG_PLAY : UI_TEXT_MUSIC_LOG_STOP);
-}
-
-static void music_test_event_cb(lv_event_t *e)
-{
-    (void)e;
-    g_input_events++;
-    ui_music_start_tone_test();
 }
 
 void ui_music_handle_key(uint8_t key_id)
@@ -91,7 +81,6 @@ void ui_create_music_app(void)
 
     g_music_play_button = ui_button(scr, g_music_playing ? UI_TEXT_MUSIC_STOP : UI_TEXT_MUSIC_PLAY,
                                     44, 260, 80, 32, music_play_event_cb, NULL);
-    ui_button(scr, "Test", 132, 260, 64, 32, music_test_event_cb, NULL);
     ui_label(scr, "K1 Play  K2 Prev  K3 Next  K4 Exit  K5 Scan", 4, 304);
 
     ui_music_scan_tracks();
@@ -123,21 +112,6 @@ static void ui_music_set_playing(bool playing)
     }
 
     ui_music_refresh_detail();
-}
-
-static void ui_music_start_tone_test(void)
-{
-    if (g_music_playing) {
-        app_music_player_request_stop();
-    }
-
-    if (!app_music_player_request_tone_test()) {
-        g_error_events++;
-        ui_music_refresh_detail();
-        return;
-    }
-
-    ui_log("Buzzer test tone");
 }
 
 static void ui_music_toggle(void)
@@ -238,53 +212,8 @@ static void ui_music_refresh_detail(void)
     app_music_player_get_status(&status);
     g_music_last_status = status.last_status;
 
-    if (status.test_stage != APP_MUSIC_PLAYER_TEST_STAGE_NONE) {
-        const char *wave_text = status.test_tx_sent ? "active" : "pending";
-        const char *pwm_text = status.test_sd_seen_high ? "ON" : "OFF";
-
-        switch (status.test_stage) {
-        case APP_MUSIC_PLAYER_TEST_STAGE_PREP:
-            snprintf(detail, sizeof(detail), "Audio test (buzzer+I2S)\nStage: %s\nPWM: %s\nTone: %s",
-                     ui_music_test_stage_text(status.test_stage),
-                     pwm_text,
-                     wave_text);
-            break;
-        case APP_MUSIC_PLAYER_TEST_STAGE_SD_HIGH:
-            snprintf(detail, sizeof(detail), "Audio test (buzzer+I2S)\nStage: %s\nPWM: %s\nTone: %s",
-                     ui_music_test_stage_text(status.test_stage),
-                     pwm_text,
-                     wave_text);
-            break;
-        case APP_MUSIC_PLAYER_TEST_STAGE_TX_OK:
-            snprintf(detail, sizeof(detail), "Audio test (buzzer+I2S)\nStage: %s\nPWM: %s\nTone: %s",
-                     ui_music_test_stage_text(status.test_stage),
-                     pwm_text,
-                     wave_text);
-            break;
-        case APP_MUSIC_PLAYER_TEST_STAGE_DONE:
-            snprintf(detail, sizeof(detail), "Audio test (buzzer+I2S)\nStage: %s\nPWM: %s\nTone: %s",
-                     ui_music_test_stage_text(status.test_stage),
-                     pwm_text,
-                     wave_text);
-            break;
-        default:
-            lv_label_set_text(g_music_detail, "Audio test (buzzer+I2S)");
-            break;
-        }
-        if (status.state == APP_MUSIC_PLAYER_STATE_ERROR) {
-            size_t used = strlen(detail);
-            if (used < sizeof(detail)) {
-                snprintf(&detail[used], sizeof(detail) - used, "\nError: %s / %s",
-                         ui_music_error_text(status.last_error),
-                         ui_music_wav_status_text(status.last_status));
-            }
-        }
-        lv_label_set_text(g_music_detail, detail);
-    } else if (status.state == APP_MUSIC_PLAYER_STATE_ERROR) {
-        snprintf(detail, sizeof(detail), "%s\nD:%08lX st:%02lX",
-                 ui_music_error_text(status.last_error),
-                 (unsigned long)status.diag,
-                 (unsigned long)((status.diag >> APP_MUSIC_PLAYER_DIAG_I2S_STATE_SHIFT) & 0xFFu));
+    if (status.state == APP_MUSIC_PLAYER_STATE_ERROR) {
+        snprintf(detail, sizeof(detail), "%s", ui_music_error_text(status.last_error));
         lv_label_set_text(g_music_detail, detail);
     } else if (g_music_last_status != APP_WAV_OK) {
         snprintf(detail, sizeof(detail), "Track scan error\nWAV: %s",
@@ -294,16 +223,14 @@ static void ui_music_refresh_detail(void)
         lv_label_set_text(g_music_detail, "TF: no WAV file in root or /Music");
     } else if (status.state == APP_MUSIC_PLAYER_STATE_LOADING ||
                status.state == APP_MUSIC_PLAYER_STATE_PLAYING) {
-        snprintf(detail, sizeof(detail), "%s\n%s  PWM:%s\n%luHz %uch %ubit\n%lu/%luB\nUR:%lu",
+        snprintf(detail, sizeof(detail), "%s\n%s\n%luHz %uch %ubit\n%lu/%luB",
                  status.track_name[0] != '\0' ? status.track_name : g_music_tracks[g_music_selected].name,
                  ui_music_state_text(status.state),
-                 ui_music_pwm_text(status.sd_enabled),
                  (unsigned long)status.wav_info.sample_rate,
                  (unsigned)status.wav_info.channels,
                  (unsigned)status.wav_info.bits_per_sample,
                  (unsigned long)status.bytes_played,
-                 (unsigned long)status.wav_info.data_size,
-                 (unsigned long)app_music_player_get_underrun_count());
+                 (unsigned long)status.wav_info.data_size);
         lv_label_set_text(g_music_detail, detail);
     } else {
         snprintf(detail, sizeof(detail), "%s\nSize: %luB",
@@ -425,8 +352,6 @@ static const char *ui_music_error_text(app_music_player_error_t error)
         return "I2S transmit failed";
     case APP_MUSIC_PLAYER_ERROR_SD_LOW:
         return "SD pin low";
-    case APP_MUSIC_PLAYER_ERROR_BUZZER_OUTPUT:
-        return "buzzer output failed";
     case APP_MUSIC_PLAYER_ERROR_NONE:
     default:
         return "none";
@@ -457,24 +382,3 @@ static const char *ui_music_wav_status_text(app_wav_status_t status)
     }
 }
 
-static const char *ui_music_pwm_text(bool enabled)
-{
-    return enabled ? "ON" : "OFF";
-}
-
-static const char *ui_music_test_stage_text(app_music_player_test_stage_t stage)
-{
-    switch (stage) {
-    case APP_MUSIC_PLAYER_TEST_STAGE_PREP:
-        return "PREP";
-    case APP_MUSIC_PLAYER_TEST_STAGE_SD_HIGH:
-        return "SD_HIGH";
-    case APP_MUSIC_PLAYER_TEST_STAGE_TX_OK:
-        return "TX_OK";
-    case APP_MUSIC_PLAYER_TEST_STAGE_DONE:
-        return "DONE";
-    case APP_MUSIC_PLAYER_TEST_STAGE_NONE:
-    default:
-        return "NONE";
-    }
-}

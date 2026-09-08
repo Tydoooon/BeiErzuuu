@@ -119,6 +119,8 @@ void Lcd_SetXY(u16 x, u16 y);
 void Gui_DrawPoint(u16 x, u16 y, u16 Data);
 void Lcd_SetRegion(u16 xStar, u16 yStar, u16 xEnd, u16 yEnd);
 void Lcd_WriteData_16Bit(u16 Data);
+/* 批量写 RGB565 像素（大端字节序），整块连续 SPI 流式发送；CS/RS 在内部只翻转一次 */
+void Lcd_WriteColorBulk(const u16 *colors, u32 count);
 
 void LCD_DrawPoint(u16 x, u16 y);
 

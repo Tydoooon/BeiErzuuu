@@ -292,9 +292,40 @@ static USBH_StatusTypeDef USBH_HID_MouseDecode(USBH_HandleTypeDef *phost)
   if (USBH_HID_FifoRead(&HID_Handle->fifo, &mouse_report_data, HID_Handle->length) == HID_Handle->length)
   {
     /*Decode report */
-    mouse_info.x = (uint8_t)HID_ReadItem((HID_Report_ItemTypedef *) &prop_x, 0U);
-    mouse_info.y = (uint8_t)HID_ReadItem((HID_Report_ItemTypedef *) &prop_y, 0U);
+    mouse_info.x = 0U;
+    mouse_info.y = 0U;
     mouse_info.wheel = 0;
+
+    /* 优先用报表描述符解析出的真实 X/Y 位偏移来取值：它能正确处理 Report ID
+       以及非标准字段顺序；固定 byte1/byte2 的 prop_x/prop_y 只对无 Report ID
+       的标准三字节报表有效，遇到带 Report ID 的鼠标会把 X/Y 读错字节，导致
+       光标上下方向来回抖动。 */
+    if (mouse_layout.valid != 0U)
+    {
+      if ((mouse_layout.has_report_id == 0U) ||
+          (mouse_report_data[0] == mouse_layout.x.report_id))
+      {
+        if (USBH_HID_MouseFieldFits(&mouse_layout.x, HID_Handle->length) != 0U)
+        {
+          mouse_info.x = (uint8_t)USBH_HID_MouseReadSignedField(mouse_report_data,
+                                                                &mouse_layout.x);
+        }
+      }
+      if ((mouse_layout.has_report_id == 0U) ||
+          (mouse_report_data[0] == mouse_layout.y.report_id))
+      {
+        if (USBH_HID_MouseFieldFits(&mouse_layout.y, HID_Handle->length) != 0U)
+        {
+          mouse_info.y = (uint8_t)USBH_HID_MouseReadSignedField(mouse_report_data,
+                                                                &mouse_layout.y);
+        }
+      }
+    }
+    else
+    {
+      mouse_info.x = (uint8_t)HID_ReadItem((HID_Report_ItemTypedef *) &prop_x, 0U);
+      mouse_info.y = (uint8_t)HID_ReadItem((HID_Report_ItemTypedef *) &prop_y, 0U);
+    }
 
     if (mouse_layout.wheel.valid != 0U)
     {
