@@ -1,21 +1,37 @@
 #include "app_ui_internal.h"
 #include "app_fault.h"
 
-#define UI_MONITOR_TASK_MAX 16
+#define UI_MONITOR_TASK_MAX 12
 #define UI_MONITOR_WHEEL_STEP 24
-#define UI_MONITOR_LINE_H 19                 /* UI_FONT 行高 */
-#define UI_MONITOR_SUMMARY_H (8 * UI_MONITOR_LINE_H)  /* 汇总标签共 8 行 */
-#define UI_MONITOR_TASK_Y0 (UI_MONITOR_SUMMARY_H + 4 + UI_MONITOR_LINE_H)  /* 任务首行 Y */
+#define UI_MONITOR_LINE_H 19
+#define UI_MONITOR_SUMMARY_H (9 * UI_MONITOR_LINE_H)
+#define UI_MONITOR_TASK_ROW_H 36
+#define UI_MONITOR_TASK_Y0 (UI_MONITOR_SUMMARY_H + 4 + UI_MONITOR_LINE_H)
 
 static void ui_monitor_refresh(void);
 static void ui_monitor_refresh_tasks(void);
 static void ui_monitor_status_text(uint32_t bits, char *out, size_t out_size);
 static void ui_monitor_reset_text(char *out, size_t out_size);
 static const char *monitor_task_state_name(eTaskState state);
+static bool ui_monitor_previous_run(TaskHandle_t handle, uint32_t *run_time);
+static void ui_monitor_save_snapshot(UBaseType_t count, uint32_t total_run_time);
+static void ui_monitor_sort_tasks(UBaseType_t count);
+static void ui_monitor_set_text(lv_obj_t *label, const char *text);
+
+typedef struct
+{
+    TaskHandle_t handle;
+    uint32_t run_time;
+} ui_monitor_task_sample_t;
 
 static lv_obj_t *g_monitor_scroll;
 static lv_obj_t *g_monitor_task_labels[UI_MONITOR_TASK_MAX];
 static TaskStatus_t g_monitor_task_status[UI_MONITOR_TASK_MAX];
+static ui_monitor_task_sample_t g_monitor_previous[UI_MONITOR_TASK_MAX];
+static UBaseType_t g_monitor_previous_count;
+static uint32_t g_monitor_previous_total;
+static uint8_t g_monitor_cpu;
+static bool g_monitor_sample_valid;
 
 static void monitor_timer_cb(lv_timer_t *timer)
 {
@@ -29,7 +45,10 @@ void ui_create_monitor_app(void)
     lv_obj_t *scroll = lv_obj_create(scr);
 
     g_monitor_scroll = scroll;
-    /* 汇总 + 任务列表放进同一个可滚动图层，滚轮滚动整个界面 */
+    g_monitor_sample_valid = false;
+    g_monitor_previous_count = 0U;
+    g_monitor_cpu = 0U;
+
     lv_obj_set_size(scroll, 216, 236);
     lv_obj_align(scroll, LV_ALIGN_TOP_LEFT, 12, 44);
     lv_obj_set_style_bg_color(scroll, lv_color_white(), 0);
@@ -39,18 +58,19 @@ void ui_create_monitor_app(void)
     lv_obj_set_scrollbar_mode(scroll, LV_SCROLLBAR_MODE_AUTO);
 
     g_monitor_label = ui_label(scroll, "", 4, 0);
-    lv_obj_set_width(g_monitor_label, 208);
+    lv_obj_set_size(g_monitor_label, 208, UI_MONITOR_SUMMARY_H);
+    lv_label_set_long_mode(g_monitor_label, LV_LABEL_LONG_CLIP);
 
     ui_label(scroll, UI_TEXT_MONITOR_TASKS, 4, UI_MONITOR_SUMMARY_H + 4);
 
-    /* 任务标签一次性创建，刷新时原地改文本。
-     * 不再用 lv_obj_clean 重建，避免每次刷新把滚动位置重置回顶部。 */
     for (uint8_t i = 0; i < UI_MONITOR_TASK_MAX; i++) {
         g_monitor_task_labels[i] = lv_label_create(scroll);
-        lv_obj_set_style_text_font(g_monitor_task_labels[i], UI_FONT, 0);
-        lv_obj_set_width(g_monitor_task_labels[i], 194);
+        /* 任务信息全是 ASCII，使用内置字体可避免每次从外部 Flash 取字形。 */
+        lv_obj_set_style_text_font(g_monitor_task_labels[i], LV_FONT_DEFAULT, 0);
+        lv_obj_set_size(g_monitor_task_labels[i], 204, UI_MONITOR_TASK_ROW_H);
+        lv_label_set_long_mode(g_monitor_task_labels[i], LV_LABEL_LONG_CLIP);
         lv_obj_align(g_monitor_task_labels[i], LV_ALIGN_TOP_LEFT, 4,
-                     (lv_coord_t)(UI_MONITOR_TASK_Y0 + (lv_coord_t)i * UI_MONITOR_LINE_H));
+                     (lv_coord_t)(UI_MONITOR_TASK_Y0 + (lv_coord_t)i * UI_MONITOR_TASK_ROW_H));
     }
 
     ui_label(scr, "K4 Exit", 94, 286);
@@ -79,6 +99,8 @@ static void ui_monitor_refresh(void)
     char reset[64];
     uint32_t bits;
 
+    ui_monitor_refresh_tasks();
+
     if (g_monitor_label != NULL) {
         lv_mem_monitor(&mem);
         free_pct = mem.used_pct <= 100U ? (uint8_t)(100U - mem.used_pct) : 0U;
@@ -86,17 +108,17 @@ static void ui_monitor_refresh(void)
         ui_monitor_status_text(bits, status, sizeof(status));
         ui_monitor_reset_text(reset, sizeof(reset));
         lv_label_set_text_fmt(g_monitor_label, UI_TEXT_MONITOR_FMT,
-                              (unsigned long)(lv_tick_get() / 1000U),
-                              status,
-                              reset,
-                              (unsigned long)g_input_events,
-                              (unsigned long)g_discarded_events,
-                              (unsigned long)g_error_events,
-                              (unsigned long)xPortGetFreeHeapSize(),
-                              free_pct);
+                               (unsigned long)(lv_tick_get() / 1000U),
+                               status,
+                               reset,
+                               (unsigned)g_monitor_cpu,
+                               (unsigned long)g_input_events,
+                               (unsigned long)g_discarded_events,
+                               (unsigned long)g_error_events,
+                               (unsigned long)xPortGetFreeHeapSize(),
+                               (unsigned long)mem.free_size,
+                               free_pct);
     }
-
-    ui_monitor_refresh_tasks();
 }
 
 static const char *monitor_task_state_name(eTaskState state)
@@ -115,36 +137,127 @@ static void ui_monitor_refresh_tasks(void)
 {
     char line[96];
     UBaseType_t count = uxTaskGetNumberOfTasks();
+    UBaseType_t sampled;
     uint32_t total_run_time = 0U;
+    uint32_t total_delta;
+    uint8_t idle_cpu = 0U;
+    bool idle_found = false;
 
     if (count > UI_MONITOR_TASK_MAX) {
-        count = UI_MONITOR_TASK_MAX;
-    }
-
-    if (count == 0U || uxTaskGetSystemState(g_monitor_task_status, count, &total_run_time) == 0U) {
         for (uint8_t i = 0; i < UI_MONITOR_TASK_MAX; i++) {
-            lv_label_set_text(g_monitor_task_labels[i], "");
+            ui_monitor_set_text(g_monitor_task_labels[i], "");
         }
-        lv_label_set_text(g_monitor_task_labels[0], UI_TEXT_MONITOR_NO_TASK);
+        snprintf(line, sizeof(line), "Too many tasks: %lu", (unsigned long)count);
+        ui_monitor_set_text(g_monitor_task_labels[0], line);
+        g_monitor_sample_valid = false;
+        g_monitor_cpu = 0U;
         return;
     }
 
-    for (uint8_t i = 0; i < UI_MONITOR_TASK_MAX; i++) {
-        if ((UBaseType_t)i < count) {
-            uint32_t run = g_monitor_task_status[i].ulRunTimeCounter;
-            uint32_t cpu = (total_run_time != 0U)
-                               ? (uint32_t)(((uint64_t)run * 100U) / (uint64_t)total_run_time)
-                               : 0U;
-            snprintf(line, sizeof(line), "%s  P%lu %u%% %s  %luB",
-                     g_monitor_task_status[i].pcTaskName,
-                     (unsigned long)g_monitor_task_status[i].uxCurrentPriority,
-                     (unsigned)cpu,
-                     monitor_task_state_name(g_monitor_task_status[i].eCurrentState),
-                     (unsigned long)((uint32_t)g_monitor_task_status[i].usStackHighWaterMark * sizeof(StackType_t)));
-            lv_label_set_text(g_monitor_task_labels[i], line);
-        } else {
-            lv_label_set_text(g_monitor_task_labels[i], "");
+    sampled = (count > 0U)
+                  ? uxTaskGetSystemState(g_monitor_task_status, count, &total_run_time)
+                  : 0U;
+    if (sampled == 0U) {
+        for (uint8_t i = 0; i < UI_MONITOR_TASK_MAX; i++) {
+            ui_monitor_set_text(g_monitor_task_labels[i], "");
         }
+        ui_monitor_set_text(g_monitor_task_labels[0], UI_TEXT_MONITOR_NO_TASK);
+        g_monitor_sample_valid = false;
+        g_monitor_cpu = 0U;
+        return;
+    }
+
+    total_delta = total_run_time - g_monitor_previous_total;
+    ui_monitor_sort_tasks(sampled);
+
+    for (uint8_t i = 0; i < UI_MONITOR_TASK_MAX; i++) {
+        if ((UBaseType_t)i < sampled) {
+            uint32_t previous_run = 0U;
+            uint32_t run = g_monitor_task_status[i].ulRunTimeCounter;
+            uint32_t cpu = 0U;
+
+            if (g_monitor_sample_valid && total_delta != 0U &&
+                ui_monitor_previous_run(g_monitor_task_status[i].xHandle, &previous_run)) {
+                uint32_t run_delta = run - previous_run;
+                cpu = (uint32_t)(((uint64_t)run_delta * 100U) / total_delta);
+                if (cpu > 100U) {
+                    cpu = 100U;
+                }
+            }
+
+            if (strcmp(g_monitor_task_status[i].pcTaskName, "IDLE") == 0) {
+                idle_cpu = (uint8_t)cpu;
+                idle_found = true;
+            }
+
+            snprintf(line, sizeof(line), "%.10s  %s P%lu CPU:%lu%%\nStack free:%luB",
+                     g_monitor_task_status[i].pcTaskName,
+                     monitor_task_state_name(g_monitor_task_status[i].eCurrentState),
+                     (unsigned long)g_monitor_task_status[i].uxCurrentPriority,
+                     (unsigned long)cpu,
+                     (unsigned long)((uint32_t)g_monitor_task_status[i].usStackHighWaterMark * sizeof(StackType_t)));
+            ui_monitor_set_text(g_monitor_task_labels[i], line);
+        } else {
+            ui_monitor_set_text(g_monitor_task_labels[i], "");
+        }
+    }
+
+    g_monitor_cpu = (g_monitor_sample_valid && idle_found)
+                        ? (uint8_t)(100U - idle_cpu)
+                        : 0U;
+    ui_monitor_save_snapshot(sampled, total_run_time);
+    g_monitor_sample_valid = true;
+}
+
+static bool ui_monitor_previous_run(TaskHandle_t handle, uint32_t *run_time)
+{
+    for (UBaseType_t i = 0U; i < g_monitor_previous_count; i++) {
+        if (g_monitor_previous[i].handle == handle) {
+            *run_time = g_monitor_previous[i].run_time;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+static void ui_monitor_save_snapshot(UBaseType_t count, uint32_t total_run_time)
+{
+    g_monitor_previous_count = count;
+    g_monitor_previous_total = total_run_time;
+
+    for (UBaseType_t i = 0U; i < count; i++) {
+        g_monitor_previous[i].handle = g_monitor_task_status[i].xHandle;
+        g_monitor_previous[i].run_time = g_monitor_task_status[i].ulRunTimeCounter;
+    }
+}
+
+static void ui_monitor_sort_tasks(UBaseType_t count)
+{
+    for (UBaseType_t i = 1U; i < count; i++) {
+        TaskStatus_t item = g_monitor_task_status[i];
+        UBaseType_t pos = i;
+
+        while (pos > 0U &&
+               strcmp(g_monitor_task_status[pos - 1U].pcTaskName, item.pcTaskName) > 0) {
+            g_monitor_task_status[pos] = g_monitor_task_status[pos - 1U];
+            pos--;
+        }
+        g_monitor_task_status[pos] = item;
+    }
+}
+
+static void ui_monitor_set_text(lv_obj_t *label, const char *text)
+{
+    const char *current;
+
+    if (label == NULL || text == NULL) {
+        return;
+    }
+
+    current = lv_label_get_text(label);
+    if (current == NULL || strcmp(current, text) != 0) {
+        lv_label_set_text(label, text);
     }
 }
 
