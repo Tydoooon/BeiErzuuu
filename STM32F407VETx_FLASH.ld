@@ -182,6 +182,15 @@ SECTIONS
     __bss_end__ = _ebss;
   } >RAM
 
+  /* 复位后不初始化的数据（跨复位保留故障码，用于记录栈溢出/看门狗复位原因） */
+  .noinit (NOLOAD) :
+  {
+    . = ALIGN(4);
+    *(.noinit)
+    *(.noinit*)
+    . = ALIGN(4);
+  } >RAM
+
   /* User_heap_stack section, used to check that there is enough RAM left */
   ._user_heap_stack :
   {

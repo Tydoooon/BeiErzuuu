@@ -78,6 +78,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     app/app_ui_monitor.c
     app/app_ui_setting.c
     app/app_event.c
+    app/app_fault.c
     app/app_music_player.c
     app/app_wav.c
     app/app_power.c

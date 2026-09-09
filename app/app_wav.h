@@ -52,8 +52,25 @@ typedef struct
     bool opened;
 } app_wav_file_t;
 
+/* 增量扫描上下文：由音频任务分步驱动，每步之间让出 CPU 以避免阻塞 UI。
+ * DIR 句柄跨步保持打开，因此调用方必须保证扫描期间独占 FatFs/TF 卡。 */
+typedef struct
+{
+    DIR dir;
+    char path_buf[APP_WAV_PATH_MAX];
+    char prefix[APP_WAV_PATH_MAX];
+    size_t prefix_len;
+    uint8_t phase;       /* 0=根目录, 1=/Music, 2=完成 */
+    bool dir_open;
+    app_wav_status_t status;
+} app_wav_scan_ctx_t;
+
 app_wav_status_t app_wav_mount(void);
 app_wav_status_t app_wav_scan_root(app_wav_track_t *tracks, size_t max_tracks, size_t *track_count);
+app_wav_status_t app_wav_scan_ctx_begin(app_wav_scan_ctx_t *ctx);
+bool app_wav_scan_ctx_step(app_wav_scan_ctx_t *ctx, app_wav_track_t *tracks,
+                           size_t max_tracks, size_t *track_count, size_t budget);
+void app_wav_scan_ctx_end(app_wav_scan_ctx_t *ctx);
 app_wav_status_t app_wav_open(app_wav_file_t *wav, const char *path);
 app_wav_status_t app_wav_read(app_wav_file_t *wav, void *buffer, uint32_t bytes_to_read, uint32_t *bytes_read);
 app_wav_status_t app_wav_rewind_data(app_wav_file_t *wav);

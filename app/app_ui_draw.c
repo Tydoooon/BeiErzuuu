@@ -244,7 +244,7 @@ static void ui_draw_save_named(const char *name)
     }
 
     if (ui_file_save_draw_snapshot(name, UI_DRAW_SAVE_BYTES)) {
-        lv_label_set_text(g_draw_status, "Saved to file list");
+        lv_label_set_text(g_draw_status, "Saving...");
     } else {
         lv_label_set_text(g_draw_status, "Save failed");
     }

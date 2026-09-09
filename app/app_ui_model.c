@@ -1,11 +1,26 @@
 #include "app_ui_internal.h"
 
 #include "app_backlight.h"
+#include "app_fault.h"
+#include "queue.h"
 
 #include <stddef.h>
 
 #define UI_STORAGE_MAGIC               0x31495355U
 #define UI_STORAGE_VERSION             1U
+#define UI_STORAGE_RESULT_QUEUE_LEN    4U
+
+#define UI_LOG_MAGIC                   0x314C4F47U  /* "1LOG" */
+#define UI_LOG_VERSION                 1U
+/* 持久化最多保留最近 N 条日志（完整 72B 文本 × 32 条会占 ~4.9KB RAM，
+ * 两个 A/B 记录更翻倍；掉电保护只需保留最近若干条即可）。 */
+#define UI_LOG_PERSIST_MAX             16U
+
+/* 存储任务请求类型：单槽队列承载，数据本身在各自的静态快照里 */
+typedef enum {
+    UI_STORAGE_REQ_COMMIT = 0,
+    UI_STORAGE_REQ_LOG_SAVE,
+} ui_storage_request_t;
 
 typedef struct {
     uint32_t magic;
@@ -20,21 +35,69 @@ typedef struct {
     uint32_t crc32;
 } ui_storage_record_t;
 
+typedef struct {
+    ui_settings_t settings;
+    ui_file_entry_t files[UI_FILE_MAX];
+    uint8_t selected_file;
+    uint8_t file_serial;
+    uint8_t draw_slot;
+    bool has_draw;
+    uint32_t feedback;
+    uint8_t draw_data[UI_DRAW_SAVE_BYTES];
+} ui_storage_snapshot_t;
+
+/* 日志持久化记录（双 A/B + CRC32），掉电不丢失 */
+typedef struct {
+    uint32_t magic;
+    uint16_t version;
+    uint16_t header_size;
+    uint32_t sequence;
+    uint8_t count;
+    uint8_t reserved[3];
+    ui_log_entry_t entries[UI_LOG_PERSIST_MAX];
+    uint32_t crc32;
+} ui_log_record_t;
+
 static uint32_t g_storage_sequence;
 static ui_storage_record_t g_storage_record_a;
 static ui_storage_record_t g_storage_record_b;
 static uint8_t g_storage_verify_chunk[256];
+static ui_storage_snapshot_t g_storage_pending_snapshot __attribute__((section(".ccmram")));
+static ui_storage_snapshot_t g_storage_active_snapshot __attribute__((section(".ccmram")));
+static ui_log_record_t g_log_record_a;
+static ui_log_record_t g_log_record_b;
+static uint32_t g_log_sequence;
+static bool g_storage_request_pending;
+static QueueHandle_t g_storage_request_queue;
+static QueueHandle_t g_storage_result_queue;
+static StaticQueue_t g_storage_request_queue_buffer;
+static StaticQueue_t g_storage_result_queue_buffer;
+static ui_storage_request_t g_storage_request_queue_storage[1U];
+static uint8_t g_storage_result_queue_storage[UI_STORAGE_RESULT_QUEUE_LEN * sizeof(ui_storage_result_t)];
+static bool g_storage_retry_active;
+static bool g_storage_retry_needs_draw;
 
 static void ui_storage_load_defaults(void);
 static bool ui_storage_load_flash(void);
 static bool ui_storage_read_record(uint32_t addr, ui_storage_record_t *record);
 static bool ui_storage_validate_record(const ui_storage_record_t *record);
-static bool ui_storage_write_record(uint32_t addr, uint32_t sequence);
+static bool ui_storage_write_record(uint32_t addr, uint32_t sequence,
+                                    const ui_storage_snapshot_t *snapshot);
+static bool ui_storage_write_draw_slot(uint8_t slot, const uint8_t *data);
 static bool ui_storage_read_draw_slots(void);
 static uint32_t ui_storage_draw_addr(uint8_t slot);
 static uint32_t ui_storage_crc32(const uint8_t *data, size_t len);
 static uint32_t ui_storage_record_crc(const ui_storage_record_t *record);
 static void ui_storage_sanitize_loaded_state(void);
+static bool ui_storage_queue_snapshot(uint32_t feedback, bool include_draw, uint8_t draw_slot);
+static bool ui_storage_take_pending_snapshot(ui_storage_snapshot_t *snapshot);
+static void ui_storage_publish_result(uint32_t feedback, bool success);
+static void ui_storage_sync_dirty_event(void);
+static bool ui_log_load_persisted(void);
+static void ui_log_save_to_flash(void);
+static bool ui_log_read_record(uint32_t addr, ui_log_record_t *record);
+static bool ui_log_validate_record(const ui_log_record_t *record);
+static uint32_t ui_log_record_crc(const ui_log_record_t *record);
 
 void ui_model_init(void)
 {
@@ -52,6 +115,9 @@ void ui_storage_load(void)
 {
     ui_storage_load_defaults();
     g_storage_dirty = false;
+    g_storage_request_pending = false;
+    g_storage_retry_active = false;
+    g_storage_retry_needs_draw = false;
     app_event_clear(APP_EVT_STORAGE_DIRTY | APP_EVT_STORAGE_BUSY);
 }
 
@@ -70,99 +136,196 @@ bool ui_storage_load_persisted(void)
     ui_apply_brightness();
     g_storage_dirty = false;
     app_event_clear(APP_EVT_STORAGE_DIRTY);
+
+    /* 加载持久化日志（掉电不丢失），新会话再追加一条启动日志 */
+    if (ui_log_load_persisted()) {
+        ui_log(UI_TEXT_SYSTEM_START);
+    }
     return true;
 }
 
-void ui_storage_mark_dirty(void)
+void app_ui_storage_service_init(void)
 {
-    g_storage_dirty = true;
-    app_event_set(APP_EVT_STORAGE_DIRTY);
+    if (g_storage_request_queue == NULL) {
+        g_storage_request_queue = xQueueCreateStatic(1U,
+                                                     sizeof(ui_storage_request_t),
+                                                     g_storage_request_queue_storage,
+                                                     &g_storage_request_queue_buffer);
+    }
+    if (g_storage_result_queue == NULL) {
+        g_storage_result_queue = xQueueCreateStatic(UI_STORAGE_RESULT_QUEUE_LEN,
+                                                    sizeof(ui_storage_result_t),
+                                                    g_storage_result_queue_storage,
+                                                    &g_storage_result_queue_buffer);
+    }
 }
 
-void ui_storage_commit(void)
+void app_ui_storage_task(void *argument)
 {
-    uint32_t sequence;
-    uint32_t addr;
+    ui_storage_request_t req;
+    (void)argument;
 
-    if (!g_storage_dirty) {
-        return;
-    }
+    app_ui_storage_service_init();
 
-    app_event_set(APP_EVT_STORAGE_BUSY);
+    for (;;) {
+        /* 有限超时等待写入请求，超时也要喂心跳，供故障监控任务判断存活 */
+        if (xQueueReceive(g_storage_request_queue, &req, pdMS_TO_TICKS(200U)) != pdPASS) {
+            app_fault_heartbeat(APP_FAULT_TASK_SAVE);
+            continue;
+        }
 
-    if (sizeof(ui_storage_record_t) > W25Q128_SECTOR_SIZE) {
+        app_fault_heartbeat(APP_FAULT_TASK_SAVE);
+
+        if (req == UI_STORAGE_REQ_LOG_SAVE) {
+            app_event_set(APP_EVT_STORAGE_BUSY);
+            ui_log_save_to_flash();
+            app_event_clear(APP_EVT_STORAGE_BUSY);
+            continue;
+        }
+
+        app_event_set(APP_EVT_STORAGE_BUSY);
+        for (;;) {
+            uint32_t sequence;
+            uint32_t addr;
+            bool success = true;
+            bool retrying = g_storage_retry_active;
+
+            if (!retrying &&
+                !ui_storage_take_pending_snapshot(&g_storage_active_snapshot)) {
+                break;
+            }
+            if (!retrying) {
+                g_storage_retry_needs_draw = g_storage_active_snapshot.has_draw;
+            }
+
+            if (sizeof(ui_storage_record_t) > W25Q128_SECTOR_SIZE) {
+                success = false;
+            }
+            if (success &&
+                !app_w25q128_is_ready() &&
+                app_w25q128_init() != BSP_W25Q128_OK) {
+                success = false;
+            }
+            if (success &&
+                g_storage_active_snapshot.has_draw &&
+                (!retrying || g_storage_retry_needs_draw)) {
+                success = ui_storage_write_draw_slot(
+                    g_storage_active_snapshot.draw_slot,
+                    g_storage_active_snapshot.draw_data);
+                g_storage_retry_needs_draw = !success;
+            }
+
+            sequence = g_storage_sequence + 1U;
+            addr = (sequence & 1U) != 0U ?
+                   APP_W25Q128_ADDR_FILE_TABLE_B :
+                   APP_W25Q128_ADDR_FILE_TABLE_A;
+            if (success) {
+                success = ui_storage_write_record(addr,
+                                                  sequence,
+                                                  &g_storage_active_snapshot);
+            }
+
+            taskENTER_CRITICAL();
+            if (success) {
+                g_storage_retry_active = false;
+                g_storage_retry_needs_draw = false;
+                g_storage_sequence = sequence;
+                if (!g_storage_request_pending) {
+                    g_storage_dirty = false;
+                }
+            } else {
+                g_storage_retry_active = true;
+            }
+            taskEXIT_CRITICAL();
+
+            ui_storage_sync_dirty_event();
+            ui_storage_publish_result(g_storage_active_snapshot.feedback, success);
+            if (!success) {
+                g_storage_active_snapshot.feedback = UI_STORAGE_FEEDBACK_NONE;
+                break;
+            }
+        }
         app_event_clear(APP_EVT_STORAGE_BUSY);
-        return;
     }
-
-    if (!app_w25q128_is_ready() && app_w25q128_init() != BSP_W25Q128_OK) {
-        app_event_clear(APP_EVT_STORAGE_BUSY);
-        return;
-    }
-
-    sequence = g_storage_sequence + 1U;
-    addr = (sequence & 1U) != 0U ?
-           APP_W25Q128_ADDR_FILE_TABLE_B :
-           APP_W25Q128_ADDR_FILE_TABLE_A;
-
-    if (ui_storage_write_record(addr, sequence)) {
-        g_storage_sequence = sequence;
-        g_storage_dirty = false;
-        app_event_clear(APP_EVT_STORAGE_DIRTY);
-    }
-    app_event_clear(APP_EVT_STORAGE_BUSY);
 }
 
-bool ui_storage_save_draw_slot(uint8_t slot)
+bool ui_storage_request_commit(uint32_t feedback)
 {
-    uint32_t addr;
-    size_t offset = 0U;
-    bool ok = false;
+    return ui_storage_queue_snapshot(feedback, false, 0U);
+}
 
+bool ui_storage_request_draw(uint8_t slot, uint32_t feedback)
+{
     if (slot >= UI_FILE_MAX || slot >= APP_W25Q128_DRAW_SLOT_COUNT) {
         return false;
     }
-    if (UI_DRAW_SAVE_BYTES > APP_W25Q128_DRAW_SLOT_SIZE) {
+
+    return ui_storage_queue_snapshot(feedback, true, slot);
+}
+
+bool ui_storage_draw_request_available(void)
+{
+    bool available;
+
+    taskENTER_CRITICAL();
+    available = !g_storage_request_pending || !g_storage_pending_snapshot.has_draw;
+    taskEXIT_CRITICAL();
+
+    return available;
+}
+
+bool ui_storage_take_result(ui_storage_result_t *result)
+{
+    if (result == NULL || g_storage_result_queue == NULL) {
         return false;
     }
 
-    app_event_set(APP_EVT_STORAGE_BUSY);
+    return xQueueReceive(g_storage_result_queue, result, 0U) == pdPASS;
+}
 
-    if (!app_w25q128_is_ready() && app_w25q128_init() != BSP_W25Q128_OK) {
-        goto done;
+static bool ui_storage_queue_snapshot(uint32_t feedback, bool include_draw, uint8_t draw_slot)
+{
+    ui_storage_request_t wake = UI_STORAGE_REQ_COMMIT;
+    bool accepted = false;
+
+    app_ui_storage_service_init();
+    if (g_storage_request_queue == NULL) {
+        return false;
     }
 
-    addr = ui_storage_draw_addr(slot);
-    if (app_w25q128_erase_sector(addr) != BSP_W25Q128_OK) {
-        goto done;
-    }
-    if (app_w25q128_write(addr, g_draw_slots[slot], UI_DRAW_SAVE_BYTES) != BSP_W25Q128_OK) {
-        goto done;
-    }
-
-    while (offset < UI_DRAW_SAVE_BYTES) {
-        size_t remain = UI_DRAW_SAVE_BYTES - offset;
-        size_t chunk = remain > sizeof(g_storage_verify_chunk) ?
-                       sizeof(g_storage_verify_chunk) : remain;
-
-        if (app_w25q128_read(addr + (uint32_t)offset,
-                             g_storage_verify_chunk,
-                             chunk) != BSP_W25Q128_OK) {
-            goto done;
+    vTaskSuspendAll();
+    if (!include_draw ||
+        !g_storage_request_pending ||
+        !g_storage_pending_snapshot.has_draw) {
+        if (!g_storage_request_pending) {
+            g_storage_pending_snapshot.feedback = UI_STORAGE_FEEDBACK_NONE;
+            g_storage_pending_snapshot.has_draw = false;
         }
-        if (memcmp(g_storage_verify_chunk,
-                   &g_draw_slots[slot][offset],
-                   chunk) != 0) {
-            goto done;
+        memcpy(&g_storage_pending_snapshot.settings, &g_settings, sizeof(g_settings));
+        memcpy(g_storage_pending_snapshot.files, g_files, sizeof(g_files));
+        g_storage_pending_snapshot.selected_file = g_selected_file;
+        g_storage_pending_snapshot.file_serial = g_file_serial;
+        g_storage_pending_snapshot.feedback |= feedback;
+        if (include_draw) {
+            g_storage_pending_snapshot.draw_slot = draw_slot;
+            g_storage_pending_snapshot.has_draw = true;
+            memcpy(g_storage_pending_snapshot.draw_data,
+                   g_draw_slots[draw_slot],
+                   UI_DRAW_SAVE_BYTES);
         }
-        offset += chunk;
+        g_storage_request_pending = true;
+        g_storage_dirty = true;
+        accepted = true;
+    }
+    (void)xTaskResumeAll();
+
+    if (!accepted) {
+        return false;
     }
 
-    ok = true;
-
-done:
-    app_event_clear(APP_EVT_STORAGE_BUSY);
-    return ok;
+    app_event_set(APP_EVT_STORAGE_DIRTY);
+    (void)xQueueOverwrite(g_storage_request_queue, &wake);
+    return true;
 }
 
 static void ui_storage_load_defaults(void)
@@ -259,20 +422,25 @@ static bool ui_storage_validate_record(const ui_storage_record_t *record)
     return record->crc32 == ui_storage_record_crc(record);
 }
 
-static bool ui_storage_write_record(uint32_t addr, uint32_t sequence)
+static bool ui_storage_write_record(uint32_t addr, uint32_t sequence,
+                                    const ui_storage_snapshot_t *snapshot)
 {
     ui_storage_record_t *record = &g_storage_record_a;
     ui_storage_record_t *verify = &g_storage_record_b;
+
+    if (snapshot == NULL) {
+        return false;
+    }
 
     memset(record, 0, sizeof(*record));
     record->magic = UI_STORAGE_MAGIC;
     record->version = UI_STORAGE_VERSION;
     record->header_size = sizeof(*record);
     record->sequence = sequence;
-    memcpy(&record->settings, &g_settings, sizeof(record->settings));
-    memcpy(record->files, g_files, sizeof(record->files));
-    record->selected_file = g_selected_file;
-    record->file_serial = g_file_serial;
+    memcpy(&record->settings, &snapshot->settings, sizeof(record->settings));
+    memcpy(record->files, snapshot->files, sizeof(record->files));
+    record->selected_file = snapshot->selected_file;
+    record->file_serial = snapshot->file_serial;
     record->crc32 = ui_storage_record_crc(record);
 
     if (app_w25q128_erase_sector(addr) != BSP_W25Q128_OK) {
@@ -287,6 +455,45 @@ static bool ui_storage_write_record(uint32_t addr, uint32_t sequence)
     }
 
     return ui_storage_validate_record(verify);
+}
+
+static bool ui_storage_write_draw_slot(uint8_t slot, const uint8_t *data)
+{
+    uint32_t addr;
+    size_t offset = 0U;
+
+    if (data == NULL ||
+        slot >= UI_FILE_MAX ||
+        slot >= APP_W25Q128_DRAW_SLOT_COUNT ||
+        UI_DRAW_SAVE_BYTES > APP_W25Q128_DRAW_SLOT_SIZE) {
+        return false;
+    }
+
+    addr = ui_storage_draw_addr(slot);
+    if (app_w25q128_erase_sector(addr) != BSP_W25Q128_OK) {
+        return false;
+    }
+    if (app_w25q128_write(addr, data, UI_DRAW_SAVE_BYTES) != BSP_W25Q128_OK) {
+        return false;
+    }
+
+    while (offset < UI_DRAW_SAVE_BYTES) {
+        size_t remain = UI_DRAW_SAVE_BYTES - offset;
+        size_t chunk = remain > sizeof(g_storage_verify_chunk) ?
+                       sizeof(g_storage_verify_chunk) : remain;
+
+        if (app_w25q128_read(addr + (uint32_t)offset,
+                             g_storage_verify_chunk,
+                             chunk) != BSP_W25Q128_OK) {
+            return false;
+        }
+        if (memcmp(g_storage_verify_chunk, &data[offset], chunk) != 0) {
+            return false;
+        }
+        offset += chunk;
+    }
+
+    return true;
 }
 
 static bool ui_storage_read_draw_slots(void)
@@ -380,6 +587,68 @@ static void ui_storage_sanitize_loaded_state(void)
     }
 }
 
+static bool ui_storage_take_pending_snapshot(ui_storage_snapshot_t *snapshot)
+{
+    bool available = false;
+
+    if (snapshot == NULL) {
+        return false;
+    }
+
+    vTaskSuspendAll();
+    if (g_storage_request_pending) {
+        memcpy(snapshot, &g_storage_pending_snapshot, sizeof(*snapshot));
+        g_storage_pending_snapshot.feedback = UI_STORAGE_FEEDBACK_NONE;
+        g_storage_pending_snapshot.has_draw = false;
+        g_storage_request_pending = false;
+        available = true;
+    }
+    (void)xTaskResumeAll();
+
+    return available;
+}
+
+static void ui_storage_publish_result(uint32_t feedback, bool success)
+{
+    ui_storage_result_t result = {
+        .feedback = feedback,
+        .success = success,
+    };
+
+    if (g_storage_result_queue == NULL || feedback == UI_STORAGE_FEEDBACK_NONE) {
+        return;
+    }
+
+    if (xQueueSend(g_storage_result_queue, &result, 0U) != pdPASS) {
+        ui_storage_result_t discarded;
+        (void)xQueueReceive(g_storage_result_queue, &discarded, 0U);
+        (void)xQueueSend(g_storage_result_queue, &result, 0U);
+    }
+}
+
+static void ui_storage_sync_dirty_event(void)
+{
+    bool dirty;
+
+    taskENTER_CRITICAL();
+    dirty = g_storage_dirty;
+    taskEXIT_CRITICAL();
+
+    if (dirty) {
+        app_event_set(APP_EVT_STORAGE_DIRTY);
+        return;
+    }
+
+    app_event_clear(APP_EVT_STORAGE_DIRTY);
+
+    taskENTER_CRITICAL();
+    dirty = g_storage_dirty;
+    taskEXIT_CRITICAL();
+    if (dirty) {
+        app_event_set(APP_EVT_STORAGE_DIRTY);
+    }
+}
+
 void ui_log(const char *text)
 {
     uint8_t pos;
@@ -393,6 +662,131 @@ void ui_log(const char *text)
 
     g_logs[pos].tick_ms = lv_tick_get();
     snprintf(g_logs[pos].text, sizeof(g_logs[pos].text), "%s", text);
+}
+
+/* ================================================================== */
+/* 日志持久化（掉电不丢失）                                            */
+/* ================================================================== */
+
+void ui_log_request_persist(void)
+{
+    ui_storage_request_t req = UI_STORAGE_REQ_LOG_SAVE;
+
+    app_ui_storage_service_init();
+    if (g_storage_request_queue == NULL) {
+        return;
+    }
+    (void)xQueueOverwrite(g_storage_request_queue, &req);
+}
+
+static uint32_t ui_log_record_crc(const ui_log_record_t *record)
+{
+    return ui_storage_crc32((const uint8_t *)&record->version,
+                            offsetof(ui_log_record_t, crc32) -
+                            offsetof(ui_log_record_t, version));
+}
+
+static bool ui_log_validate_record(const ui_log_record_t *record)
+{
+    if (record == NULL) {
+        return false;
+    }
+    if (record->magic != UI_LOG_MAGIC ||
+        record->version != UI_LOG_VERSION ||
+        record->header_size != sizeof(ui_log_record_t) ||
+        record->count > UI_LOG_PERSIST_MAX) {
+        return false;
+    }
+    return record->crc32 == ui_log_record_crc(record);
+}
+
+static bool ui_log_read_record(uint32_t addr, ui_log_record_t *record)
+{
+    if (record == NULL) {
+        return false;
+    }
+    memset(record, 0, sizeof(*record));
+    if (app_w25q128_read(addr, record, sizeof(*record)) != BSP_W25Q128_OK) {
+        return false;
+    }
+    return ui_log_validate_record(record);
+}
+
+static bool ui_log_load_persisted(void)
+{
+    bool valid_a;
+    bool valid_b;
+    const ui_log_record_t *record;
+
+    if (!app_w25q128_is_ready() && app_w25q128_init() != BSP_W25Q128_OK) {
+        return false;
+    }
+
+    valid_a = ui_log_read_record(APP_W25Q128_ADDR_LOG_META_A, &g_log_record_a);
+    valid_b = ui_log_read_record(APP_W25Q128_ADDR_LOG_META_B, &g_log_record_b);
+    if (!valid_a && !valid_b) {
+        return false;
+    }
+
+    if (valid_a && valid_b) {
+        record = g_log_record_a.sequence >= g_log_record_b.sequence ?
+                 &g_log_record_a : &g_log_record_b;
+    } else {
+        record = valid_a ? &g_log_record_a : &g_log_record_b;
+    }
+
+    g_log_count = record->count;
+    memcpy(g_logs, record->entries, (size_t)record->count * sizeof(g_logs[0]));
+    g_log_sequence = record->sequence;
+    return true;
+}
+
+static void ui_log_save_to_flash(void)
+{
+    uint32_t sequence = g_log_sequence + 1U;
+    uint32_t addr = (sequence & 1U) != 0U ?
+                    APP_W25Q128_ADDR_LOG_META_B :
+                    APP_W25Q128_ADDR_LOG_META_A;
+
+    if (sizeof(ui_log_record_t) > W25Q128_SECTOR_SIZE) {
+        return;
+    }
+    if (!app_w25q128_is_ready() && app_w25q128_init() != BSP_W25Q128_OK) {
+        return;
+    }
+
+    /* 快照当前日志：避免写入期间被 UI 追加导致数据撕裂 */
+    vTaskSuspendAll();
+    {
+        ui_log_record_t *record = &g_log_record_a;
+
+        memset(record, 0, sizeof(*record));
+        record->magic = UI_LOG_MAGIC;
+        record->version = UI_LOG_VERSION;
+        record->header_size = sizeof(*record);
+        record->sequence = sequence;
+        record->count = g_log_count > UI_LOG_PERSIST_MAX ? UI_LOG_PERSIST_MAX : g_log_count;
+        /* 仅保留最近的 count 条（内存日志按追加顺序，尾部最新） */
+        memcpy(record->entries, &g_logs[g_log_count - record->count],
+               (size_t)record->count * sizeof(g_logs[0]));
+        record->crc32 = ui_log_record_crc(record);
+    }
+    (void)xTaskResumeAll();
+
+    if (app_w25q128_erase_sector(addr) != BSP_W25Q128_OK) {
+        return;
+    }
+    if (app_w25q128_write(addr, &g_log_record_a, sizeof(g_log_record_a)) != BSP_W25Q128_OK) {
+        return;
+    }
+
+    memset(&g_log_record_b, 0, sizeof(g_log_record_b));
+    if (app_w25q128_read(addr, &g_log_record_b, sizeof(g_log_record_b)) != BSP_W25Q128_OK ||
+        !ui_log_validate_record(&g_log_record_b)) {
+        return;
+    }
+
+    g_log_sequence = sequence;
 }
 
 void ui_apply_brightness(void)

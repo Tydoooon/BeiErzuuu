@@ -1,14 +1,16 @@
 #include "app_ui_internal.h"
+#include "app_fault.h"
 
 #define UI_MONITOR_TASK_MAX 16
 #define UI_MONITOR_WHEEL_STEP 24
 #define UI_MONITOR_LINE_H 19                 /* UI_FONT 行高 */
-#define UI_MONITOR_SUMMARY_H (7 * UI_MONITOR_LINE_H)  /* 汇总标签共 7 行 */
+#define UI_MONITOR_SUMMARY_H (8 * UI_MONITOR_LINE_H)  /* 汇总标签共 8 行 */
 #define UI_MONITOR_TASK_Y0 (UI_MONITOR_SUMMARY_H + 4 + UI_MONITOR_LINE_H)  /* 任务首行 Y */
 
 static void ui_monitor_refresh(void);
 static void ui_monitor_refresh_tasks(void);
 static void ui_monitor_status_text(uint32_t bits, char *out, size_t out_size);
+static void ui_monitor_reset_text(char *out, size_t out_size);
 static const char *monitor_task_state_name(eTaskState state);
 
 static lv_obj_t *g_monitor_scroll;
@@ -62,7 +64,7 @@ void ui_create_monitor_app(void)
 void ui_monitor_handle_wheel(int16_t wheel_delta)
 {
     if (g_monitor_scroll == NULL || wheel_delta == 0) {
-        return;
+        return ;
     }
 
     lv_obj_scroll_by_bounded(g_monitor_scroll, 0,
@@ -74,6 +76,7 @@ static void ui_monitor_refresh(void)
     lv_mem_monitor_t mem;
     uint8_t free_pct;
     char status[48];
+    char reset[64];
     uint32_t bits;
 
     if (g_monitor_label != NULL) {
@@ -81,9 +84,11 @@ static void ui_monitor_refresh(void)
         free_pct = mem.used_pct <= 100U ? (uint8_t)(100U - mem.used_pct) : 0U;
         bits = app_event_get_bits();
         ui_monitor_status_text(bits, status, sizeof(status));
+        ui_monitor_reset_text(reset, sizeof(reset));
         lv_label_set_text_fmt(g_monitor_label, UI_TEXT_MONITOR_FMT,
                               (unsigned long)(lv_tick_get() / 1000U),
                               status,
+                              reset,
                               (unsigned long)g_input_events,
                               (unsigned long)g_discarded_events,
                               (unsigned long)g_error_events,
@@ -126,9 +131,14 @@ static void ui_monitor_refresh_tasks(void)
 
     for (uint8_t i = 0; i < UI_MONITOR_TASK_MAX; i++) {
         if ((UBaseType_t)i < count) {
-            snprintf(line, sizeof(line), "%s  P%lu %s  %luB",
+            uint32_t run = g_monitor_task_status[i].ulRunTimeCounter;
+            uint32_t cpu = (total_run_time != 0U)
+                               ? (uint32_t)(((uint64_t)run * 100U) / (uint64_t)total_run_time)
+                               : 0U;
+            snprintf(line, sizeof(line), "%s  P%lu %u%% %s  %luB",
                      g_monitor_task_status[i].pcTaskName,
                      (unsigned long)g_monitor_task_status[i].uxCurrentPriority,
+                     (unsigned)cpu,
                      monitor_task_state_name(g_monitor_task_status[i].eCurrentState),
                      (unsigned long)((uint32_t)g_monitor_task_status[i].usStackHighWaterMark * sizeof(StackType_t)));
             lv_label_set_text(g_monitor_task_labels[i], line);
@@ -136,6 +146,36 @@ static void ui_monitor_refresh_tasks(void)
             lv_label_set_text(g_monitor_task_labels[i], "");
         }
     }
+}
+
+static void ui_monitor_reset_text(char *out, size_t out_size)
+{
+    const app_fault_reset_reason_t *r = app_fault_get_reset_reason();
+    uint32_t fault = app_fault_get_last_fault();
+    const char *cause = "POR";
+    const char *fault_name = "-";
+
+    if (r->independent_watchdog) {
+        cause = "IWDG";
+    } else if (r->window_watchdog) {
+        cause = "WWDG";
+    } else if (r->software_reset) {
+        cause = "Soft";
+    } else if (r->low_power_reset) {
+        cause = "LP";
+    } else if (r->power_on) {
+        cause = "POR";
+    }
+
+    switch (fault) {
+    case APP_FAULT_CODE_STACK_OVERFLOW: fault_name = "StackOVF"; break;
+    case APP_FAULT_CODE_MALLOC_FAILED:  fault_name = "Malloc";   break;
+    case APP_FAULT_CODE_ASSERT:         fault_name = "Assert";   break;
+    case APP_FAULT_CODE_TASK_HUNG:      fault_name = "TaskHung"; break;
+    default:                            fault_name = "-";        break;
+    }
+
+    snprintf(out, out_size, "复位:%s 上次故障:%s", cause, fault_name);
 }
 
 static void ui_monitor_status_text(uint32_t bits, char *out, size_t out_size)

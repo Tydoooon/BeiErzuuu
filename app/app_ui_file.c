@@ -20,12 +20,13 @@ static void ui_close_file_name_dialog(void);
 static void ui_show_rename_dialog(void);
 static void ui_show_file_context_menu(int16_t x, int16_t y);
 static void ui_close_file_context_menu(void);
-static void ui_show_file_open_dialog(void);
-static void ui_close_file_open_dialog(void);
+static void ui_show_file_editor(void);
+static void ui_close_file_editor(void);
 static void file_name_submit_event_cb(lv_event_t *e);
 static void file_name_keypad_event_cb(lv_event_t *e);
 static void file_menu_event_cb(lv_event_t *e);
-static void file_open_close_event_cb(lv_event_t *e);
+static void file_editor_keypad_event_cb(lv_event_t *e);
+static void file_editor_save_event_cb(lv_event_t *e);
 
 typedef enum {
     UI_FILE_DIALOG_CREATE = 0,
@@ -37,7 +38,9 @@ static lv_obj_t *g_file_name_dialog;
 static lv_obj_t *g_file_name_ta;
 static lv_obj_t *g_file_name_keyboard;
 static lv_obj_t *g_file_context_menu;
-static lv_obj_t *g_file_open_dialog;
+static lv_obj_t *g_file_editor;
+static lv_obj_t *g_file_editor_ta;
+static lv_obj_t *g_file_editor_kb;
 
 static void file_select_event_cb(lv_event_t *e)
 {
@@ -74,7 +77,9 @@ void ui_create_file_app(void)
     g_file_name_ta = NULL;
     g_file_name_keyboard = NULL;
     g_file_context_menu = NULL;
-    g_file_open_dialog = NULL;
+    g_file_editor = NULL;
+    g_file_editor_ta = NULL;
+    g_file_editor_kb = NULL;
     g_file_dialog_mode = UI_FILE_DIALOG_CREATE;
 
     g_file_list = lv_list_create(scr);
@@ -100,9 +105,9 @@ void ui_file_handle_key(uint8_t key_id)
         }
         return;
     }
-    if (g_file_open_dialog != NULL) {
+    if (g_file_editor != NULL) {
         if (key_id == 4U) {
-            ui_close_file_open_dialog();
+            ui_close_file_editor();
         }
         return;
     }
@@ -146,7 +151,7 @@ void ui_file_handle_wheel(int16_t wheel_delta)
 
 void ui_file_handle_right_click(int16_t x, int16_t y)
 {
-    if (g_file_name_dialog != NULL || g_file_open_dialog != NULL) {
+    if (g_file_name_dialog != NULL || g_file_editor != NULL) {
         return;
     }
 
@@ -157,6 +162,12 @@ bool ui_file_save_draw_snapshot(const char *name, uint32_t size)
 {
     int slot;
     char file_name[UI_FILE_NAME_LEN];
+
+    if (!ui_storage_draw_request_available()) {
+        g_error_events++;
+        ui_log("Draw save queue busy");
+        return false;
+    }
 
     ui_file_make_name(name, ".drw", file_name, sizeof(file_name));
     slot = ui_file_find(file_name);
@@ -178,21 +189,12 @@ bool ui_file_save_draw_snapshot(const char *name, uint32_t size)
     memcpy(g_draw_slots[slot], g_draw_save, UI_DRAW_SAVE_BYTES);
     g_selected_file = (uint8_t)slot;
 
-    if (!ui_storage_save_draw_slot((uint8_t)slot)) {
+    if (!ui_storage_request_draw((uint8_t)slot, UI_STORAGE_FEEDBACK_DRAW_SAVE)) {
         g_error_events++;
-        ui_log("Draw flash save failed");
+        ui_log("Draw save request failed");
         return false;
     }
 
-    ui_storage_mark_dirty();
-    ui_storage_commit();
-    if (g_storage_dirty) {
-        g_error_events++;
-        ui_log("File table save failed");
-        return false;
-    }
-
-    ui_log(UI_TEXT_DRAW_LOG_SAVE);
     return true;
 }
 
@@ -395,9 +397,11 @@ static bool ui_create_file_named(const char *input)
     g_files[slot].storage_addr = APP_W25Q128_FILE_DATA_START + (uint32_t)slot * UI_STORAGE_SLOT_SIZE;
     g_files[slot].state = UI_FILE_STATE_NORMAL;
     g_selected_file = (uint8_t)slot;
-    ui_storage_mark_dirty();
-    ui_storage_commit();
-    ui_log(UI_TEXT_FILE_CREATED);
+    if (!ui_storage_request_commit(UI_STORAGE_FEEDBACK_FILE_CREATE)) {
+        g_error_events++;
+        ui_log("File create save request failed");
+        return false;
+    }
     return true;
 }
 
@@ -430,9 +434,11 @@ static bool ui_rename_file(const char *input)
     }
 
     snprintf(file->name, sizeof(file->name), "%s", name);
-    ui_storage_mark_dirty();
-    ui_storage_commit();
-    ui_log(UI_TEXT_FILE_RENAMED);
+    if (!ui_storage_request_commit(UI_STORAGE_FEEDBACK_FILE_RENAME)) {
+        g_error_events++;
+        ui_log("File rename save request failed");
+        return false;
+    }
     return true;
 }
 
@@ -452,9 +458,10 @@ static void ui_delete_file(void)
     if (g_files[g_selected_file].state != UI_FILE_STATE_NORMAL) return;
 
     g_files[g_selected_file].state = UI_FILE_STATE_DELETED;
-    ui_storage_mark_dirty();
-    ui_storage_commit();
-    ui_log(UI_TEXT_FILE_DELETED);
+    if (!ui_storage_request_commit(UI_STORAGE_FEEDBACK_FILE_DELETE)) {
+        g_error_events++;
+        ui_log("File delete save request failed");
+    }
 }
 
 static void ui_save_file(void)
@@ -465,9 +472,10 @@ static void ui_save_file(void)
 
     snprintf(file->content, sizeof(file->content), "Saved at %lus.", (unsigned long)(lv_tick_get() / 1000U));
     file->size = strlen(file->content);
-    ui_storage_mark_dirty();
-    ui_storage_commit();
-    ui_log(UI_TEXT_FILE_SAVED);
+    if (!ui_storage_request_commit(UI_STORAGE_FEEDBACK_FILE_SAVE)) {
+        g_error_events++;
+        ui_log("File save request failed");
+    }
 }
 
 static void ui_open_file(void)
@@ -475,7 +483,7 @@ static void ui_open_file(void)
     if (g_files[g_selected_file].state != UI_FILE_STATE_NORMAL) return;
 
     ui_log(UI_TEXT_FILE_OPENED);
-    ui_show_file_open_dialog();
+    ui_show_file_editor();
 }
 
 static void ui_show_file_context_menu(int16_t x, int16_t y)
@@ -526,48 +534,103 @@ static void ui_close_file_context_menu(void)
     }
 }
 
-static void ui_show_file_open_dialog(void)
+static void ui_show_file_editor(void)
 {
+    static const char * const editor_key_map[] = {
+        "a", "b", "c", "d", "e", "f", "\n",
+        "g", "h", "i", "j", "k", "l", "\n",
+        "m", "n", "o", "p", "q", "r", "\n",
+        "s", "t", "u", "v", "w", "x", "\n",
+        "y", "z", "0", "1", "2", "3", "\n",
+        "4", "5", "6", "7", "8", "9", "\n",
+        "Bksp", " ", ".", ",", "-", "_", "\n",
+        "OK", "Cancel", "Clear", "", "", "", ""
+    };
     ui_file_entry_t *file = &g_files[g_selected_file];
     lv_obj_t *scr = lv_scr_act();
-    lv_obj_t *label;
-    char text[256];
+    char title[UI_FILE_NAME_LEN + 8];
 
-    if (scr == NULL || g_file_open_dialog != NULL) return;
+    if (scr == NULL || g_file_editor != NULL) return;
     if (file->state != UI_FILE_STATE_NORMAL) return;
 
-    g_file_open_dialog = lv_obj_create(scr);
-    lv_obj_set_size(g_file_open_dialog, 216, 200);
-    lv_obj_align(g_file_open_dialog, LV_ALIGN_TOP_MID, 0, 56);
-    lv_obj_set_style_bg_color(g_file_open_dialog, lv_color_white(), 0);
-    lv_obj_set_style_border_color(g_file_open_dialog, lv_color_hex(0x94A3B8), 0);
-    lv_obj_clear_flag(g_file_open_dialog, LV_OBJ_FLAG_SCROLLABLE);
+    g_file_editor = lv_obj_create(scr);
+    lv_obj_set_size(g_file_editor, 216, 288);
+    lv_obj_align(g_file_editor, LV_ALIGN_TOP_MID, 0, 16);
+    lv_obj_set_style_bg_color(g_file_editor, lv_color_white(), 0);
+    lv_obj_set_style_border_color(g_file_editor, lv_color_hex(0x94A3B8), 0);
+    lv_obj_clear_flag(g_file_editor, LV_OBJ_FLAG_SCROLLABLE);
 
-    snprintf(text, sizeof(text), UI_TEXT_FILE_DETAIL_FMT,
-             file->name, file->type, (unsigned long)file->size,
-             (unsigned long)file->storage_addr, file->content);
-    label = lv_label_create(g_file_open_dialog);
-    lv_label_set_text(label, text);
-    lv_obj_set_style_text_font(label, UI_FONT, 0);
-    lv_obj_set_width(label, 196);
-    lv_obj_align(label, LV_ALIGN_TOP_LEFT, 10, 8);
+    snprintf(title, sizeof(title), "Edit: %s", file->name);
+    ui_label(g_file_editor, title, 10, 0);
 
-    ui_button(g_file_open_dialog, UI_TEXT_FILE_CLOSE, 68, 162, 80, 30,
-              file_open_close_event_cb, NULL);
+    g_file_editor_ta = lv_textarea_create(g_file_editor);
+    lv_obj_set_size(g_file_editor_ta, 196, 60);
+    lv_obj_align(g_file_editor_ta, LV_ALIGN_TOP_LEFT, 0, 20);
+    lv_textarea_set_max_length(g_file_editor_ta, UI_FILE_CONTENT_LEN - 1U);
+    lv_textarea_set_text(g_file_editor_ta, file->content);
+    lv_obj_set_style_text_font(g_file_editor_ta, UI_FONT, 0);
+
+    g_file_editor_kb = lv_btnmatrix_create(g_file_editor);
+    lv_btnmatrix_set_map(g_file_editor_kb, (const char **)editor_key_map);
+    lv_obj_set_size(g_file_editor_kb, 196, 172);
+    lv_obj_align(g_file_editor_kb, LV_ALIGN_BOTTOM_MID, 0, 10);
+    lv_obj_set_style_text_font(g_file_editor_kb, UI_FONT, LV_PART_ITEMS);
+    lv_obj_set_style_radius(g_file_editor_kb, 5, LV_PART_ITEMS);
+    lv_obj_add_event_cb(g_file_editor_kb, file_editor_keypad_event_cb, LV_EVENT_VALUE_CHANGED, NULL);
 }
 
-static void file_open_close_event_cb(lv_event_t *e)
+static void file_editor_keypad_event_cb(lv_event_t *e)
 {
+    lv_obj_t *btnm = lv_event_get_target(e);
+    uint16_t id = lv_btnmatrix_get_selected_btn(btnm);
+    const char *txt = lv_btnmatrix_get_btn_text(btnm, id);
+
+    if (txt == NULL || g_file_editor_ta == NULL) return;
+
+    if (strcmp(txt, "OK") == 0) {
+        file_editor_save_event_cb(e);
+    } else if (strcmp(txt, "Cancel") == 0) {
+        ui_close_file_editor();
+    } else if (strcmp(txt, "Bksp") == 0) {
+        lv_textarea_del_char(g_file_editor_ta);
+    } else if (strcmp(txt, "Clear") == 0) {
+        lv_textarea_set_text(g_file_editor_ta, "");
+    } else {
+        lv_textarea_add_text(g_file_editor_ta, txt);
+    }
+}
+
+static void file_editor_save_event_cb(lv_event_t *e)
+{
+    ui_file_entry_t *file = &g_files[g_selected_file];
+    const char *content;
+
     (void)e;
-    g_input_events++;
-    ui_close_file_open_dialog();
+    if (g_file_editor_ta == NULL) return;
+    if (file->state != UI_FILE_STATE_NORMAL) return;
+
+    content = lv_textarea_get_text(g_file_editor_ta);
+    snprintf(file->content, sizeof(file->content), "%s", content);
+    file->size = strlen(file->content);
+
+    if (!ui_storage_request_commit(UI_STORAGE_FEEDBACK_FILE_SAVE)) {
+        g_error_events++;
+        ui_log("File save request failed");
+    } else {
+        ui_log(UI_TEXT_FILE_SAVED);
+    }
+
+    ui_close_file_editor();
+    ui_refresh_file_detail();
 }
 
-static void ui_close_file_open_dialog(void)
+static void ui_close_file_editor(void)
 {
-    if (g_file_open_dialog != NULL) {
-        lv_obj_del(g_file_open_dialog);
-        g_file_open_dialog = NULL;
+    if (g_file_editor != NULL) {
+        lv_obj_del(g_file_editor);
+        g_file_editor = NULL;
+        g_file_editor_ta = NULL;
+        g_file_editor_kb = NULL;
     }
 }
 

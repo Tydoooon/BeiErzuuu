@@ -10,7 +10,7 @@
             "executable": "./build/BeiErZu.elf",
             "runToEntryPoint": "main",
             "configFiles": [
-                "interface/stlink.cfg",
+                "interface/stlink-hla.cfg",
                 "target/stm32f4x.cfg"
             ],
             "toolchainPrefix": "arm-none-eabi"

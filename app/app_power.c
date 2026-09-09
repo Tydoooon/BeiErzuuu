@@ -5,6 +5,7 @@
 #include "app_led.h"
 #include "app_music_player.h"
 #include "app_ui_internal.h"
+#include "app_fault.h"
 #include "usb_host.h"
 
 /* PE7~PE11 对应 EXTI7~11，引脚位掩码与 EXTI 行掩码数值相同 */
@@ -51,7 +52,10 @@ void app_power_enter_stop(void)
     EXTI->PR = APP_POWER_KEY_PINS;
     __HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
 
-    /* 5. 进入 STOP（WFI）。按键 EXTI 中断可唤醒 CPU。 */
+    /* 5. 进入 STOP（WFI）。按键 EXTI 中断可唤醒 CPU。
+     *    IWDG 由 LSI 驱动，STOP 下仍计数：进 STOP 前喂一次，
+     *    唤醒中断里再喂一次，保证短时休眠不会被看门狗误复位。 */
+    app_fault_iwdg_refresh();
     HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);
 
     /* ---- 唤醒后 ---- */
@@ -115,10 +119,12 @@ static void app_power_restore_keys(void)
  * 正常流程中 restore_keys 会在重开节拍前关掉 EXTI，这两个 ISR 通常不会触发。 */
 void EXTI9_5_IRQHandler(void)
 {
+    app_fault_iwdg_refresh();
     HAL_GPIO_EXTI_IRQHandler(KEY_Pin | KEYE8_Pin | KEYE9_Pin);
 }
 
 void EXTI15_10_IRQHandler(void)
 {
+    app_fault_iwdg_refresh();
     HAL_GPIO_EXTI_IRQHandler(KEYE10_Pin | KEYE11_Pin);
 }

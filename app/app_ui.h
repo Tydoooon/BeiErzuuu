@@ -14,6 +14,8 @@ extern "C" {
 void app_ui_create(void);
 bool app_ui_is_created(void);
 void app_ui_load_w25q128_resources(void);
+void app_ui_storage_service_init(void);
+void app_ui_storage_task(void *argument);
 void app_ui_notify_activity(void);
 void app_ui_handle_idle(void);
 void app_ui_sleep_now(void);

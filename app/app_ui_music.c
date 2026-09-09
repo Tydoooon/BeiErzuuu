@@ -3,13 +3,14 @@
 #include "app_wav.h"
 
 #define UI_MUSIC_MAX_TRACKS 12U
-#define UI_MUSIC_SYNC_INTERVAL_MS 100U
+#define UI_MUSIC_SYNC_INTERVAL_MS 200U
 #define UI_MUSIC_WHEEL_STEP 24
 
 static void ui_music_set_playing(bool playing);
 static void ui_music_apply_play_state(bool playing);
 static void ui_music_toggle(void);
 static void ui_music_scan_tracks(void);
+static void ui_music_poll_scan(void);
 static void ui_music_refresh_list(void);
 static void ui_music_refresh_detail(void);
 static void ui_music_refresh_progress(void);
@@ -20,6 +21,7 @@ static void ui_music_update_play_button(void);
 static const char *ui_music_state_text(app_music_player_state_t state);
 static const char *ui_music_error_text(app_music_player_error_t error);
 static const char *ui_music_wav_status_text(app_wav_status_t status);
+static void ui_music_set_label_text(lv_obj_t *label, const char *text);
 
 static app_wav_track_t g_music_tracks[UI_MUSIC_MAX_TRACKS];
 static lv_obj_t *g_music_list;
@@ -30,6 +32,7 @@ static size_t g_music_track_count;
 static uint8_t g_music_selected;
 static app_wav_status_t g_music_last_status = APP_WAV_OK;
 static uint32_t g_music_last_sync_tick;
+static uint32_t g_music_scan_seq;
 
 static void music_track_event_cb(lv_event_t *e)
 {
@@ -113,8 +116,12 @@ void ui_music_handle_key(uint8_t key_id)
 void ui_create_music_app(void)
 {
     lv_obj_t *scr = ui_create_app_frame(UI_TEXT_APP_MUSIC);
+    app_music_player_status_t status;
 
-    /* 重新进入时立即同步一次播放状态（可能曲目已在后台播完） */
+    /* 重进页面时使用播放器真实状态，不能沿用上次页面留下的按钮状态。 */
+    app_music_player_get_status(&status);
+    g_music_playing = (status.state == APP_MUSIC_PLAYER_STATE_LOADING ||
+                       status.state == APP_MUSIC_PLAYER_STATE_PLAYING);
     g_music_last_sync_tick = 0;
 
     g_music_list = lv_list_create(scr);
@@ -211,6 +218,8 @@ void ui_music_sync_state(void)
     }
     g_music_last_sync_tick = now;
 
+    ui_music_poll_scan();
+
     app_music_player_get_status(&status);
     playing = (status.state == APP_MUSIC_PLAYER_STATE_LOADING ||
                status.state == APP_MUSIC_PLAYER_STATE_PLAYING);
@@ -226,11 +235,35 @@ void ui_music_sync_state(void)
 
 static void ui_music_scan_tracks(void)
 {
-    if (app_music_player_get_state() == APP_MUSIC_PLAYER_STATE_ERROR) {
+    app_music_player_state_t state = app_music_player_get_state();
+
+    if (state == APP_MUSIC_PLAYER_STATE_PLAYING ||
+        state == APP_MUSIC_PLAYER_STATE_LOADING) {
+        return;
+    }
+
+    if (state == APP_MUSIC_PLAYER_STATE_ERROR) {
         app_music_player_request_stop();
     }
 
-    g_music_last_status = app_wav_scan_root(g_music_tracks, UI_MUSIC_MAX_TRACKS, &g_music_track_count);
+    /* 请求后台扫描：由音频任务分步执行，不阻塞 UI；
+     * 播放中音频任务会跳过扫描（避免 remount 中断音乐）。 */
+    app_music_player_request_scan();
+}
+
+static void ui_music_poll_scan(void)
+{
+    app_wav_status_t status;
+    size_t count;
+
+    if (!app_music_player_get_scan(&g_music_scan_seq, &status,
+                                   g_music_tracks, UI_MUSIC_MAX_TRACKS,
+                                   &count)) {
+        return;
+    }
+
+    g_music_track_count = count;
+    g_music_last_status = status;
     if (g_music_last_status != APP_WAV_OK) {
         g_music_track_count = 0;
         g_music_selected = 0;
@@ -238,12 +271,12 @@ static void ui_music_scan_tracks(void)
         if (g_music_playing) {
             ui_music_set_playing(false);
         }
-        return;
-    }
-
-    if (g_music_selected >= g_music_track_count) {
+    } else if (g_music_selected >= g_music_track_count) {
         g_music_selected = 0;
     }
+
+    ui_music_refresh_list();
+    ui_music_refresh_detail();
 }
 
 static void ui_music_refresh_list(void)
@@ -286,33 +319,31 @@ static void ui_music_refresh_detail(void)
 
     if (status.state == APP_MUSIC_PLAYER_STATE_ERROR) {
         snprintf(detail, sizeof(detail), "%s", ui_music_error_text(status.last_error));
-        lv_label_set_text(g_music_detail, detail);
     } else if (g_music_last_status != APP_WAV_OK) {
         snprintf(detail, sizeof(detail), "Track scan error\nWAV: %s",
                  ui_music_wav_status_text(g_music_last_status));
-        lv_label_set_text(g_music_detail, detail);
     } else if (g_music_track_count == 0U) {
-        lv_label_set_text(g_music_detail, "TF: no WAV file in root or /Music");
+        snprintf(detail, sizeof(detail), "TF: no WAV file in root or /Music");
     } else if (status.state == APP_MUSIC_PLAYER_STATE_LOADING ||
                status.state == APP_MUSIC_PLAYER_STATE_PLAYING) {
         snprintf(detail, sizeof(detail), "%s\n%s\n%luHz %uch %ubit",
                  status.track_name[0] != '\0' ? status.track_name : g_music_tracks[g_music_selected].name,
                  ui_music_state_text(status.state),
-                 (unsigned long)status.wav_info.sample_rate,
-                 (unsigned)status.wav_info.channels,
-                 (unsigned)status.wav_info.bits_per_sample);
-        lv_label_set_text(g_music_detail, detail);
+                  (unsigned long)status.wav_info.sample_rate,
+                  (unsigned)status.wav_info.channels,
+                  (unsigned)status.wav_info.bits_per_sample);
     } else {
         snprintf(detail, sizeof(detail), "%s\nSize: %luB",
                  g_music_tracks[g_music_selected].name,
                  (unsigned long)g_music_tracks[g_music_selected].size);
-        lv_label_set_text(g_music_detail, detail);
     }
+    ui_music_set_label_text(g_music_detail, detail);
 
-    lv_label_set_text_fmt(g_music_status, "%s  Vol:%u%%  Tracks:%u",
-                          g_music_playing ? UI_TEXT_MUSIC_PLAYING : UI_TEXT_MUSIC_STOPPED,
-                          g_settings.system_volume,
-                          (unsigned)g_music_track_count);
+    snprintf(detail, sizeof(detail), "%s  Vol:%u%%  Tracks:%u",
+             g_music_playing ? UI_TEXT_MUSIC_PLAYING : UI_TEXT_MUSIC_STOPPED,
+             g_settings.system_volume,
+             (unsigned)g_music_track_count);
+    ui_music_set_label_text(g_music_status, detail);
 }
 
 static void ui_music_refresh_progress(void)
@@ -334,7 +365,9 @@ static void ui_music_refresh_progress(void)
     played = status.bytes_played;
 
     if (!playing || total == 0U) {
-        lv_bar_set_value(g_music_progress, 0, LV_ANIM_OFF);
+        if (lv_bar_get_value(g_music_progress) != 0) {
+            lv_bar_set_value(g_music_progress, 0, LV_ANIM_OFF);
+        }
         return;
     }
 
@@ -345,7 +378,9 @@ static void ui_music_refresh_progress(void)
         pct = 0;
     }
 
-    lv_bar_set_value(g_music_progress, pct, LV_ANIM_OFF);
+    if (lv_bar_get_value(g_music_progress) != pct) {
+        lv_bar_set_value(g_music_progress, pct, LV_ANIM_OFF);
+    }
 }
 
 static void ui_music_select_track(uint8_t track)
@@ -413,7 +448,21 @@ static void ui_music_update_play_button(void)
 
     label = lv_obj_get_child(g_music_play_button, 0);
     if (label != NULL) {
-        lv_label_set_text(label, g_music_playing ? UI_TEXT_MUSIC_STOP : UI_TEXT_MUSIC_PLAY);
+        ui_music_set_label_text(label, g_music_playing ? UI_TEXT_MUSIC_STOP : UI_TEXT_MUSIC_PLAY);
+    }
+}
+
+static void ui_music_set_label_text(lv_obj_t *label, const char *text)
+{
+    const char *current;
+
+    if (label == NULL || text == NULL) {
+        return;
+    }
+
+    current = lv_label_get_text(label);
+    if (current == NULL || strcmp(current, text) != 0) {
+        lv_label_set_text(label, text);
     }
 }
 
@@ -484,4 +533,3 @@ static const char *ui_music_wav_status_text(app_wav_status_t status)
         return "unknown";
     }
 }
-

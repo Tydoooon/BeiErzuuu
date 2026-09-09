@@ -32,9 +32,10 @@ static void setting_slider_event_cb(lv_event_t *e)
 
     ui_setting_update_value_label(id, value);
 
-    ui_storage_mark_dirty();
-    ui_storage_commit();
-    ui_log(UI_TEXT_SETTING_CHANGED);
+    if (!ui_storage_request_commit(UI_STORAGE_FEEDBACK_SETTINGS)) {
+        g_error_events++;
+        ui_log("Setting save request failed");
+    }
 }
 
 static void ui_setting_row(lv_obj_t *parent, const char *name, uint8_t id,

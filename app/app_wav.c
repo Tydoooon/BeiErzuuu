@@ -53,6 +53,109 @@ app_wav_status_t app_wav_scan_root(app_wav_track_t *tracks, size_t max_tracks, s
     return app_wav_scan_dir("/Music", "/Music", tracks, max_tracks, track_count);
 }
 
+app_wav_status_t app_wav_scan_ctx_begin(app_wav_scan_ctx_t *ctx)
+{
+    if (ctx == NULL) {
+        return APP_WAV_INVALID_PARAM;
+    }
+
+    memset(ctx, 0, sizeof(*ctx));
+    ctx->phase = 0U;
+    ctx->dir_open = false;
+    ctx->status = app_wav_mount();
+    return ctx->status;
+}
+
+bool app_wav_scan_ctx_step(app_wav_scan_ctx_t *ctx, app_wav_track_t *tracks,
+                           size_t max_tracks, size_t *track_count, size_t budget)
+{
+    size_t processed = 0U;
+
+    if (ctx == NULL || tracks == NULL || track_count == NULL) {
+        return true;
+    }
+
+    /* 挂载失败或已完成：直接返回“结束” */
+    if (ctx->status != APP_WAV_OK || ctx->phase >= 2U) {
+        return true;
+    }
+
+    while (processed < budget && ctx->phase < 2U) {
+        if (!ctx->dir_open) {
+            const char *dir = (ctx->phase == 0U) ? "/" : "/Music";
+            const char *prefix = (ctx->phase == 0U) ? "" : "/Music";
+
+            ctx->prefix_len = strlen(prefix);
+            memcpy(ctx->prefix, prefix, ctx->prefix_len + 1U);
+
+            if (app_wav_make_path(dir, ctx->path_buf) != APP_WAV_OK ||
+                f_opendir(&ctx->dir, ctx->path_buf) != FR_OK) {
+                /* 目录打不开（不存在/无卡）-> 跳到下一阶段 */
+                ctx->phase++;
+                ctx->dir_open = false;
+                continue;
+            }
+            ctx->dir_open = true;
+        }
+
+        {
+            FILINFO info;
+            FRESULT res = f_readdir(&ctx->dir, &info);
+
+            if (res != FR_OK) {
+                (void)f_closedir(&ctx->dir);
+                ctx->dir_open = false;
+                ctx->status = APP_WAV_READ_FAILED;
+                ctx->phase = 2U;
+                break;
+            }
+            if (info.fname[0] == '\0') {
+                (void)f_closedir(&ctx->dir);
+                ctx->dir_open = false;
+                ctx->phase++;
+                continue;
+            }
+
+            processed++;
+
+            if ((info.fattrib & AM_DIR) != 0U || !app_wav_has_wav_ext(info.fname)) {
+                continue;
+            }
+
+            if (*track_count < max_tracks) {
+                size_t name_len = strlen(info.fname);
+
+                if (name_len < APP_WAV_NAME_MAX &&
+                    (ctx->prefix_len + 1U + name_len + 1U) <= APP_WAV_PATH_MAX) {
+                    app_wav_track_t *t = &tracks[*track_count];
+
+                    memcpy(t->name, info.fname, name_len + 1U);
+                    memcpy(t->path, ctx->prefix, ctx->prefix_len);
+                    t->path[ctx->prefix_len] = '/';
+                    memcpy(&t->path[ctx->prefix_len + 1U], info.fname, name_len + 1U);
+                    t->size = (uint32_t)info.fsize;
+                    (*track_count)++;
+                }
+            }
+        }
+    }
+
+    return (ctx->phase >= 2U);
+}
+
+void app_wav_scan_ctx_end(app_wav_scan_ctx_t *ctx)
+{
+    if (ctx == NULL) {
+        return;
+    }
+
+    if (ctx->dir_open) {
+        (void)f_closedir(&ctx->dir);
+        ctx->dir_open = false;
+    }
+    ctx->phase = 2U;
+}
+
 app_wav_status_t app_wav_open(app_wav_file_t *wav, const char *path)
 {
     char full_path[APP_WAV_PATH_MAX];

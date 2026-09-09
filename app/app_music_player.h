@@ -43,7 +43,13 @@ typedef struct
     uint32_t bytes_played;
 } app_music_player_status_t;
 
+#define APP_MUSIC_PLAYER_MAX_TRACKS 12U
+
 void app_music_player_init(void);
+void app_music_player_request_scan(void);
+bool app_music_player_get_scan(uint32_t *seq, app_wav_status_t *status,
+                               app_wav_track_t *tracks, size_t max_tracks,
+                               size_t *track_count);
 bool app_music_player_request_play(const app_wav_track_t *track);
 void app_music_player_request_stop(void);
 void app_music_player_request_seek(uint32_t byte_offset);

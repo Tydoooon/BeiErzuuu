@@ -68,6 +68,21 @@ typedef enum {
     UI_APP_NONE = 0xFF,
 } ui_app_id_t;
 
+typedef enum {
+    UI_STORAGE_FEEDBACK_NONE        = 0U,
+    UI_STORAGE_FEEDBACK_SETTINGS    = 1U << 0,
+    UI_STORAGE_FEEDBACK_FILE_CREATE = 1U << 1,
+    UI_STORAGE_FEEDBACK_FILE_RENAME = 1U << 2,
+    UI_STORAGE_FEEDBACK_FILE_DELETE = 1U << 3,
+    UI_STORAGE_FEEDBACK_FILE_SAVE   = 1U << 4,
+    UI_STORAGE_FEEDBACK_DRAW_SAVE   = 1U << 5,
+} ui_storage_feedback_t;
+
+typedef struct {
+    uint32_t feedback;
+    bool success;
+} ui_storage_result_t;
+
 extern lv_obj_t *g_password_ta;
 extern lv_obj_t *g_login_hint;
 extern lv_obj_t *g_file_list;
@@ -106,10 +121,12 @@ extern ui_app_id_t g_current_app;
 void ui_model_init(void);
 void ui_storage_load(void);
 bool ui_storage_load_persisted(void);
-void ui_storage_mark_dirty(void);
-void ui_storage_commit(void);
-bool ui_storage_save_draw_slot(uint8_t slot);
+bool ui_storage_request_commit(uint32_t feedback);
+bool ui_storage_request_draw(uint8_t slot, uint32_t feedback);
+bool ui_storage_draw_request_available(void);
+bool ui_storage_take_result(ui_storage_result_t *result);
 void ui_log(const char *text);
+void ui_log_request_persist(void);
 void ui_apply_brightness(void);
 
 void ui_load_screen(lv_obj_t *scr);

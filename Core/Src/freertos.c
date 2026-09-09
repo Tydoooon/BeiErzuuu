@@ -33,6 +33,7 @@
 #include "app_ui.h"
 #include "app_w25q128.h"
 #include "app_event.h"
+#include "app_fault.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,12 +59,13 @@ osThreadId_t lcdTaskHandle;
 osThreadId_t w25q128TaskHandle;
 osThreadId_t usbinitTaskHandle;
 osThreadId_t audioTaskHandle;
+osThreadId_t saveTaskHandle;
 const osThreadAttr_t startTask_attributes = {
   .name = "startTask",
 #if APP_W25Q128_FONT_PROGRAMMER_ENABLE
-  .stack_size = 1024,
+  .stack_size = 1536,
 #else
-  .stack_size = 128 * 4,
+  .stack_size = 256 * 4,
 #endif
   .priority = (osPriority_t) osPriorityNormal,
 };
@@ -84,7 +86,7 @@ const osThreadAttr_t w25q128Task_attributes = {
 };
 const osThreadAttr_t initTask_attributes = {
   .name = "initTask",
-  .stack_size = 128 * 4,
+  .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
 const osThreadAttr_t audioTask_attributes = {
@@ -94,6 +96,11 @@ const osThreadAttr_t audioTask_attributes = {
    * 读卡填缓冲是“忙等不释放 CPU”的软件 SPI，若与 LVGL 渲染同优先级时间片轮转，
    * 容易被抢断导致读卡赶不上 46ms 的 DMA 播放窗口 -> underrun -> I2S transmit failed。 */
   .priority = (osPriority_t) osPriorityAboveNormal,
+};
+const osThreadAttr_t saveTask_attributes = {
+  .name = "saveTask",
+  .stack_size = 1024,
+  .priority = (osPriority_t) osPriorityBelowNormal,
 };
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
@@ -112,6 +119,7 @@ void StartLCDTask(void *argument);
 void StartW25Q128Task(void *argument);
 void StartInitTask(void *argument);
 void StartAudioTask(void *argument);
+void StartSaveTask(void *argument);
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
@@ -127,6 +135,7 @@ void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
   app_event_init();
+  app_ui_storage_service_init();
 
   /* USER CODE END Init */
 
@@ -186,16 +195,25 @@ void StartDefaultTask(void *argument)
 void StartStartTask(void *argument)
 {
   (void)argument;
+  app_fault_init();
 #if APP_W25Q128_FONT_PROGRAMMER_ENABLE
   (void)app_w25q128_program_ui_font_image();
 #endif
   keyTaskHandle = osThreadNew(StartKeyTask, NULL, &keyTask_attributes);
+  saveTaskHandle = osThreadNew(StartSaveTask, NULL, &saveTask_attributes);
   lcdTaskHandle = osThreadNew(StartLCDTask, NULL, &lcdTask_attributes);
   w25q128TaskHandle = osThreadNew(StartW25Q128Task, NULL, &w25q128Task_attributes);
   usbinitTaskHandle = osThreadNew(StartInitTask, NULL, &initTask_attributes);
   app_music_player_init();
   audioTaskHandle = osThreadNew(StartAudioTask, NULL, &audioTask_attributes);
-  
+
+  /* 故障保护：注册可自动重启的任务，并启动监控任务 */
+  app_fault_register_restartable(APP_FAULT_TASK_AUDIO, &audioTaskHandle,
+                                 StartAudioTask, &audioTask_attributes);
+  app_fault_register_restartable(APP_FAULT_TASK_SAVE, &saveTaskHandle,
+                                 StartSaveTask, &saveTask_attributes);
+  app_fault_start();
+
   osThreadExit();
 }
 
@@ -203,10 +221,12 @@ void StartKeyTask(void *argument)
 {
   (void)argument;
   g_key_queue = KeyQueueInit();
+  key_scan_reset();
 
   for(;;)
   {
     key_scan();
+    app_fault_heartbeat(APP_FAULT_TASK_KEY);
     osDelay(10);
   }
 }
@@ -224,6 +244,8 @@ void StartLCDTask(void *argument)
 
   for(;;)
   {
+    app_fault_heartbeat(APP_FAULT_TASK_LCD);
+
     while (g_key_queue != NULL && xQueueReceive(g_key_queue, &key_id, 0) == pdPASS)
     {
       app_ui_key_push(key_id);
@@ -259,7 +281,16 @@ void StartInitTask(void *argument)
 }
 void StartAudioTask(void *argument)
 {
+  app_fault_task_entered(APP_FAULT_TASK_AUDIO);
   app_music_player_task(argument);
+  app_fault_task_exited(APP_FAULT_TASK_AUDIO);
+  osThreadExit();
+}
+void StartSaveTask(void *argument)
+{
+  app_fault_task_entered(APP_FAULT_TASK_SAVE);
+  app_ui_storage_task(argument);
+  app_fault_task_exited(APP_FAULT_TASK_SAVE);
   osThreadExit();
 }
 /* USER CODE END Application */

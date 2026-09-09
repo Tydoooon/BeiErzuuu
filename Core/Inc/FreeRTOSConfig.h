@@ -44,7 +44,7 @@
  *----------------------------------------------------------*/
 
 /* USER CODE BEGIN Includes */
-/* Section where include file can be added */
+#include "app_fault.h"
 /* USER CODE END Includes */
 
 /* Ensure definitions are only used by the compiler, and not by the assembler. */
@@ -62,7 +62,7 @@
 #define configUSE_PREEMPTION                     1
 #define configSUPPORT_STATIC_ALLOCATION          1
 #define configSUPPORT_DYNAMIC_ALLOCATION         1
-#define configUSE_IDLE_HOOK                      0
+#define configUSE_IDLE_HOOK                      1
 #define configUSE_TICK_HOOK                      0
 #define configCPU_CLOCK_HZ                       ( SystemCoreClock )
 #define configTICK_RATE_HZ                       ((TickType_t)1000)
@@ -71,6 +71,9 @@
 #define configTOTAL_HEAP_SIZE                    ((size_t)15360)
 #define configMAX_TASK_NAME_LEN                  ( 16 )
 #define configUSE_TRACE_FACILITY                 1
+#define configGENERATE_RUN_TIME_STATS            1
+#define configCHECK_FOR_STACK_OVERFLOW           2
+#define configUSE_MALLOC_FAILED_HOOK             1
 #define configUSE_16_BIT_TICKS                   0
 #define configUSE_MUTEXES                        1
 #define configQUEUE_REGISTRY_SIZE                8
@@ -151,7 +154,8 @@ See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html. */
 /* Normal assert() semantics without relying on the provision of an assert.h
 header file. */
 /* USER CODE BEGIN 1 */
-#define configASSERT( x ) if ((x) == 0) {taskDISABLE_INTERRUPTS(); for( ;; );}
+/* 失败即记录故障码并复位（由 IWDG/监控任务兜底），不再永久卡死 */
+#define configASSERT( x ) do { if ((x) == 0) { app_fault_trap(APP_FAULT_CODE_ASSERT); } } while (0)
 /* USER CODE END 1 */
 
 /* Definitions that map the FreeRTOS port interrupt handlers to their CMSIS
@@ -164,7 +168,28 @@ standard names. */
 #define USE_CUSTOM_SYSTICK_HANDLER_IMPLEMENTATION 0
 
 /* USER CODE BEGIN Defines */
-/* Section where parameter definitions can be added (for instance, to override default ones in FreeRTOS.h) */
+/* 栈溢出检测：2 = 每次任务切换时检查栈顶哨兵（canary），
+ * 溢出时进入 vApplicationStackOverflowHook（见 app_fault.c）。 */
+#define configCHECK_FOR_STACK_OVERFLOW            2
+
+/* 堆申请失败钩子：pvPortMalloc 失败时进入 vApplicationMallocFailedHook。 */
+#define configUSE_MALLOC_FAILED_HOOK              1
+
+/* 运行时间统计（CPU 占用率）：见下方 DWT 周期计数器实现。 */
+#define configGENERATE_RUN_TIME_STATS             1
+
+/* 运行时间统计：使用 DWT 周期计数器，无需占用额外的硬件定时器。
+ * 直接操作寄存器地址，避免依赖 CMSIS core 头（tasks.c 只包含 FreeRTOS.h）。 */
+#define APP_FAULT_DWT_CTRL   (*(volatile uint32_t *)0xE0001000UL) /* DWT->CTRL */
+#define APP_FAULT_DWT_CYCCNT (*(volatile uint32_t *)0xE0001004UL) /* DWT->CYCCNT */
+#define APP_FAULT_SCB_DEMCR  (*(volatile uint32_t *)0xE000EDFCUL) /* CoreDebug->DEMCR */
+
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() do { \
+        APP_FAULT_SCB_DEMCR |= (1UL << 24);   /* TRCENA */ \
+        APP_FAULT_DWT_CYCCNT = 0UL;           /* 计数清零 */ \
+        APP_FAULT_DWT_CTRL |= 1UL;            /* CYCCNTENA */ \
+    } while (0)
+#define portGET_RUN_TIME_COUNTER_VALUE()       APP_FAULT_DWT_CYCCNT
 /* USER CODE END Defines */
 
 #endif /* FREERTOS_CONFIG_H */

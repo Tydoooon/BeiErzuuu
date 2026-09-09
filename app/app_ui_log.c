@@ -15,6 +15,16 @@ static void log_clear_event_cb(lv_event_t *e)
     ui_create_log_app();
 }
 
+static void log_save_event_cb(lv_event_t *e)
+{
+    (void)e;
+    g_input_events++;
+    /* 请求后台把日志写入 W25Q128，掉电不丢失 */
+    ui_log_request_persist();
+    ui_log(UI_TEXT_LOG_SAVE);
+    ui_create_log_app();
+}
+
 void ui_create_log_app(void)
 {
     lv_obj_t *scr = ui_create_app_frame(UI_TEXT_APP_LOG);
@@ -29,7 +39,8 @@ void ui_create_log_app(void)
     lv_obj_set_scrollbar_mode(list, LV_SCROLLBAR_MODE_AUTO);
     ui_refresh_logs(list);
 
-    ui_button(scr, UI_TEXT_LOG_CLEAR, 70, 266, 100, 34, log_clear_event_cb, NULL);
+    ui_button(scr, UI_TEXT_LOG_SAVE, 12, 266, 100, 34, log_save_event_cb, NULL);
+    ui_button(scr, UI_TEXT_LOG_CLEAR, 128, 266, 100, 34, log_clear_event_cb, NULL);
     ui_label(scr, "K4 Exit", 94, 304);
     ui_load_screen(scr);
 }

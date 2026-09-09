@@ -1,6 +1,7 @@
 #include "app_music_player.h"
 
 #include "app_event.h"
+#include "app_fault.h"
 #include "app_ui.h"
 #include "bsp_max98357a.h"
 #include "FreeRTOS.h"
@@ -27,6 +28,8 @@
 #define APP_MUSIC_PLAYER_HALF_WORDS         4096U
 /* 单片最多需要的原始 PCM 字节数（16bit 双声道时 = 帧数 * 4） */
 #define APP_MUSIC_PLAYER_IN_BYTES           8192U
+/* 读卡分片大小：兼顾软件 SPI 连续吞吐和 LCD/UI 获得调度机会。 */
+#define APP_MUSIC_PLAYER_READ_CHUNK         2048U
 /* 等待一次 DMA 完成事件的超时 */
 #define APP_MUSIC_PLAYER_WAIT_TIMEOUT_MS    2000U
 
@@ -34,7 +37,8 @@ typedef enum
 {
     APP_MUSIC_PLAYER_CMD_PLAY = 0,
     APP_MUSIC_PLAYER_CMD_STOP,
-    APP_MUSIC_PLAYER_CMD_SEEK
+    APP_MUSIC_PLAYER_CMD_SEEK,
+    APP_MUSIC_PLAYER_CMD_SCAN
 } app_music_player_cmd_type_t;
 
 typedef struct
@@ -44,10 +48,20 @@ typedef struct
     uint32_t offset;      /* CMD_SEEK 的目标字节偏移 */
 } app_music_player_cmd_t;
 
+typedef struct
+{
+    uint32_t seq;
+    app_wav_status_t status;
+    size_t count;
+    app_wav_track_t tracks[APP_MUSIC_PLAYER_MAX_TRACKS];
+} app_music_player_scan_result_t;
+
 static QueueHandle_t g_music_cmd_queue;
 static StaticQueue_t g_music_cmd_queue_buf;
 static uint8_t g_music_cmd_queue_storage[APP_MUSIC_PLAYER_QUEUE_LEN * sizeof(app_music_player_cmd_t)];
 static app_music_player_status_t g_music_status;
+static app_music_player_scan_result_t g_music_scan_result;
+static bool g_music_scan_pending;
 
 /* 播放缓冲（静态，避免占用 FreeRTOS 堆） */
 static uint8_t  g_music_in_buf[APP_MUSIC_PLAYER_IN_BYTES];        /* TF 卡读出的原始 PCM */
@@ -66,6 +80,7 @@ static TaskHandle_t       g_audio_task_h;
 static void app_music_player_reset_status(void);
 static void app_music_player_set_state(app_music_player_state_t state, app_wav_status_t status, app_music_player_error_t error);
 static bool app_music_player_send_cmd(const app_music_player_cmd_t *cmd);
+static void app_music_player_do_scan(void);
 static void app_music_player_play_track(const app_wav_track_t *track);
 static app_music_player_error_t app_music_player_stream(app_wav_file_t *wav);
 static uint32_t app_music_player_fill(uint16_t *dst, app_wav_file_t *wav, const app_wav_info_t *info);
@@ -191,7 +206,7 @@ void app_music_player_request_stop(void)
 
     cmd.type = APP_MUSIC_PLAYER_CMD_STOP;
     memset(&cmd.track, 0, sizeof(cmd.track));
-    (void)app_music_player_send_cmd(&cmd);
+    (void)xQueueSendToFront(g_music_cmd_queue, &cmd, 0);
 }
 
 void app_music_player_request_seek(uint32_t byte_offset)
@@ -206,6 +221,63 @@ void app_music_player_request_seek(uint32_t byte_offset)
     memset(&cmd.track, 0, sizeof(cmd.track));
     cmd.offset = byte_offset;
     (void)app_music_player_send_cmd(&cmd);
+}
+
+void app_music_player_request_scan(void)
+{
+    app_music_player_cmd_t cmd;
+    bool queued;
+
+    if (g_music_cmd_queue == NULL) {
+        return;
+    }
+
+    taskENTER_CRITICAL();
+    if (g_music_scan_pending) {
+        taskEXIT_CRITICAL();
+        return;
+    }
+    g_music_scan_pending = true;
+    taskEXIT_CRITICAL();
+
+    cmd.type = APP_MUSIC_PLAYER_CMD_SCAN;
+    memset(&cmd.track, 0, sizeof(cmd.track));
+    queued = app_music_player_send_cmd(&cmd);
+    if (!queued) {
+        taskENTER_CRITICAL();
+        g_music_scan_pending = false;
+        taskEXIT_CRITICAL();
+    }
+}
+
+bool app_music_player_get_scan(uint32_t *seq, app_wav_status_t *status,
+                               app_wav_track_t *tracks, size_t max_tracks,
+                               size_t *track_count)
+{
+    size_t count;
+
+    if (seq == NULL || status == NULL || tracks == NULL || track_count == NULL) {
+        return false;
+    }
+
+    taskENTER_CRITICAL();
+    if (*seq == g_music_scan_result.seq) {
+        taskEXIT_CRITICAL();
+        return false;
+    }
+
+    count = g_music_scan_result.count;
+    if (count > max_tracks) {
+        count = max_tracks;
+    }
+    memcpy(tracks, g_music_scan_result.tracks, count * sizeof(tracks[0]));
+    *status = g_music_scan_result.status;
+    *track_count = count;
+    *seq = g_music_scan_result.seq;
+    g_music_scan_pending = false;
+    taskEXIT_CRITICAL();
+
+    return true;
 }
 
 app_music_player_state_t app_music_player_get_state(void)
@@ -244,9 +316,13 @@ void app_music_player_task(void *argument)
             continue;
         }
 
-        if (xQueueReceive(g_music_cmd_queue, &cmd, portMAX_DELAY) != pdPASS) {
+        /* 有限超时等待命令，超时也要喂心跳，供故障监控任务判断存活 */
+        if (xQueueReceive(g_music_cmd_queue, &cmd, pdMS_TO_TICKS(200U)) != pdPASS) {
+            app_fault_heartbeat(APP_FAULT_TASK_AUDIO);
             continue;
         }
+
+        app_fault_heartbeat(APP_FAULT_TASK_AUDIO);
 
         if (cmd.type == APP_MUSIC_PLAYER_CMD_STOP) {
             g_stop_req = true;
@@ -257,6 +333,11 @@ void app_music_player_task(void *argument)
             continue;
         }
 
+        if (cmd.type == APP_MUSIC_PLAYER_CMD_SCAN) {
+            app_music_player_do_scan();
+            continue;
+        }
+
         if (cmd.type == APP_MUSIC_PLAYER_CMD_SEEK) {
             /* 空闲状态下收到的 seek 无意义（UI 仅在播放中发送），直接丢弃 */
             continue;
@@ -264,6 +345,58 @@ void app_music_player_task(void *argument)
 
         app_music_player_play_track(&cmd.track);
     }
+}
+
+/* ================================================================== */
+/* 后台扫描                                                            */
+/* ================================================================== */
+
+/**
+ * @brief 在音频任务里分步扫描 TF 卡的 WAV 文件，每步之间让出 CPU。
+ *        播放/加载中直接跳过：remount 会使已打开的 FIL 失效，导致音乐中断。
+ *        扫描完成后整体提交结果（写 seq），UI 轮询发现 seq 变化再刷新列表。
+ */
+static void app_music_player_do_scan(void)
+{
+    app_wav_scan_ctx_t ctx;
+    app_wav_status_t status;
+    size_t count = 0U;
+    app_music_player_state_t state = app_music_player_get_state();
+
+    if (state == APP_MUSIC_PLAYER_STATE_PLAYING ||
+        state == APP_MUSIC_PLAYER_STATE_LOADING) {
+        taskENTER_CRITICAL();
+        g_music_scan_pending = false;
+        taskEXIT_CRITICAL();
+        return;   /* 播放中不重扫，保持音乐不中断 */
+    }
+
+    status = app_wav_scan_ctx_begin(&ctx);
+    if (status != APP_WAV_OK) {
+        taskENTER_CRITICAL();
+        g_music_scan_result.seq++;
+        g_music_scan_result.status = status;
+        g_music_scan_result.count = 0U;
+        taskEXIT_CRITICAL();
+        return;
+    }
+
+    for (;;) {
+        bool done = app_wav_scan_ctx_step(&ctx, g_music_scan_result.tracks,
+                                          APP_MUSIC_PLAYER_MAX_TRACKS, &count, 8U);
+        if (done || count >= APP_MUSIC_PLAYER_MAX_TRACKS) {
+            break;
+        }
+        vTaskDelay(1);   /* 让出 CPU，避免阻塞 UI */
+    }
+    app_wav_scan_ctx_end(&ctx);
+    status = ctx.status;
+
+    taskENTER_CRITICAL();
+    g_music_scan_result.seq++;
+    g_music_scan_result.status = status;
+    g_music_scan_result.count = count;
+    taskEXIT_CRITICAL();
 }
 
 /* ================================================================== */
@@ -545,9 +678,31 @@ static uint32_t app_music_player_fill(uint16_t *dst, app_wav_file_t *wav, const 
     remain = wav->info.data_size - wav->data_read;
     to_read = (in_max < remain) ? in_max : remain;
 
-    if (app_wav_read(wav, g_music_in_buf, to_read, &bytes_read) != APP_WAV_OK) {
-        return 0U;
+    /* 分片读 + 让出 CPU：整片 8KB 软件 SPI 忙等会饿死同优先级/低优先级任务，
+     * 导致界面卡顿；每读一小片就让出一次，UI 得以在播放间隙刷新。 */
+    while (bytes_read < to_read) {
+        uint32_t chunk = to_read - bytes_read;
+        uint32_t got = 0U;
+
+        if (chunk > APP_MUSIC_PLAYER_READ_CHUNK) {
+            chunk = APP_MUSIC_PLAYER_READ_CHUNK;
+        }
+
+        if (app_wav_read(wav, g_music_in_buf + bytes_read, chunk, &got) != APP_WAV_OK) {
+            return 0U;
+        }
+        if (got == 0U) {
+            break;
+        }
+        bytes_read += got;
+
+        app_fault_heartbeat(APP_FAULT_TASK_AUDIO);
+
+        if (bytes_read < to_read) {
+            vTaskDelay(1);   /* 让出 CPU，供 LCD/UI 任务运行 */
+        }
     }
+
     if (bytes_read == 0U) {
         return 0U;
     }
@@ -681,31 +836,40 @@ static int app_music_player_wait_event(uint32_t timeout_ms)
 }
 
 /**
- * @brief 检查命令队列（流式播放期间轮询），消费 STOP/SEEK 并置对应标志。
- *        仅消费队首一条命令：STOP 优先于 SEEK 的语义由 FIFO 顺序保证。
+ * @brief 检查命令队列（流式播放期间轮询）。
+ *        播放期间的 SCAN/PLAY 没有意义，必须消费掉，否则会堵住后续 STOP。
  */
 static void app_music_player_poll_command(void)
 {
     app_music_player_cmd_t cmd;
+    bool seek_pending = false;
+    uint32_t seek_offset = 0U;
 
     if (g_music_cmd_queue == NULL) {
         return;
     }
-    if (xQueuePeek(g_music_cmd_queue, &cmd, 0) != pdPASS) {
-        return;
+
+    while (xQueueReceive(g_music_cmd_queue, &cmd, 0) == pdPASS) {
+        if (cmd.type == APP_MUSIC_PLAYER_CMD_STOP) {
+            g_seek_pending = false;
+            g_stop_req = true;
+            return;
+        }
+        if (cmd.type == APP_MUSIC_PLAYER_CMD_SEEK) {
+            seek_offset = cmd.offset;
+            seek_pending = true;
+        } else if (cmd.type == APP_MUSIC_PLAYER_CMD_SCAN) {
+            taskENTER_CRITICAL();
+            g_music_scan_pending = false;
+            taskEXIT_CRITICAL();
+        }
+        /* SCAN 和重复 PLAY 在当前曲目播放结束前直接丢弃。 */
     }
 
-    if (cmd.type == APP_MUSIC_PLAYER_CMD_STOP) {
-        (void)xQueueReceive(g_music_cmd_queue, &cmd, 0);
-        g_stop_req = true;
-        return;
-    }
-    if (cmd.type == APP_MUSIC_PLAYER_CMD_SEEK) {
-        (void)xQueueReceive(g_music_cmd_queue, &cmd, 0);
-        g_seek_offset = cmd.offset;
+    if (seek_pending) {
+        g_seek_offset = seek_offset;
         g_seek_pending = true;
         g_stop_req = true;   /* 中断当前流，交由 play_track 处理跳转并重新起播 */
-        return;
     }
 }
 

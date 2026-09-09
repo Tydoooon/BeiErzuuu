@@ -45,6 +45,7 @@ static void app_ui_process_home_key(uint8_t key_id);
 static void app_ui_process_current_app_key(uint8_t key_id);
 static void app_ui_process_mouse_wheel(void);
 static void app_ui_process_mouse_right_click(void);
+static void app_ui_process_storage_results(void);
 
 void app_ui_create(void)
 {
@@ -80,6 +81,7 @@ void app_ui_handle_idle(void)
     uint32_t now = lv_tick_get();
     uint32_t timeout_ms = (uint32_t)app_ui_get_screen_timeout_s() * 1000U;
 
+    app_ui_process_storage_results();
     app_ui_process_mouse_wheel();
     app_ui_process_mouse_right_click();
     ui_music_sync_state();
@@ -276,6 +278,46 @@ static void app_ui_process_mouse_right_click(void)
 
     if (g_current_app == UI_APP_FILE) {
         ui_file_handle_right_click(app_mouse_get_x(), app_mouse_get_y());
+    }
+}
+
+static void app_ui_process_storage_results(void)
+{
+    ui_storage_result_t result;
+
+    while (ui_storage_take_result(&result)) {
+        if (!result.success) {
+            g_error_events++;
+            ui_log("Storage save failed");
+            if ((result.feedback & UI_STORAGE_FEEDBACK_DRAW_SAVE) != 0U &&
+                g_current_app == UI_APP_DRAW &&
+                g_draw_status != NULL) {
+                lv_label_set_text(g_draw_status, "Save failed");
+            }
+            continue;
+        }
+
+        if ((result.feedback & UI_STORAGE_FEEDBACK_SETTINGS) != 0U) {
+            ui_log(UI_TEXT_SETTING_CHANGED);
+        }
+        if ((result.feedback & UI_STORAGE_FEEDBACK_FILE_CREATE) != 0U) {
+            ui_log(UI_TEXT_FILE_CREATED);
+        }
+        if ((result.feedback & UI_STORAGE_FEEDBACK_FILE_RENAME) != 0U) {
+            ui_log(UI_TEXT_FILE_RENAMED);
+        }
+        if ((result.feedback & UI_STORAGE_FEEDBACK_FILE_DELETE) != 0U) {
+            ui_log(UI_TEXT_FILE_DELETED);
+        }
+        if ((result.feedback & UI_STORAGE_FEEDBACK_FILE_SAVE) != 0U) {
+            ui_log(UI_TEXT_FILE_SAVED);
+        }
+        if ((result.feedback & UI_STORAGE_FEEDBACK_DRAW_SAVE) != 0U) {
+            ui_log(UI_TEXT_DRAW_LOG_SAVE);
+            if (g_current_app == UI_APP_DRAW && g_draw_status != NULL) {
+                lv_label_set_text(g_draw_status, "Saved to file list");
+            }
+        }
     }
 }
 

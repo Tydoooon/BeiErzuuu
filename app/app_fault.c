@@ -1,0 +1,286 @@
+#include "app_fault.h"
+
+#include "cmsis_os.h"
+#include "stm32f4xx_hal.h"
+
+#include <string.h>
+
+/* ------------------------------------------------------------------ */
+/* 跨复位故障记录（.noinit 段：上电/复位后不初始化，保留上次故障码）    */
+/* ------------------------------------------------------------------ */
+#define APP_FAULT_NOINIT_MAGIC  0x4641554CUL  /* "FAUL" */
+
+typedef struct {
+    uint32_t magic;
+    uint32_t code;
+} app_fault_noinit_t;
+
+static app_fault_noinit_t g_fault_noinit __attribute__((section(".noinit"), aligned(4)));
+
+/* ------------------------------------------------------------------ */
+/* IWDG 看门狗                                                         */
+/* 直接操作寄存器，避免依赖 HAL IWDG 模块（该模块未在 hal_conf 使能）。 */
+/* ------------------------------------------------------------------ */
+#define APP_FAULT_IWDG_BASE   0x40003000UL
+#define APP_FAULT_IWDG_KR     (*(volatile uint32_t *)(APP_FAULT_IWDG_BASE + 0x00U)) /* 键寄存器 */
+#define APP_FAULT_IWDG_PR     (*(volatile uint32_t *)(APP_FAULT_IWDG_BASE + 0x04U)) /* 预分频 */
+#define APP_FAULT_IWDG_RLR    (*(volatile uint32_t *)(APP_FAULT_IWDG_BASE + 0x08U)) /* 重装载 */
+#define APP_FAULT_IWDG_SR     (*(volatile uint32_t *)(APP_FAULT_IWDG_BASE + 0x0CU)) /* 状态 */
+
+#define APP_FAULT_IWDG_KR_UNLOCK  0x5555U
+#define APP_FAULT_IWDG_KR_START   0xCCCCU
+#define APP_FAULT_IWDG_KR_RELOAD  0xAAAAU
+
+#define APP_FAULT_IWDG_PR_DIV256  6U      /* PR[2:0]=110 -> /256 */
+#define APP_FAULT_IWDG_SR_UPD_BUSY (IWDG_SR_PVU | IWDG_SR_RVU)
+#define APP_FAULT_IWDG_TIMEOUT_MS  100U
+
+static volatile bool g_iwdg_started;
+/* 仅当系统健康时才喂狗：任一任务挂死 -> 监控任务置 false -> IWDG 兜底复位 */
+static volatile bool g_watchdog_healthy = true;
+
+/* ------------------------------------------------------------------ */
+/* 任务心跳 / 运行标志                                                  */
+/* ------------------------------------------------------------------ */
+static volatile uint32_t g_heartbeat[APP_FAULT_TASK_COUNT];
+static volatile bool     g_running[APP_FAULT_TASK_COUNT];
+
+/* 可自动重启的任务 */
+typedef struct {
+    void **handle;          /* osThreadId_t* */
+    void (*fn)(void *);     /* osThreadFunc_t */
+    const void *attr;       /* const osThreadAttr_t* */
+    bool registered;
+} app_fault_restart_t;
+
+static app_fault_restart_t g_restart[APP_FAULT_TASK_COUNT];
+
+static uint32_t g_last_fault;
+static app_fault_reset_reason_t g_reset_reason;
+
+/* 心跳连续 N 次检查无变化即判定任务挂死（监控周期 1s） */
+#define APP_FAULT_HEARTBEAT_TIMEOUT_TICKS  10U
+
+static void app_fault_capture_reset_reason(void);
+static void app_fault_supervisor(void *argument);
+
+/* ================================================================== */
+/* 复位/记录                                                            */
+/* ================================================================== */
+
+/**
+ * @brief 记录故障码并复位系统。直接写 .noinit、不依赖栈/堆，
+ *        可在任意上下文（含栈溢出钩子）安全调用。
+ */
+void app_fault_trap(uint32_t code)
+{
+    g_fault_noinit.code = code;
+    g_fault_noinit.magic = APP_FAULT_NOINIT_MAGIC;
+    __DSB();
+    NVIC_SystemReset();
+    for (;;) {
+    }
+}
+
+void app_fault_init(void)
+{
+    uint32_t tickstart;
+
+    memset(&g_reset_reason, 0, sizeof(g_reset_reason));
+    g_last_fault = APP_FAULT_CODE_NONE;
+    g_iwdg_started = false;
+
+    /* 读取上次复位前的故障码（magic 校验失败说明是首次上电/内存脏，忽略） */
+    if (g_fault_noinit.magic == APP_FAULT_NOINIT_MAGIC) {
+        g_last_fault = g_fault_noinit.code;
+    }
+    g_fault_noinit.magic = 0U;
+    g_fault_noinit.code = 0U;
+
+    app_fault_capture_reset_reason();
+
+    /* 启动 IWDG：LSI 独立时钟，即使 STOP 也继续计数 */
+    __HAL_RCC_LSI_ENABLE();
+    tickstart = HAL_GetTick();
+    while (READ_BIT(RCC->CSR, RCC_CSR_LSIRDY) == 0U) {
+        if ((HAL_GetTick() - tickstart) > APP_FAULT_IWDG_TIMEOUT_MS) {
+            return;
+        }
+    }
+
+    /*
+     * F407 must have the IWDG running before PR/RLR updates can complete.
+     * Start -> unlock -> configure -> wait for PVU/RVU -> reload.
+     */
+    APP_FAULT_IWDG_KR = APP_FAULT_IWDG_KR_START;
+    APP_FAULT_IWDG_KR = APP_FAULT_IWDG_KR_UNLOCK;
+    APP_FAULT_IWDG_PR  = APP_FAULT_IWDG_PR_DIV256;   /* 32kHz/256 ≈ 125Hz */
+    APP_FAULT_IWDG_RLR = 4095U;                      /* 约 32s（32kHz LSI） */
+    tickstart = HAL_GetTick();
+    while ((APP_FAULT_IWDG_SR & APP_FAULT_IWDG_SR_UPD_BUSY) != 0U) {
+        if ((HAL_GetTick() - tickstart) > APP_FAULT_IWDG_TIMEOUT_MS) {
+            APP_FAULT_IWDG_KR = APP_FAULT_IWDG_KR_RELOAD;
+            g_iwdg_started = true;
+            return;
+        }
+    }
+    APP_FAULT_IWDG_KR = APP_FAULT_IWDG_KR_RELOAD;    /* 初始喂狗 */
+    g_iwdg_started = true;
+
+    g_watchdog_healthy = true;
+}
+
+void app_fault_iwdg_refresh(void)
+{
+    if (g_iwdg_started) {
+        APP_FAULT_IWDG_KR = APP_FAULT_IWDG_KR_RELOAD;
+    }
+}
+
+/* ================================================================== */
+/* 监控任务                                                            */
+/* ================================================================== */
+
+void app_fault_start(void)
+{
+    static osThreadId_t sup_handle;
+    static const osThreadAttr_t sup_attr = {
+        .name = "faultTask",
+        .stack_size = 1024,
+        .priority = (osPriority_t)osPriorityAboveNormal,
+    };
+
+    sup_handle = osThreadNew(app_fault_supervisor, NULL, &sup_attr);
+    (void)sup_handle;
+}
+
+void app_fault_heartbeat(app_fault_task_id_t id)
+{
+    if (id < APP_FAULT_TASK_COUNT) {
+        g_heartbeat[id]++;
+    }
+}
+
+void app_fault_task_entered(app_fault_task_id_t id)
+{
+    if (id < APP_FAULT_TASK_COUNT) {
+        g_running[id] = true;
+    }
+}
+
+void app_fault_task_exited(app_fault_task_id_t id)
+{
+    if (id < APP_FAULT_TASK_COUNT) {
+        g_running[id] = false;
+    }
+}
+
+void app_fault_register_restartable(app_fault_task_id_t id, void *handle_ptr,
+                                    void (*fn)(void *), const void *attr)
+{
+    if (id >= APP_FAULT_TASK_COUNT || handle_ptr == NULL || fn == NULL) {
+        return;
+    }
+
+    g_restart[id].handle = (void **)handle_ptr;
+    g_restart[id].fn = fn;
+    g_restart[id].attr = attr;
+    g_restart[id].registered = true;
+    g_running[id] = true;   /* 注册时任务已创建（或即将运行），先视为存活 */
+}
+
+uint32_t app_fault_get_last_fault(void)
+{
+    return g_last_fault;
+}
+
+const app_fault_reset_reason_t *app_fault_get_reset_reason(void)
+{
+    return &g_reset_reason;
+}
+
+static void app_fault_capture_reset_reason(void)
+{
+    uint32_t csr = RCC->CSR;
+
+    g_reset_reason.independent_watchdog = (csr & RCC_CSR_IWDGRSTF) != 0U;
+    g_reset_reason.window_watchdog       = (csr & RCC_CSR_WWDGRSTF) != 0U;
+    g_reset_reason.software_reset        = (csr & RCC_CSR_SFTRSTF) != 0U;
+    g_reset_reason.power_on              = (csr & RCC_CSR_PORRSTF) != 0U;
+    g_reset_reason.low_power_reset       = (csr & RCC_CSR_LPWRRSTF) != 0U;
+
+    /* 清复位标志，便于下次准确判断 */
+    __HAL_RCC_CLEAR_RESET_FLAGS();
+}
+
+static void app_fault_supervisor(void *argument)
+{
+    uint32_t last_beat[APP_FAULT_TASK_COUNT];
+    uint32_t miss[APP_FAULT_TASK_COUNT];
+
+    (void)argument;
+    memset(last_beat, 0, sizeof(last_beat));
+    memset(miss, 0, sizeof(miss));
+
+    for (;;) {
+        vTaskDelay(pdMS_TO_TICKS(1000U));
+
+        for (uint8_t i = 0; i < APP_FAULT_TASK_COUNT; i++) {
+            /* 可重启任务退出了 -> 重建 */
+            if (g_restart[i].registered && !g_running[i]) {
+                osThreadId_t *h = (osThreadId_t *)g_restart[i].handle;
+                if (h != NULL) {
+                    *h = osThreadNew((osThreadFunc_t)g_restart[i].fn, NULL,
+                                     (const osThreadAttr_t *)g_restart[i].attr);
+                }
+                g_running[i] = true;   /* 新任务进入后会再次置 1 */
+                last_beat[i] = g_heartbeat[i];
+                miss[i] = 0U;
+                continue;
+            }
+
+            if (g_heartbeat[i] != last_beat[i]) {
+                last_beat[i] = g_heartbeat[i];
+                miss[i] = 0U;
+            } else {
+                miss[i]++;
+            }
+
+            /* 心跳长时间无变化 -> 任务挂死 -> 记录并复位 */
+            if (miss[i] >= APP_FAULT_HEARTBEAT_TIMEOUT_TICKS) {
+                g_watchdog_healthy = false;   /* 停喂狗，IWDG 兜底 */
+                app_fault_trap(APP_FAULT_CODE_TASK_HUNG);
+            }
+        }
+
+        g_watchdog_healthy = true;   /* 全部存活，恢复喂狗 */
+    }
+}
+
+/* ================================================================== */
+/* FreeRTOS 钩子（弱符号覆盖）                                         */
+/* ================================================================== */
+
+/* configCHECK_FOR_STACK_OVERFLOW = 2：检测栈溢出后调用。此时栈可能已损坏，
+ * 只做最小动作：记录故障码并复位。 */
+void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
+{
+    (void)xTask;
+    (void)pcTaskName;
+    app_fault_trap(APP_FAULT_CODE_STACK_OVERFLOW);
+}
+
+/* configUSE_MALLOC_FAILED_HOOK = 1：堆申请失败时调用。 */
+void vApplicationMallocFailedHook(void)
+{
+    app_fault_trap(APP_FAULT_CODE_MALLOC_FAILED);
+}
+
+/* configUSE_IDLE_HOOK = 1：空闲钩子负责喂狗。仅系统健康时喂狗，
+ * 一旦调度器/CPU 卡死导致空闲任务停摆，IWDG 超时自动复位。 */
+void vApplicationIdleHook(void)
+{
+    if (g_watchdog_healthy) {
+        app_fault_iwdg_refresh();
+    }
+}
