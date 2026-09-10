@@ -12,7 +12,7 @@
 #define APP_POWER_KEY_PINS   (KEY_Pin | KEYE8_Pin | KEYE9_Pin | KEYE10_Pin | KEYE11_Pin)
 #define APP_POWER_EXTI_PRIO  6U   /* 数值越大优先级越低；仅作唤醒，不调用 FreeRTOS API */
 #define APP_POWER_RTC_EXTI_LINE       (1UL << 22)
-#define APP_POWER_RTC_WAKEUP_COUNT    39999U
+#define APP_POWER_RTC_WAKEUP_COUNT    9999U
 #define APP_POWER_RTC_READY_TIMEOUT_MS 100U
 
 extern void SystemClock_Config(void);
@@ -22,8 +22,10 @@ static volatile bool g_stop_key_wakeup;
 static void app_power_config_keys_exti(void);
 static void app_power_restore_keys(void);
 static bool app_power_start_rtc_wakeup(void);
+static bool app_power_rearm_rtc_wakeup(void);
 static void app_power_stop_rtc_wakeup(void);
 static bool app_power_wait_rtc_flag(uint32_t flag, bool set);
+static void app_power_clear_rtc_wakeup_flags(void);
 
 bool app_power_can_sleep(void)
 {
@@ -45,8 +47,7 @@ bool app_power_can_sleep(void)
 
 void app_power_enter_stop(void)
 {
-    /* RTC 与 IWDG 共用 LSI。RTC 每约 20s 唤醒一次，仅用于喂狗；
-     * RTC 周期约为 IWDG 周期的 61%，不受 LSI 频率偏差影响。 */
+    /* RTC 与 IWDG 共用 LSI。RTC 每约 5s 唤醒一次，仅用于喂狗。 */
     if (!app_power_start_rtc_wakeup()) {
         return;
     }
@@ -73,6 +74,10 @@ void app_power_enter_stop(void)
         app_fault_iwdg_refresh();
         __HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
         HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);
+        app_fault_iwdg_refresh();
+        if (!g_stop_key_wakeup && !app_power_rearm_rtc_wakeup()) {
+            g_stop_key_wakeup = true;
+        }
     } while (!g_stop_key_wakeup);
 
     /* ---- 唤醒后 ---- */
@@ -133,7 +138,7 @@ static bool app_power_start_rtc_wakeup(void)
 
     CLEAR_BIT(RTC->CR, RTC_CR_WUCKSEL | RTC_CR_WUTIE);
     RTC->WUTR = APP_POWER_RTC_WAKEUP_COUNT;
-    CLEAR_BIT(RTC->ISR, RTC_ISR_WUTF);
+    app_power_clear_rtc_wakeup_flags();
 
     EXTI->IMR |= APP_POWER_RTC_EXTI_LINE;
     EXTI->RTSR |= APP_POWER_RTC_EXTI_LINE;
@@ -150,6 +155,25 @@ static bool app_power_start_rtc_wakeup(void)
     return true;
 }
 
+static bool app_power_rearm_rtc_wakeup(void)
+{
+    bool ready;
+
+    HAL_PWR_EnableBkUpAccess();
+    RTC->WPR = 0xCAU;
+    RTC->WPR = 0x53U;
+    CLEAR_BIT(RTC->CR, RTC_CR_WUTE);
+    ready = app_power_wait_rtc_flag(RTC_ISR_WUTWF, true);
+    if (ready) {
+        RTC->WUTR = APP_POWER_RTC_WAKEUP_COUNT;
+        app_power_clear_rtc_wakeup_flags();
+        SET_BIT(RTC->CR, RTC_CR_WUTIE | RTC_CR_WUTE);
+    }
+    RTC->WPR = 0xFFU;
+    HAL_PWR_DisableBkUpAccess();
+    return ready;
+}
+
 static void app_power_stop_rtc_wakeup(void)
 {
     HAL_NVIC_DisableIRQ(RTC_WKUP_IRQn);
@@ -160,7 +184,7 @@ static void app_power_stop_rtc_wakeup(void)
     CLEAR_BIT(RTC->CR, RTC_CR_WUTE);
     (void)app_power_wait_rtc_flag(RTC_ISR_WUTWF, true);
     CLEAR_BIT(RTC->CR, RTC_CR_WUTIE);
-    CLEAR_BIT(RTC->ISR, RTC_ISR_WUTF);
+    app_power_clear_rtc_wakeup_flags();
     RTC->WPR = 0xFFU;
     HAL_PWR_DisableBkUpAccess();
 
@@ -182,6 +206,13 @@ static bool app_power_wait_rtc_flag(uint32_t flag, bool set)
     }
 
     return true;
+}
+
+static void app_power_clear_rtc_wakeup_flags(void)
+{
+    WRITE_REG(RTC->ISR, 0x0000FFFFU & ~(RTC_ISR_WUTF | RTC_ISR_INIT));
+    EXTI->PR = APP_POWER_RTC_EXTI_LINE;
+    HAL_NVIC_ClearPendingIRQ(RTC_WKUP_IRQn);
 }
 
 static void app_power_config_keys_exti(void)
@@ -240,10 +271,12 @@ void EXTI15_10_IRQHandler(void)
 void RTC_WKUP_IRQHandler(void)
 {
     if ((RTC->ISR & RTC_ISR_WUTF) != 0U) {
+        HAL_PWR_EnableBkUpAccess();
         RTC->WPR = 0xCAU;
         RTC->WPR = 0x53U;
-        CLEAR_BIT(RTC->ISR, RTC_ISR_WUTF);
+        WRITE_REG(RTC->ISR, 0x0000FFFFU & ~(RTC_ISR_WUTF | RTC_ISR_INIT));
         RTC->WPR = 0xFFU;
+        HAL_PWR_DisableBkUpAccess();
     }
 
     EXTI->PR = APP_POWER_RTC_EXTI_LINE;

@@ -289,3 +289,6 @@
 23	240	8107364590098786	CMakeFiles/BeiErZu.dir/app/app_power.c.obj	3d035fbdb44b9b05
 9	269	8107364589958637	CMakeFiles/BeiErZu.dir/app/app_ui.c.obj	893b2964c82300db
 269	491	8107364592559230	BeiErZu.elf	82ca8ed225fdbac2
+23	246	8107402853235659	CMakeFiles/BeiErZu.dir/app/app_power.c.obj	3d035fbdb44b9b05
+9	304	8107402853097501	CMakeFiles/BeiErZu.dir/app/app_ui_monitor.c.obj	fd0fa0a812c37987
+304	593	8107402856041494	BeiErZu.elf	82ca8ed225fdbac2

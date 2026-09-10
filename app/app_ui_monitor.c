@@ -205,27 +205,28 @@ static void ui_monitor_refresh_tasks(void)
         if ((UBaseType_t)i < sampled) {
             uint32_t previous_run = 0U;
             uint32_t run = g_monitor_task_status[i].ulRunTimeCounter;
-            uint32_t cpu = 0U;
+            uint32_t cpu_x10 = 0U;
 
             if (g_monitor_sample_valid && total_delta != 0U &&
                 ui_monitor_previous_run(g_monitor_task_status[i].xHandle, &previous_run)) {
                 uint32_t run_delta = run - previous_run;
-                cpu = (uint32_t)(((uint64_t)run_delta * 100U) / total_delta);
-                if (cpu > 100U) {
-                    cpu = 100U;
+                cpu_x10 = (uint32_t)(((uint64_t)run_delta * 1000U) / total_delta);
+                if (cpu_x10 > 1000U) {
+                    cpu_x10 = 1000U;
                 }
             }
 
             if (strcmp(g_monitor_task_status[i].pcTaskName, "IDLE") == 0) {
-                idle_cpu = (uint8_t)cpu;
+                idle_cpu = (uint8_t)(cpu_x10 / 10U);
                 idle_found = true;
             }
 
-            snprintf(line, sizeof(line), "%.10s  %s P%lu CPU:%lu%%\nStack free:%luB",
+            snprintf(line, sizeof(line), "%.10s %s P%lu CPU:%lu.%lu%%\nStack free:%luB",
                      g_monitor_task_status[i].pcTaskName,
                      monitor_task_state_name(g_monitor_task_status[i].eCurrentState),
                      (unsigned long)g_monitor_task_status[i].uxCurrentPriority,
-                     (unsigned long)cpu,
+                     (unsigned long)(cpu_x10 / 10U),
+                     (unsigned long)(cpu_x10 % 10U),
                      (unsigned long)((uint32_t)g_monitor_task_status[i].usStackHighWaterMark * sizeof(StackType_t)));
             ui_monitor_set_text(g_monitor_task_labels[i], line);
         } else {
