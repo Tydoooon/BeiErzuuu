@@ -8,6 +8,14 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 
+typedef struct
+{
+    uint32_t last_ms;
+    uint32_t average_ms;
+    uint32_t max_ms;
+    uint32_t sample_count;
+} app_ui_key_latency_stats_t;
+
 /**
  * @brief 创建 LVGL 应用界面，从登录界面开始运行。
  */
@@ -32,13 +40,16 @@ uint8_t app_ui_get_cursor_size(void);
 /**
  * @brief 从按键扫描任务投递一个 UI 按键事件。
  * @param key_id 按键编号，范围 1~5。
+ * @param generated_tick 按键消抖确认时的 FreeRTOS tick。
  */
-void app_ui_key_push(uint8_t key_id);
+void app_ui_key_push(uint8_t key_id, uint32_t generated_tick);
 
 /**
  * @brief 在 LVGL 任务中处理已投递的按键事件。
  */
 void app_ui_process_keys(void);
+void app_ui_record_discarded_event(void);
+void app_ui_get_key_latency_stats(app_ui_key_latency_stats_t *stats);
 
 #ifdef __cplusplus
 }

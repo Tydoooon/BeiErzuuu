@@ -1,4 +1,5 @@
 #include "app_led.h"
+#include "app_queue_monitor.h"
 
 /* 软件消抖：扫描周期 10ms，连续 N 次读到相同电平才确认跳变（约 30ms） */
 #define KEY_DEBOUNCE_CNT 3U
@@ -8,6 +9,7 @@ uint8_t B1 = 0,B2 = 0,B3 = 0,B4 = 0,B5 = 0;
 uint8_t B1_last = 1,B2_last = 1,B3_last = 1,B4_last = 1,B5_last = 1;
 
 static uint8_t B1_cnt = 0,B2_cnt = 0,B3_cnt = 0,B4_cnt = 0,B5_cnt = 0;
+static uint32_t g_key_queue_send_failures;
 
 /* 稳定计数消抖：raw 与当前稳定值不同则累加计数，达到阈值才接受跳变 */
 static uint8_t key_debounce(uint8_t raw, uint8_t stable, uint8_t *cnt)
@@ -67,7 +69,27 @@ void key_scan(void)
     }
 
     if (key_id != 0 && g_key_queue != NULL) {
-        xQueueSend(g_key_queue, &key_id, 0);
+        app_key_event_t event = {
+            .key_id = key_id,
+            .generated_tick = xTaskGetTickCount(),
+        };
+        BaseType_t send_result;
+        UBaseType_t depth = 0U;
+
+        taskENTER_CRITICAL();
+        send_result = xQueueSend(g_key_queue, &event, 0);
+        if (send_result == pdPASS) {
+            depth = uxQueueMessagesWaiting(g_key_queue);
+        } else {
+            g_key_queue_send_failures++;
+        }
+        taskEXIT_CRITICAL();
+
+        if (send_result == pdPASS) {
+            app_queue_monitor_record_depth(APP_QUEUE_KEY, depth);
+        } else {
+            app_ui_record_discarded_event();
+        }
     }
 
     B1_last = B1;
@@ -101,6 +123,23 @@ void key_scan_reset(void)
 QueueHandle_t KeyQueueInit(void)
 {
     QueueHandle_t KeyQueue;
-    KeyQueue = xQueueCreate(5,sizeof(uint8_t));
+
+    taskENTER_CRITICAL();
+    g_key_queue_send_failures = 0U;
+    taskEXIT_CRITICAL();
+
+    KeyQueue = xQueueCreate(APP_KEY_QUEUE_LENGTH, sizeof(app_key_event_t));
+    app_queue_monitor_register(APP_QUEUE_KEY, KeyQueue, APP_KEY_QUEUE_LENGTH);
     return KeyQueue;
+}
+
+void app_key_queue_get_stats(app_key_queue_stats_t *stats)
+{
+    if (stats == NULL) {
+        return;
+    }
+
+    taskENTER_CRITICAL();
+    stats->send_failures = g_key_queue_send_failures;
+    taskEXIT_CRITICAL();
 }

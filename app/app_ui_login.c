@@ -2,6 +2,7 @@
 
 #define UI_LOGIN_MAX_WRONG_COUNT 5U
 #define UI_LOGIN_LOCK_MS         10000U
+#define UI_LOGIN_PASSWORD_MAX_LENGTH 4U
 
 static uint8_t g_login_wrong_count;
 static uint32_t g_login_lock_until;
@@ -135,7 +136,7 @@ void ui_create_login(void)
     lv_obj_align(g_password_ta, LV_ALIGN_TOP_MID, 0, 50);
     lv_textarea_set_one_line(g_password_ta, true);
     lv_textarea_set_password_mode(g_password_ta, true);
-    lv_textarea_set_max_length(g_password_ta, 8);
+    lv_textarea_set_max_length(g_password_ta, UI_LOGIN_PASSWORD_MAX_LENGTH);
     lv_textarea_set_accepted_chars(g_password_ta, "0123456789");
     lv_obj_set_style_text_font(g_password_ta, UI_FONT, 0);
 
@@ -157,8 +158,8 @@ static void ui_login_add_text(const char *text)
 {
     if (g_password_ta == NULL || text == NULL) return;
 
-    if (strlen(lv_textarea_get_text(g_password_ta)) >= 8U) {
-        g_discarded_events++;
+    if (strlen(lv_textarea_get_text(g_password_ta)) >= UI_LOGIN_PASSWORD_MAX_LENGTH) {
+        app_ui_record_discarded_event();
         return;
     }
 

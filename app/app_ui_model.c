@@ -2,6 +2,7 @@
 
 #include "app_backlight.h"
 #include "app_fault.h"
+#include "app_queue_monitor.h"
 #include "queue.h"
 
 #include <stddef.h>
@@ -92,6 +93,7 @@ static void ui_storage_sanitize_loaded_state(void);
 static bool ui_storage_queue_snapshot(uint32_t feedback, bool include_draw, uint8_t draw_slot);
 static bool ui_storage_take_pending_snapshot(ui_storage_snapshot_t *snapshot);
 static void ui_storage_publish_result(uint32_t feedback, bool success);
+static void ui_storage_wake_task(ui_storage_request_t request);
 static void ui_storage_sync_dirty_event(void);
 static bool ui_log_load_persisted(void);
 static void ui_log_save_to_flash(void);
@@ -151,12 +153,17 @@ void app_ui_storage_service_init(void)
                                                      sizeof(ui_storage_request_t),
                                                      g_storage_request_queue_storage,
                                                      &g_storage_request_queue_buffer);
+        app_queue_monitor_register(APP_QUEUE_STORAGE_REQUEST,
+                                   g_storage_request_queue, 1U);
     }
     if (g_storage_result_queue == NULL) {
         g_storage_result_queue = xQueueCreateStatic(UI_STORAGE_RESULT_QUEUE_LEN,
                                                     sizeof(ui_storage_result_t),
                                                     g_storage_result_queue_storage,
                                                     &g_storage_result_queue_buffer);
+        app_queue_monitor_register(APP_QUEUE_STORAGE_RESULT,
+                                   g_storage_result_queue,
+                                   UI_STORAGE_RESULT_QUEUE_LEN);
     }
 }
 
@@ -324,7 +331,7 @@ static bool ui_storage_queue_snapshot(uint32_t feedback, bool include_draw, uint
     }
 
     app_event_set(APP_EVT_STORAGE_DIRTY);
-    (void)xQueueOverwrite(g_storage_request_queue, &wake);
+    ui_storage_wake_task(wake);
     return true;
 }
 
@@ -610,7 +617,9 @@ static bool ui_storage_take_pending_snapshot(ui_storage_snapshot_t *snapshot)
 
 static void ui_storage_publish_result(uint32_t feedback, bool success)
 {
-    ui_storage_result_t result = {
+    BaseType_t send_result;
+    UBaseType_t depth = 0U;
+    ui_storage_result_t message = {
         .feedback = feedback,
         .success = success,
     };
@@ -619,11 +628,43 @@ static void ui_storage_publish_result(uint32_t feedback, bool success)
         return;
     }
 
-    if (xQueueSend(g_storage_result_queue, &result, 0U) != pdPASS) {
+    taskENTER_CRITICAL();
+    send_result = xQueueSend(g_storage_result_queue, &message, 0U);
+    if (send_result == pdPASS) {
+        depth = uxQueueMessagesWaiting(g_storage_result_queue);
+    }
+    taskEXIT_CRITICAL();
+
+    if (send_result != pdPASS) {
         ui_storage_result_t discarded;
         (void)xQueueReceive(g_storage_result_queue, &discarded, 0U);
-        (void)xQueueSend(g_storage_result_queue, &result, 0U);
+        taskENTER_CRITICAL();
+        send_result = xQueueSend(g_storage_result_queue, &message, 0U);
+        if (send_result == pdPASS) {
+            depth = uxQueueMessagesWaiting(g_storage_result_queue);
+        }
+        taskEXIT_CRITICAL();
     }
+
+    if (send_result == pdPASS) {
+        app_queue_monitor_record_depth(APP_QUEUE_STORAGE_RESULT, depth);
+    }
+}
+
+static void ui_storage_wake_task(ui_storage_request_t request)
+{
+    UBaseType_t depth;
+
+    if (g_storage_request_queue == NULL) {
+        return;
+    }
+
+    taskENTER_CRITICAL();
+    (void)xQueueOverwrite(g_storage_request_queue, &request);
+    depth = uxQueueMessagesWaiting(g_storage_request_queue);
+    taskEXIT_CRITICAL();
+
+    app_queue_monitor_record_depth(APP_QUEUE_STORAGE_REQUEST, depth);
 }
 
 static void ui_storage_sync_dirty_event(void)
@@ -676,7 +717,7 @@ void ui_log_request_persist(void)
     if (g_storage_request_queue == NULL) {
         return;
     }
-    (void)xQueueOverwrite(g_storage_request_queue, &req);
+    ui_storage_wake_task(req);
 }
 
 static uint32_t ui_log_record_crc(const ui_log_record_t *record)

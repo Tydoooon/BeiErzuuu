@@ -233,7 +233,7 @@ void StartKeyTask(void *argument)
 
 void StartLCDTask(void *argument)
 {
-  uint8_t key_id;
+  app_key_event_t key_event;
   (void)argument;
   lv_init();
   lv_port_disp_init();
@@ -246,9 +246,10 @@ void StartLCDTask(void *argument)
   {
     app_fault_heartbeat(APP_FAULT_TASK_LCD);
 
-    while (g_key_queue != NULL && xQueueReceive(g_key_queue, &key_id, 0) == pdPASS)
+    while (g_key_queue != NULL && xQueueReceive(g_key_queue, &key_event, 0) == pdPASS)
     {
-      app_ui_key_push(key_id);
+      app_ui_key_push(key_event.key_id, (uint32_t)key_event.generated_tick);
+      app_ui_process_keys();
     }
 
     app_ui_process_keys();

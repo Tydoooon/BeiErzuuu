@@ -2,6 +2,7 @@
 
 #include "app_event.h"
 #include "app_fault.h"
+#include "app_queue_monitor.h"
 #include "app_ui.h"
 #include "bsp_max98357a.h"
 #include "FreeRTOS.h"
@@ -80,6 +81,7 @@ static TaskHandle_t       g_audio_task_h;
 static void app_music_player_reset_status(void);
 static void app_music_player_set_state(app_music_player_state_t state, app_wav_status_t status, app_music_player_error_t error);
 static bool app_music_player_send_cmd(const app_music_player_cmd_t *cmd);
+static bool app_music_player_send_cmd_to_front(const app_music_player_cmd_t *cmd);
 static void app_music_player_do_scan(void);
 static void app_music_player_play_track(const app_wav_track_t *track);
 static app_music_player_error_t app_music_player_stream(app_wav_file_t *wav);
@@ -160,6 +162,9 @@ void app_music_player_init(void)
                                                sizeof(app_music_player_cmd_t),
                                                g_music_cmd_queue_storage,
                                                &g_music_cmd_queue_buf);
+        app_queue_monitor_register(APP_QUEUE_MUSIC_COMMAND,
+                                   g_music_cmd_queue,
+                                   APP_MUSIC_PLAYER_QUEUE_LEN);
     }
 
     app_music_player_reset_status();
@@ -206,7 +211,7 @@ void app_music_player_request_stop(void)
 
     cmd.type = APP_MUSIC_PLAYER_CMD_STOP;
     memset(&cmd.track, 0, sizeof(cmd.track));
-    (void)xQueueSendToFront(g_music_cmd_queue, &cmd, 0);
+    (void)app_music_player_send_cmd_to_front(&cmd);
 }
 
 void app_music_player_request_seek(uint32_t byte_offset)
@@ -424,11 +429,50 @@ static void app_music_player_set_state(app_music_player_state_t state, app_wav_s
 
 static bool app_music_player_send_cmd(const app_music_player_cmd_t *cmd)
 {
+    BaseType_t result;
+    UBaseType_t depth = 0U;
+
     if (cmd == NULL || g_music_cmd_queue == NULL) {
         return false;
     }
 
-    return xQueueSend(g_music_cmd_queue, cmd, 0) == pdPASS;
+    taskENTER_CRITICAL();
+    result = xQueueSend(g_music_cmd_queue, cmd, 0);
+    if (result == pdPASS) {
+        depth = uxQueueMessagesWaiting(g_music_cmd_queue);
+    }
+    taskEXIT_CRITICAL();
+
+    if (result == pdPASS) {
+        app_queue_monitor_record_depth(APP_QUEUE_MUSIC_COMMAND, depth);
+        return true;
+    }
+
+    return false;
+}
+
+static bool app_music_player_send_cmd_to_front(const app_music_player_cmd_t *cmd)
+{
+    BaseType_t result;
+    UBaseType_t depth = 0U;
+
+    if (cmd == NULL || g_music_cmd_queue == NULL) {
+        return false;
+    }
+
+    taskENTER_CRITICAL();
+    result = xQueueSendToFront(g_music_cmd_queue, cmd, 0);
+    if (result == pdPASS) {
+        depth = uxQueueMessagesWaiting(g_music_cmd_queue);
+    }
+    taskEXIT_CRITICAL();
+
+    if (result == pdPASS) {
+        app_queue_monitor_record_depth(APP_QUEUE_MUSIC_COMMAND, depth);
+        return true;
+    }
+
+    return false;
 }
 
 static void app_music_player_stream_reset_flags(void)

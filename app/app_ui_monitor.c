@@ -1,10 +1,12 @@
 #include "app_ui_internal.h"
 #include "app_fault.h"
+#include "app_led.h"
+#include "app_queue_monitor.h"
 
 #define UI_MONITOR_TASK_MAX 12
 #define UI_MONITOR_WHEEL_STEP 24
 #define UI_MONITOR_LINE_H 19
-#define UI_MONITOR_SUMMARY_H (9 * UI_MONITOR_LINE_H)
+#define UI_MONITOR_SUMMARY_H (14 * UI_MONITOR_LINE_H)
 #define UI_MONITOR_TASK_ROW_H 36
 #define UI_MONITOR_TASK_Y0 (UI_MONITOR_SUMMARY_H + 4 + UI_MONITOR_LINE_H)
 
@@ -98,6 +100,12 @@ static void ui_monitor_refresh(void)
     char status[48];
     char reset[64];
     uint32_t bits;
+    app_key_queue_stats_t queue_stats;
+    app_ui_key_latency_stats_t latency_stats;
+    app_queue_watermark_t key_queue;
+    app_queue_watermark_t music_queue;
+    app_queue_watermark_t storage_request_queue;
+    app_queue_watermark_t storage_result_queue;
 
     ui_monitor_refresh_tasks();
 
@@ -107,6 +115,12 @@ static void ui_monitor_refresh(void)
         bits = app_event_get_bits();
         ui_monitor_status_text(bits, status, sizeof(status));
         ui_monitor_reset_text(reset, sizeof(reset));
+        app_key_queue_get_stats(&queue_stats);
+        app_ui_get_key_latency_stats(&latency_stats);
+        (void)app_queue_monitor_get(APP_QUEUE_KEY, &key_queue);
+        (void)app_queue_monitor_get(APP_QUEUE_MUSIC_COMMAND, &music_queue);
+        (void)app_queue_monitor_get(APP_QUEUE_STORAGE_REQUEST, &storage_request_queue);
+        (void)app_queue_monitor_get(APP_QUEUE_STORAGE_RESULT, &storage_result_queue);
         lv_label_set_text_fmt(g_monitor_label, UI_TEXT_MONITOR_FMT,
                                (unsigned long)(lv_tick_get() / 1000U),
                                status,
@@ -115,7 +129,24 @@ static void ui_monitor_refresh(void)
                                (unsigned long)g_input_events,
                                (unsigned long)g_discarded_events,
                                (unsigned long)g_error_events,
+                               (unsigned long)key_queue.current,
+                               (unsigned long)key_queue.capacity,
+                               (unsigned long)key_queue.high_water_mark,
+                               (unsigned long)queue_stats.send_failures,
+                               (unsigned long)music_queue.current,
+                               (unsigned long)music_queue.capacity,
+                               (unsigned long)music_queue.high_water_mark,
+                               (unsigned long)storage_request_queue.current,
+                               (unsigned long)storage_request_queue.capacity,
+                               (unsigned long)storage_request_queue.high_water_mark,
+                               (unsigned long)storage_result_queue.current,
+                               (unsigned long)storage_result_queue.capacity,
+                               (unsigned long)storage_result_queue.high_water_mark,
+                               (unsigned long)latency_stats.last_ms,
+                               (unsigned long)latency_stats.average_ms,
+                               (unsigned long)latency_stats.max_ms,
                                (unsigned long)xPortGetFreeHeapSize(),
+                               (unsigned long)xPortGetMinimumEverFreeHeapSize(),
                                (unsigned long)mem.free_size,
                                free_pct);
     }

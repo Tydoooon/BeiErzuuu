@@ -39,8 +39,14 @@ uint8_t g_home_selected;
 ui_app_id_t g_current_app = UI_APP_NONE;
 
 static uint32_t g_last_activity_tick;
+static uint32_t g_pending_key_ticks[5];
+static uint32_t g_key_latency_last_ms;
+static uint32_t g_key_latency_max_ms;
+static uint64_t g_key_latency_total_ms;
+static uint32_t g_key_latency_samples;
 
 static void app_ui_process_key(uint8_t key_id);
+static void app_ui_record_key_latency(uint32_t generated_tick);
 static void app_ui_process_home_key(uint8_t key_id);
 static void app_ui_process_current_app_key(uint8_t key_id);
 static void app_ui_process_mouse_wheel(void);
@@ -142,19 +148,32 @@ uint8_t app_ui_get_cursor_size(void)
     return g_settings.cursor_size;
 }
 
-void app_ui_key_push(uint8_t key_id)
+void app_ui_key_push(uint8_t key_id, uint32_t generated_tick)
 {
+    uint8_t mask;
+
     if (key_id == 0U || key_id > 5U) return;
-    g_pending_keys |= (uint8_t)(1U << (key_id - 1U));
+    mask = (uint8_t)(1U << (key_id - 1U));
+
+    taskENTER_CRITICAL();
+    if ((g_pending_keys & mask) == 0U) {
+        g_pending_key_ticks[key_id - 1U] = generated_tick;
+    }
+    g_pending_keys |= mask;
+    taskEXIT_CRITICAL();
 }
 
 void app_ui_process_keys(void)
 {
     uint8_t keys;
+    uint32_t generated_ticks[5];
 
     taskENTER_CRITICAL();
     keys = g_pending_keys;
     g_pending_keys = 0U;
+    for (uint8_t i = 0U; i < 5U; i++) {
+        generated_ticks[i] = g_pending_key_ticks[i];
+    }
     taskEXIT_CRITICAL();
 
     if (keys == 0U) return;
@@ -164,7 +183,31 @@ void app_ui_process_keys(void)
 
         app_ui_notify_activity();
         app_ui_process_key(key_id);
+        app_ui_record_key_latency(generated_ticks[key_id - 1U]);
     }
+}
+
+void app_ui_record_discarded_event(void)
+{
+    taskENTER_CRITICAL();
+    g_discarded_events++;
+    taskEXIT_CRITICAL();
+}
+
+void app_ui_get_key_latency_stats(app_ui_key_latency_stats_t *stats)
+{
+    if (stats == NULL) {
+        return;
+    }
+
+    taskENTER_CRITICAL();
+    stats->last_ms = g_key_latency_last_ms;
+    stats->max_ms = g_key_latency_max_ms;
+    stats->sample_count = g_key_latency_samples;
+    stats->average_ms = (g_key_latency_samples == 0U)
+                            ? 0U
+                            : (uint32_t)(g_key_latency_total_ms / g_key_latency_samples);
+    taskEXIT_CRITICAL();
 }
 
 void ui_open_app(ui_app_id_t app)
@@ -195,6 +238,22 @@ static void app_ui_process_key(uint8_t key_id)
     } else {
         app_ui_process_current_app_key(key_id);
     }
+}
+
+static void app_ui_record_key_latency(uint32_t generated_tick)
+{
+    TickType_t elapsed_ticks = xTaskGetTickCount() - (TickType_t)generated_tick;
+    uint32_t elapsed_ms =
+        (uint32_t)(((uint64_t)elapsed_ticks * 1000U) / configTICK_RATE_HZ);
+
+    taskENTER_CRITICAL();
+    g_key_latency_last_ms = elapsed_ms;
+    if (elapsed_ms > g_key_latency_max_ms) {
+        g_key_latency_max_ms = elapsed_ms;
+    }
+    g_key_latency_total_ms += elapsed_ms;
+    g_key_latency_samples++;
+    taskEXIT_CRITICAL();
 }
 
 static void app_ui_process_home_key(uint8_t key_id)

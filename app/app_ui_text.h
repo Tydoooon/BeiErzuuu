@@ -71,7 +71,7 @@
 #define UI_TEXT_LOG_CLEAR               "清空日志"
 #define UI_TEXT_LOG_SAVE                "保存日志"
 
-#define UI_TEXT_MONITOR_FMT             "运行时间:%lus\n系统状态:%s\n%s\nCPU占用:%u%%\n输入事件:%lu\n丢弃事件:%lu\n错误事件:%lu\nRTOS剩余堆:%luB\nLVGL剩余:%luB(%u%%)"
+#define UI_TEXT_MONITOR_FMT             "运行时间:%lus\n系统状态:%s\n%s\nCPU占用:%u%%\n输入事件:%lu\n丢弃事件:%lu\n错误事件:%lu\nKeyQ:%lu/%lu peak:%lu full:%lu\nMusicQ:%lu/%lu peak:%lu\nSaveReqQ:%lu/%lu peak:%lu\nSaveResQ:%lu/%lu peak:%lu\nDelay L/A/M:%lu/%lu/%lums\nRTOS堆:%luB min:%luB\nLVGL剩余:%luB(%u%%)"
 #define UI_TEXT_MONITOR_TASKS           "任务列表"
 #define UI_TEXT_MONITOR_NO_TASK         "无任务信息"
 #define UI_TEXT_STATUS_NORMAL           "正常"
