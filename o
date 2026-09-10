@@ -1,0 +1,131 @@
+[33mcommit 112d3ae6baa4937430149a0eda02423e99614cae[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Tydoooon <3107501696@qq.com>
+Date:   Wed Sep 9 17:55:41 2026 +0800
+
+    监控最终
+
+[33mcommit 61df2ee4fbba42e15a00de7ee945caf74d82a995[m
+Author: Tydoooon <3107501696@qq.com>
+Date:   Wed Sep 9 17:43:49 2026 +0800
+
+    优化
+
+[33mcommit f659aa2a9c901024b28c0a47b7057ae14617f2e7[m
+Author: Tydoooon <3107501696@qq.com>
+Date:   Tue Sep 8 18:44:01 2026 +0800
+
+    完成
+
+[33mcommit 74caf673637ac815d08150eadaee27568a303720[m
+Author: Tydoooon <3107501696@qq.com>
+Date:   Tue Sep 8 16:32:35 2026 +0800
+
+    鼠标超级优化
+
+[33mcommit db6b7fbe1d28d2e711f47ad7e5c38c9a9df5cc80[m
+Author: Tydoooon <3107501696@qq.com>
+Date:   Tue Sep 8 00:41:30 2026 +0800
+
+    音乐完成
+
+[33mcommit e888d8741141199d07f1e7c03addbe8a260ee4c8[m
+Author: Tydoooon <3107501696@qq.com>
+Date:   Sun Sep 6 16:45:02 2026 +0800
+
+    帧率
+
+[33mcommit 1a4fc2434d93f8e69c0acc138062fb126bdc1aeb[m
+Author: Tydoooon <3107501696@qq.com>
+Date:   Fri Sep 4 18:51:14 2026 +0800
+
+    换引脚
+
+[33mcommit f23196d6f8735e3f35ceec3cf8cec770ac445267[m
+Author: Tydoooon <3107501696@qq.com>
+Date:   Thu Sep 3 17:34:13 2026 +0800
+
+    事件组引入
+
+[33mcommit dff98353739dffe2f2671dd63f69e24ef065b879[m
+Author: Tydoooon <3107501696@qq.com>
+Date:   Wed Sep 2 20:51:46 2026 +0800
+
+    息屏
+
+[33mcommit f2a0e9fb6af1780e3735bbca7be3ec7666d5b02a[m
+Author: Tydoooon <3107501696@qq.com>
+Date:   Tue Sep 1 23:18:47 2026 +0800
+
+    文件重命名检测
+
+[33mcommit f616130d497d39bb440d72c49358e6a0e37eb593[m
+Author: Tydoooon <3107501696@qq.com>
+Date:   Sat Aug 29 19:06:28 2026 +0800
+
+    加入背光
+
+[33mcommit b8db90fa5d0d2096e68ac0d310e44af640284966[m
+Author: Tydoooon <3107501696@qq.com>
+Date:   Sat Aug 29 18:23:30 2026 +0800
+
+    基本实现
+
+[33mcommit 7257d5a9923738170c0798057109ba1d3ceae31e[m
+Author: Tydoooon <3107501696@qq.com>
+Date:   Fri Aug 28 22:12:19 2026 +0800
+
+    鼠标优化
+
+[33mcommit d83ed85adcfb5c9ac10dd3e11c1d7b7643781049[m
+Author: Tydoooon <3107501696@qq.com>
+Date:   Thu Aug 27 20:53:53 2026 +0800
+
+    界面完毕，差优化应用
+
+[33mcommit f25e25587581adb1b98097106594f4e4114ac99f[m
+Author: Tydoooon <3107501696@qq.com>
+Date:   Thu Aug 27 19:46:08 2026 +0800
+
+    内存优化
+
+[33mcommit 668cdce19f075c2e477434be2b2338a61d19e0ba[m
+Author: Tydoooon <3107501696@qq.com>
+Date:   Thu Aug 27 16:21:16 2026 +0800
+
+    bug修复
+
+[33mcommit 83080bbff9e092b565ea14b16fd0453fa6aad3ce[m
+Author: Tydoooon <3107501696@qq.com>
+Date:   Thu Aug 27 15:46:59 2026 +0800
+
+    w25q64
+
+[33mcommit 67716c06f4248d951f00397d6c5805c6ce2a16bb[m
+Author: Tydoooon <3107501696@qq.com>
+Date:   Wed Aug 26 16:43:56 2026 +0800
+
+    鼠标完毕
+
+[33mcommit 699f38ec256aa52fc929a4a81606a0a4b06b5233[m
+Author: Tydoooon <3107501696@qq.com>
+Date:   Tue Aug 25 22:43:57 2026 +0800
+
+    lvgl界面创建
+
+[33mcommit e2b637c787baef0bc8482ba0ee7ffd363065559b[m
+Author: Tydoooon <3107501696@qq.com>
+Date:   Tue Aug 25 15:04:15 2026 +0800
+
+    rtos移植
+
+[33mcommit ef73106b5be963ad65d419b7dc845e7679ac2fdd[m
+Author: Tydoooon <3107501696@qq.com>
+Date:   Sun Aug 23 22:34:11 2026 +0800
+
+    tft底层完毕
+
+[33mcommit 7bcedbf90855cb1e00fef10a27387f8ad421793c[m
+Author: Tydoooon <3107501696@qq.com>
+Date:   Sun Aug 23 21:56:32 2026 +0800
+
+    BerErZu
